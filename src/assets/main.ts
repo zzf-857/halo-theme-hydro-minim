@@ -7,6 +7,29 @@ import "./styles/main.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const motionEnabled = document.body.dataset.enableMotion !== "false";
+const colorSchemeStorageKey = "hydro-color-scheme";
+type ColorSchemeMode = "auto" | "dark" | "light";
+
+function isColorSchemeMode(value: string | null): value is ColorSchemeMode {
+  return value === "auto" || value === "dark" || value === "light";
+}
+
+function readStoredColorScheme() {
+  try {
+    const value = window.localStorage.getItem(colorSchemeStorageKey);
+    return isColorSchemeMode(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredColorScheme(mode: ColorSchemeMode) {
+  try {
+    window.localStorage.setItem(colorSchemeStorageKey, mode);
+  } catch {
+    // Ignore storage failures so private browsing still gets a working toggle.
+  }
+}
 
 function escapeHtml(value: string) {
   return value
@@ -35,6 +58,115 @@ function initLenis() {
   lenis.on("scroll", () => ScrollTrigger.update());
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
+}
+
+function initColorScheme() {
+  const root = document.documentElement;
+  const toggles = document.querySelectorAll<HTMLButtonElement>("[data-hydro-theme-toggle]");
+  const configuredMode = root.dataset.themeDefault ?? null;
+  const defaultMode: ColorSchemeMode = isColorSchemeMode(configuredMode) ? configuredMode : "auto";
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let isTransitioning = false;
+
+  const resolveMode = (mode: ColorSchemeMode) =>
+    mode === "dark" || (mode === "auto" && mediaQuery.matches) ? "dark" : "light";
+  const getTransitionOrigin = (trigger?: HTMLElement) => {
+    const rect = trigger?.getBoundingClientRect();
+    const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const y = rect ? rect.top + rect.height / 2 : 64;
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+    return { radius, x, y };
+  };
+
+  const applyMode = (mode: ColorSchemeMode) => {
+    const resolvedMode = resolveMode(mode);
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = mode;
+    root.classList.toggle("dark", mode === "dark");
+    root.classList.toggle("light", mode === "light");
+    root.classList.toggle("color-scheme-dark", mode === "dark");
+    root.classList.toggle("color-scheme-light", mode === "light");
+    root.classList.toggle("color-scheme-auto", mode === "auto");
+    root.style.colorScheme = resolvedMode;
+
+    toggles.forEach((toggle) => {
+      const nextLabel = resolvedMode === "dark" ? "切换为浅色模式" : "切换为深色模式";
+      toggle.setAttribute("aria-label", nextLabel);
+      toggle.setAttribute("title", nextLabel);
+      toggle.setAttribute("aria-pressed", String(resolvedMode === "dark"));
+    });
+  };
+  const setTransitionVars = (origin: ReturnType<typeof getTransitionOrigin>) => {
+    root.style.setProperty("--hydro-theme-transition-x", `${origin.x}px`);
+    root.style.setProperty("--hydro-theme-transition-y", `${origin.y}px`);
+    root.style.setProperty("--hydro-theme-transition-radius", `${origin.radius}px`);
+  };
+  const runThemeTransition = (mode: ColorSchemeMode, origin: ReturnType<typeof getTransitionOrigin>) => {
+    const resolvedMode = resolveMode(mode);
+    const styles = window.getComputedStyle(root);
+    const targetBackground =
+      styles.getPropertyValue(resolvedMode === "dark" ? "--hydro-dark-bg" : "--hydro-light-bg").trim() ||
+      styles.getPropertyValue("--hydro-bg").trim();
+    const overlay = document.createElement("div");
+
+    overlay.className = "hydro-theme-wipe";
+    overlay.style.setProperty("--hydro-theme-wipe-bg", targetBackground);
+    overlay.style.setProperty("--hydro-theme-transition-x", `${origin.x}px`);
+    overlay.style.setProperty("--hydro-theme-transition-y", `${origin.y}px`);
+    overlay.style.setProperty("--hydro-theme-transition-radius", `${origin.radius}px`);
+    document.body.append(overlay);
+
+    window.requestAnimationFrame(() => {
+      overlay.classList.add("is-expanding");
+    });
+    // 提前应用主题，让颜色过渡与遮罩扩散同步，创造循序渐进的渐变感
+    window.setTimeout(() => {
+      applyMode(mode);
+    }, 280);
+    window.setTimeout(() => {
+      overlay.classList.add("is-leaving");
+    }, 1000);
+    window.setTimeout(() => {
+      overlay.remove();
+      root.classList.remove("is-theme-transitioning");
+      isTransitioning = false;
+    }, 2000);
+  };
+  const transitionToMode = (mode: ColorSchemeMode, trigger?: HTMLElement, forceAnimation = false) => {
+    if (isTransitioning) {
+      return;
+    }
+    if (!motionEnabled || (!forceAnimation && reduceMotion.matches)) {
+      applyMode(mode);
+      return;
+    }
+
+    isTransitioning = true;
+    root.classList.add("is-theme-transitioning");
+    const origin = getTransitionOrigin(trigger);
+    setTransitionVars(origin);
+    runThemeTransition(mode, origin);
+  };
+
+  const getActiveMode = () => readStoredColorScheme() ?? defaultMode;
+
+  applyMode(getActiveMode());
+
+  toggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const nextMode: ColorSchemeMode = root.dataset.hydroTheme === "dark" ? "light" : "dark";
+      writeStoredColorScheme(nextMode);
+      transitionToMode(nextMode, toggle, true);
+    });
+  });
+
+  mediaQuery.addEventListener("change", () => {
+    if (!readStoredColorScheme() && defaultMode === "auto") {
+      transitionToMode("auto");
+    }
+  });
 }
 
 function initNavigation() {
@@ -387,6 +519,7 @@ function initFooterMarquee() {
   });
 }
 
+initColorScheme();
 initNavigation();
 initScrambleLinks();
 initLenis();

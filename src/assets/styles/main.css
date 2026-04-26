@@ -5,13 +5,47 @@
 @tailwind utilities;
 
 :root {
-  --hydro-bg: #f3f3f3;
-  --hydro-text: #000;
-  --hydro-muted: rgb(0 0 0 / 60%);
-  --hydro-faint: rgb(0 0 0 / 10%);
+  color-scheme: light;
+  --hydro-light-bg: #f3f3f3;
+  --hydro-dark-bg: #101112;
+  --hydro-bg: var(--hydro-light-bg);
+  --hydro-solid: #000;
+  --hydro-solid-contrast: #fff;
+  --hydro-text: var(--hydro-solid);
+  --hydro-ink-rgb: 0 0 0;
+  --hydro-paper-rgb: 255 255 255;
+  --hydro-shadow-rgb: 0 0 0;
+  --hydro-muted: rgb(var(--hydro-ink-rgb) / 60%);
+  --hydro-faint: rgb(var(--hydro-ink-rgb) / 10%);
   --hydro-coral: #ff6b6b;
   --hydro-teal: #4ecdc4;
   --hydro-yellow: #ffe66d;
+  --hydro-image-text: #fff;
+  --hydro-image-chip-bg: rgb(0 0 0 / 20%);
+  --hydro-image-chip-text: rgb(255 255 255 / 85%);
+  --hydro-image-shade: rgb(0 0 0 / 42%);
+  --hydro-code-bg: #111;
+  --hydro-code-text: #fff;
+  --hydro-theme-transition-x: 50vw;
+  --hydro-theme-transition-y: 4rem;
+  --hydro-theme-transition-radius: 120vmax;
+}
+
+:root[data-hydro-theme="dark"] {
+  color-scheme: dark;
+  --hydro-bg: var(--hydro-dark-bg);
+  --hydro-solid: #f5f3ef;
+  --hydro-solid-contrast: #101112;
+  --hydro-text: var(--hydro-solid);
+  --hydro-ink-rgb: 245 243 239;
+  --hydro-paper-rgb: 18 19 20;
+  --hydro-muted: rgb(var(--hydro-ink-rgb) / 66%);
+  --hydro-faint: rgb(var(--hydro-ink-rgb) / 14%);
+  --hydro-teal: #7dded6;
+  --hydro-yellow: #fff0a6;
+  --hydro-image-shade: rgb(0 0 0 / 52%);
+  --hydro-code-bg: rgb(255 255 255 / 8%);
+  --hydro-code-text: var(--hydro-solid);
 }
 
 *,
@@ -21,7 +55,24 @@
 }
 
 html {
+  background: var(--hydro-bg);
   scroll-behavior: smooth;
+  transition: background-color 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.is-theme-transitioning {
+  pointer-events: none;
+  transition: background-color 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.is-theme-transitioning * {
+  transition:
+    background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    fill 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.hydro-page {
@@ -33,6 +84,9 @@ body.hydro-page {
   font-family: "Space Mono", monospace;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricprecision;
+  transition:
+    background-color 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.hydro-menu-lock {
@@ -56,7 +110,7 @@ input {
 
 ::selection {
   background: var(--hydro-coral);
-  color: #fff;
+  color: var(--hydro-solid-contrast);
 }
 
 .hydro-container {
@@ -71,6 +125,28 @@ input {
   pointer-events: none;
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.hydro-theme-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--hydro-theme-wipe-bg, var(--hydro-bg));
+  clip-path: circle(0 at var(--hydro-theme-transition-x) var(--hydro-theme-transition-y));
+  will-change: clip-path, opacity;
+}
+
+.hydro-theme-wipe.is-expanding {
+  animation: hydro-theme-wipe-expand 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hydro-theme-wipe.is-leaving {
+  animation: hydro-theme-wipe-fade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  clip-path: circle(
+    var(--hydro-theme-transition-radius) at var(--hydro-theme-transition-x) var(--hydro-theme-transition-y)
+  );
 }
 
 .hydro-nav {
@@ -94,10 +170,10 @@ input {
   width: min(calc(100% - 2rem), 50rem);
   padding: 0.75rem 1.5rem;
   transform: none;
-  border: 1px solid rgb(0 0 0 / 5%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
   border-radius: 999px;
-  background: rgb(255 255 255 / 80%);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 10%);
+  background: rgb(var(--hydro-paper-rgb) / 80%);
+  box-shadow: 0 16px 40px rgb(var(--hydro-shadow-rgb) / 10%);
   backdrop-filter: blur(22px);
 }
 
@@ -149,14 +225,14 @@ input {
 }
 
 .hydro-nav__links a {
-  color: rgb(0 0 0 / 70%);
+  color: rgb(var(--hydro-ink-rgb) / 70%);
   font-size: 0.875rem;
   font-weight: 700;
   transition: color 0.3s ease;
 }
 
 .hydro-nav__links a:hover {
-  color: #000;
+  color: var(--hydro-solid);
 }
 
 .hydro-nav__actions {
@@ -175,13 +251,13 @@ input {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #000;
+  color: var(--hydro-solid);
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .hydro-icon-button:hover {
-  background: rgb(0 0 0 / 5%);
+  background: rgb(var(--hydro-ink-rgb) / 5%);
 }
 
 .hydro-icon-button svg {
@@ -196,6 +272,22 @@ input {
 
 .hydro-menu-button {
   display: none;
+}
+
+.hydro-theme-toggle {
+  position: relative;
+}
+
+.hydro-theme-moon {
+  display: none;
+}
+
+:root[data-hydro-theme="dark"] .hydro-theme-sun {
+  display: none;
+}
+
+:root[data-hydro-theme="dark"] .hydro-theme-moon {
+  display: block;
 }
 
 .hydro-menu-close,
@@ -214,10 +306,10 @@ input {
   right: 1rem;
   display: none;
   padding: 0.75rem 1rem;
-  border: 1px solid rgb(0 0 0 / 5%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
   border-radius: 1rem;
-  background: rgb(255 255 255 / 90%);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 10%);
+  background: rgb(var(--hydro-paper-rgb) / 90%);
+  box-shadow: 0 16px 40px rgb(var(--hydro-shadow-rgb) / 10%);
   backdrop-filter: blur(22px);
 }
 
@@ -230,7 +322,7 @@ input {
   border: 0;
   outline: 0;
   background: transparent;
-  color: #000;
+  color: var(--hydro-solid);
   font-size: 0.875rem;
 }
 
@@ -259,7 +351,7 @@ input {
 }
 
 .hydro-mobile-menu a {
-  color: rgb(0 0 0 / 70%);
+  color: rgb(var(--hydro-ink-rgb) / 70%);
   font-size: clamp(2rem, 10vw, 4rem);
   font-weight: 700;
 }
@@ -310,8 +402,8 @@ input {
   left: 2rem;
   z-index: 2;
   border-radius: 999px;
-  background: rgb(0 0 0 / 20%);
-  color: rgb(255 255 255 / 85%);
+  background: var(--hydro-image-chip-bg);
+  color: var(--hydro-image-chip-text);
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -364,12 +456,12 @@ input {
 .hydro-scroll-hint span {
   width: 1px;
   height: 3rem;
-  background: rgb(0 0 0 / 20%);
+  background: rgb(var(--hydro-ink-rgb) / 20%);
   animation: hydro-pulse 1.6s ease-in-out infinite;
 }
 
 .hydro-scroll-hint strong {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -382,11 +474,11 @@ input {
 }
 
 .hydro-hero-list li {
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-hero-list li:last-child {
-  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-hero-list a {
@@ -407,7 +499,7 @@ input {
 }
 
 .hydro-hero-list span {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -422,7 +514,7 @@ input {
 }
 
 .hydro-hero-list time {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -511,7 +603,7 @@ input {
 .hydro-card__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgb(0 0 0 / 40%), transparent);
+  background: linear-gradient(to top, var(--hydro-image-shade), transparent);
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -525,7 +617,7 @@ input {
   top: 1rem;
   left: 1rem;
   border-radius: 999px;
-  background: rgb(255 255 255 / 90%);
+  background: rgb(var(--hydro-paper-rgb) / 90%);
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -541,7 +633,7 @@ input {
   height: 2.5rem;
   place-items: center;
   border-radius: 999px;
-  background: #fff;
+  background: var(--hydro-solid-contrast);
   opacity: 0;
   transform: translateY(1rem);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -555,7 +647,7 @@ input {
 .hydro-card__body time,
 .hydro-list-card__meta,
 .hydro-content-kicker {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -597,18 +689,18 @@ input {
   gap: 0.5rem;
   min-height: 3.5rem;
   padding: 0 2rem;
-  border: 1px solid #000;
+  border: 1px solid var(--hydro-solid);
   border-radius: 999px;
   background: transparent;
-  color: #000;
+  color: var(--hydro-solid);
   font-size: 0.875rem;
   font-weight: 700;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hydro-pill-link:hover {
-  background: #000;
-  color: #fff;
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
 }
 
 .hydro-pill-link:hover svg {
@@ -623,8 +715,8 @@ input {
 .hydro-category-slices {
   display: flex;
   min-height: 31rem;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-top: 1px solid var(--hydro-solid);
+  border-bottom: 1px solid var(--hydro-solid);
 }
 
 .hydro-category-slice {
@@ -633,7 +725,7 @@ input {
   min-width: 0;
   overflow: hidden;
   padding: clamp(2rem, 4vw, 3rem);
-  border-right: 1px solid rgb(0 0 0 / 10%);
+  border-right: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
   cursor: pointer;
   transition:
     flex 0.7s cubic-bezier(0.16, 1, 0.3, 1),
@@ -653,7 +745,7 @@ input {
 .hydro-category-slices .hydro-category-slice:hover {
   flex: 2;
   opacity: 1;
-  background: rgb(0 0 0 / 2%);
+  background: rgb(var(--hydro-ink-rgb) / 2%);
 }
 
 .hydro-category-slice__top {
@@ -661,7 +753,7 @@ input {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 2rem;
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -715,7 +807,7 @@ input {
   position: absolute;
   right: -0.25rem;
   bottom: -2.5rem;
-  color: rgb(0 0 0 / 3%);
+  color: rgb(var(--hydro-ink-rgb) / 3%);
   font-size: 12rem;
   line-height: 1;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
@@ -735,8 +827,8 @@ input {
   justify-content: center;
   pointer-events: none;
   border-radius: 999px;
-  background: #000;
-  color: #fff;
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
   font-size: 0.75rem;
   font-weight: 700;
   transform: translate(-50%, -50%);
@@ -763,7 +855,7 @@ input {
 }
 
 .hydro-about__title span + span {
-  color: rgb(0 0 0 / 30%);
+  color: rgb(var(--hydro-ink-rgb) / 30%);
 }
 
 .hydro-about__content {
@@ -773,7 +865,7 @@ input {
 
 .hydro-about__content p {
   margin: 0;
-  color: rgb(0 0 0 / 70%);
+  color: rgb(var(--hydro-ink-rgb) / 70%);
   font-size: 1.125rem;
   line-height: 1.8;
 }
@@ -783,7 +875,7 @@ input {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-about__stats strong {
@@ -794,7 +886,7 @@ input {
 }
 
 .hydro-about__stats span {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -809,15 +901,15 @@ input {
   width: 3rem;
   height: 3rem;
   place-items: center;
-  border: 1px solid rgb(0 0 0 / 20%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 20%);
   border-radius: 999px;
   transition: all 0.3s ease;
 }
 
 .hydro-socials a:hover {
-  border-color: #000;
-  background: #000;
-  color: #fff;
+  border-color: var(--hydro-solid);
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
 }
 
 .hydro-socials svg {
@@ -852,7 +944,7 @@ input {
 
 .hydro-marquee-track span {
   margin: 0 2rem;
-  color: rgb(0 0 0 / 3%);
+  color: rgb(var(--hydro-ink-rgb) / 3%);
   font-size: 20vw;
   font-weight: 700;
   line-height: 1;
@@ -888,7 +980,7 @@ input {
 
 .hydro-footer h2 {
   margin: 0 0 1.5rem;
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -912,7 +1004,7 @@ input {
 }
 
 .hydro-wavy-link:hover {
-  color: rgb(0 0 0 / 70%);
+  color: rgb(var(--hydro-ink-rgb) / 70%);
 }
 
 .hydro-wavy-link__line {
@@ -944,7 +1036,7 @@ input {
   justify-content: space-between;
   gap: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-footer__bar span {
@@ -957,7 +1049,7 @@ input {
 
 .hydro-list-hero p {
   margin: 0 0 1rem;
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -990,7 +1082,7 @@ input {
 }
 
 .hydro-list-card {
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
   padding-top: 1.25rem;
 }
 
@@ -1033,7 +1125,7 @@ input {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  color: rgb(0 0 0 / 45%);
+  color: rgb(var(--hydro-ink-rgb) / 45%);
   font-size: 0.8rem;
 }
 
@@ -1047,7 +1139,7 @@ input {
 
 .hydro-pagination a,
 .hydro-pagination span {
-  border: 1px solid #000;
+  border: 1px solid var(--hydro-solid);
   border-radius: 999px;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
@@ -1059,8 +1151,8 @@ input {
 }
 
 .hydro-pagination a:hover {
-  background: #000;
-  color: #fff;
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
 }
 
 .hydro-taxonomy-grid {
@@ -1072,20 +1164,20 @@ input {
 .hydro-taxonomy-card {
   min-height: 14rem;
   padding: 1.5rem;
-  border: 1px solid rgb(0 0 0 / 12%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
   border-radius: 0.5rem;
-  background: rgb(255 255 255 / 30%);
+  background: rgb(var(--hydro-paper-rgb) / 30%);
   transition: all 0.3s ease;
 }
 
 .hydro-taxonomy-card:hover {
   transform: translateY(-0.25rem);
-  border-color: #000;
-  background: rgb(255 255 255 / 60%);
+  border-color: var(--hydro-solid);
+  background: rgb(var(--hydro-paper-rgb) / 60%);
 }
 
 .hydro-taxonomy-card span {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -1106,21 +1198,21 @@ input {
   align-items: flex-start;
   gap: 0.35rem;
   padding: 0.85rem 1.1rem;
-  border: 1px solid rgb(0 0 0 / 12%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
   border-radius: 999px;
-  background: rgb(255 255 255 / 35%);
+  background: rgb(var(--hydro-paper-rgb) / 35%);
   font-weight: 700;
   transition: all 0.3s ease;
 }
 
 .hydro-tag-cloud a:hover {
-  border-color: #000;
-  background: #000;
-  color: #fff;
+  border-color: var(--hydro-solid);
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
 }
 
 .hydro-tag-cloud sup {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
 }
 
 .hydro-content-page {
@@ -1134,7 +1226,7 @@ input {
   padding: 7rem 2rem 4rem;
   background-position: center;
   background-size: cover;
-  color: #fff;
+  color: var(--hydro-image-text);
   text-align: center;
   isolation: isolate;
   position: relative;
@@ -1144,7 +1236,7 @@ input {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgb(0 0 0 / 42%);
+  background: var(--hydro-image-shade);
   content: "";
 }
 
@@ -1196,7 +1288,7 @@ input {
 }
 
 .hydro-prose {
-  color: rgb(0 0 0 / 78%);
+  color: rgb(var(--hydro-ink-rgb) / 78%);
   font-family:
     ui-sans-serif,
     system-ui,
@@ -1225,8 +1317,8 @@ input {
 .hydro-prose pre {
   overflow: auto;
   border-radius: 0.5rem;
-  background: #111;
-  color: #fff;
+  background: var(--hydro-code-bg);
+  color: var(--hydro-code-text);
   padding: 1rem;
 }
 
@@ -1238,7 +1330,7 @@ input {
 }
 
 .hydro-content-tags a {
-  color: rgb(0 0 0 / 50%);
+  color: rgb(var(--hydro-ink-rgb) / 50%);
   font-size: 0.875rem;
   font-style: italic;
 }
@@ -1249,26 +1341,26 @@ input {
   gap: 1rem;
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-post-nav a {
   min-width: 0;
-  border: 1px solid rgb(0 0 0 / 12%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
   border-radius: 0.5rem;
   padding: 1rem;
   transition: all 0.3s ease;
 }
 
 .hydro-post-nav a:hover {
-  border-color: #000;
-  background: rgb(255 255 255 / 45%);
+  border-color: var(--hydro-solid);
+  background: rgb(var(--hydro-paper-rgb) / 45%);
 }
 
 .hydro-post-nav span {
   display: block;
   margin-bottom: 0.5rem;
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.75rem;
 }
 
@@ -1282,7 +1374,7 @@ input {
 .hydro-comments {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid rgb(0 0 0 / 10%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-comments h2 {
@@ -1298,7 +1390,7 @@ input {
   display: grid;
   grid-template-columns: 12rem minmax(0, 1fr);
   gap: 2rem;
-  border-top: 1px solid rgb(0 0 0 / 12%);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
   padding-top: 1.5rem;
 }
 
@@ -1314,7 +1406,7 @@ input {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.75rem 2rem;
   padding: 1.25rem 0;
-  border-bottom: 1px solid rgb(0 0 0 / 8%);
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 8%);
 }
 
 .hydro-archive__item strong {
@@ -1326,7 +1418,7 @@ input {
 }
 
 .hydro-archive__item time {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
 }
 
@@ -1345,7 +1437,7 @@ input {
 }
 
 .hydro-error span {
-  color: rgb(0 0 0 / 40%);
+  color: rgb(var(--hydro-ink-rgb) / 40%);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -1368,9 +1460,9 @@ input {
   display: grid;
   min-height: 10rem;
   place-items: center;
-  border: 1px dashed rgb(0 0 0 / 16%);
+  border: 1px dashed rgb(var(--hydro-ink-rgb) / 16%);
   border-radius: 0.5rem;
-  color: rgb(0 0 0 / 45%);
+  color: rgb(var(--hydro-ink-rgb) / 45%);
 }
 
 @keyframes hydro-pulse {
@@ -1418,6 +1510,34 @@ input {
   }
 }
 
+@keyframes hydro-theme-wipe-expand {
+  from {
+    clip-path: circle(0 at var(--hydro-theme-transition-x) var(--hydro-theme-transition-y));
+    opacity: 0;
+  }
+  to {
+    clip-path: circle(
+      var(--hydro-theme-transition-radius) at var(--hydro-theme-transition-x) var(--hydro-theme-transition-y)
+    );
+    opacity: 0.52;
+  }
+}
+
+@keyframes hydro-theme-wipe-fade {
+  from {
+    opacity: 0.52;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.hydro-page {
+    transition: none;
+  }
+}
+
 html.lenis,
 html.lenis body {
   height: auto;
@@ -1462,13 +1582,13 @@ html.lenis body {
     top: max(1rem, env(safe-area-inset-top));
     right: max(0.25rem, env(safe-area-inset-right));
     left: auto;
-    width: min(50vw, 20.5rem);
-    min-width: 12rem;
+    width: min(64vw, 22rem);
+    min-width: 14.75rem;
     padding: 0.85rem 1.25rem;
-    border: 1px solid rgb(0 0 0 / 5%);
+    border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
     border-radius: 999px;
-    background: rgb(255 255 255 / 84%);
-    box-shadow: 0 12px 30px rgb(0 0 0 / 14%);
+    background: rgb(var(--hydro-paper-rgb) / 84%);
+    box-shadow: 0 12px 30px rgb(var(--hydro-shadow-rgb) / 24%);
     backdrop-filter: blur(22px);
     transform: none;
   }
@@ -1487,7 +1607,7 @@ html.lenis body {
   }
 
   .hydro-nav__actions {
-    gap: 1.15rem;
+    gap: 0.85rem;
   }
 
   .hydro-icon-button {
@@ -1530,7 +1650,7 @@ html.lenis body {
   .hydro-category-slice,
   .hydro-category-slice:last-child {
     border-right: 0;
-    border-bottom: 1px solid rgb(0 0 0 / 10%);
+    border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
   }
 
   .hydro-category-slices:hover .hydro-category-slice,

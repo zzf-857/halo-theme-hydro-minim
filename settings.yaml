@@ -7,10 +7,25 @@ spec:
     - group: style
       label: 样式
       formSchema:
+        - $formkit: radio
+          name: color_scheme
+          label: 默认配色模式
+          value: auto
+          options:
+            - label: 跟随系统
+              value: auto
+            - label: 浅色
+              value: light
+            - label: 深色
+              value: dark
         - $formkit: color
           name: background_color
-          label: 背景颜色
+          label: 浅色背景
           value: "#F3F3F3"
+        - $formkit: color
+          name: dark_background_color
+          label: 深色背景
+          value: "#101112"
         - $formkit: color
           name: accent_color
           label: 强调色
