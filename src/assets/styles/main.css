@@ -167,7 +167,7 @@ input {
   top: 1rem;
   right: clamp(1rem, 10.5vw, 14rem);
   left: auto;
-  width: min(calc(100% - 2rem), 50rem);
+  /*width: min(calc(100% - 2rem), 50rem);*/
   padding: 0.75rem 1.5rem;
   transform: none;
   border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
@@ -1582,7 +1582,7 @@ html.lenis body {
     top: max(1rem, env(safe-area-inset-top));
     right: max(0.25rem, env(safe-area-inset-right));
     left: auto;
-    width: min(64vw, 22rem);
+    width: min(54vw, 22rem);
     min-width: 14.75rem;
     padding: 0.85rem 1.25rem;
     border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
