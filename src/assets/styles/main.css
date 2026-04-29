@@ -16,7 +16,9 @@
   --hydro-muted: rgb(var(--hydro-ink-rgb) / 60%);
   --hydro-faint: rgb(var(--hydro-ink-rgb) / 10%);
   --hydro-coral: #ff6b6b;
+  --hydro-coral-rgb: 255 107 107;
   --hydro-teal: #4ecdc4;
+  --hydro-teal-rgb: 78 205 196;
   --hydro-yellow: #ffe66d;
   --hydro-image-text: #fff;
   --hydro-image-chip-bg: rgb(0 0 0 / 20%);
@@ -40,6 +42,7 @@
   --hydro-muted: rgb(var(--hydro-ink-rgb) / 66%);
   --hydro-faint: rgb(var(--hydro-ink-rgb) / 14%);
   --hydro-teal: #7dded6;
+  --hydro-teal-rgb: 125 222 214;
   --hydro-yellow: #fff0a6;
   --hydro-image-shade: rgb(0 0 0 / 52%);
   --hydro-code-bg: rgb(255 255 255 / 8%);
@@ -2035,19 +2038,25 @@ html.lenis body {
 .hydro-links-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-  gap: 1.25rem;
+  align-items: stretch;
+  gap: 1rem;
 }
 
 /* ── 友链卡 ──────────────────────────────────────────────── */
 .hydro-link-card {
-  display: flex;
-  flex-direction: column;
-  padding: 1.25rem 1.5rem 1rem;
-  border: 1px solid rgb(var(--hydro-ink-rgb) / 6%);
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 8.75rem;
+  padding: 1.25rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 7%);
   border-radius: 0.5rem;
-  background: rgb(var(--hydro-paper-rgb) / 35%);
+  background:
+    linear-gradient(135deg, rgb(var(--hydro-paper-rgb) / 62%), rgb(var(--hydro-paper-rgb) / 26%)),
+    rgb(var(--hydro-paper-rgb) / 35%);
   position: relative;
   overflow: hidden;
+  overflow: clip;
   cursor: pointer;
   opacity: 0;
   animation: hydro-link-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -2071,6 +2080,23 @@ html.lenis body {
   pointer-events: none;
 }
 
+.hydro-link-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 55%;
+  background:
+    radial-gradient(circle at 18% 100%, rgb(var(--hydro-coral-rgb) / 13%), transparent 46%),
+    radial-gradient(circle at 82% 100%, rgb(var(--hydro-teal-rgb) / 12%), transparent 42%);
+  opacity: 0;
+  transform: translateY(22%);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
 @keyframes hydro-link-enter {
   from {
     opacity: 0;
@@ -2082,15 +2108,27 @@ html.lenis body {
   }
 }
 
-.hydro-link-card:hover {
-  border-color: rgb(var(--hydro-ink-rgb) / 10%);
-  background: rgb(var(--hydro-paper-rgb) / 60%);
+.hydro-link-card:hover,
+.hydro-link-card:focus-visible {
+  border-color: rgb(var(--hydro-ink-rgb) / 16%);
+  background:
+    linear-gradient(135deg, rgb(var(--hydro-paper-rgb) / 76%), rgb(var(--hydro-paper-rgb) / 36%)),
+    rgb(var(--hydro-paper-rgb) / 55%);
   box-shadow: 0 8px 24px rgb(var(--hydro-shadow-rgb) / 8%);
   transform: translateY(-0.25rem);
+  outline: none;
 }
 
-.hydro-link-card:hover::before {
+.hydro-link-card:hover::before,
+.hydro-link-card:focus-visible::before,
+.hydro-link-card:hover::after,
+.hydro-link-card:focus-visible::after {
   opacity: 1;
+}
+
+.hydro-link-card:hover::after,
+.hydro-link-card:focus-visible::after {
+  transform: translateY(0);
 }
 
 /* 序号 */
@@ -2107,7 +2145,8 @@ html.lenis body {
   transition: color 0.3s ease;
 }
 
-.hydro-link-card:hover .hydro-link-card__index {
+.hydro-link-card:hover .hydro-link-card__index,
+.hydro-link-card:focus-visible .hydro-link-card__index {
   color: rgb(var(--hydro-ink-rgb) / 20%);
 }
 
@@ -2116,13 +2155,14 @@ html.lenis body {
   display: flex;
   align-items: center;
   gap: 0.875rem;
+  min-width: 0;
   pointer-events: none;
 }
 
 .hydro-link-card__avatar {
   flex-shrink: 0;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 0.375rem;
   overflow: hidden;
   border: 1px solid rgb(var(--hydro-ink-rgb) / 8%);
@@ -2134,7 +2174,8 @@ html.lenis body {
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.hydro-link-card:hover .hydro-link-card__avatar {
+.hydro-link-card:hover .hydro-link-card__avatar,
+.hydro-link-card:focus-visible .hydro-link-card__avatar {
   transform: scale(1.06) rotate(-2deg);
 }
 
@@ -2163,7 +2204,8 @@ html.lenis body {
   transition: color 0.5s ease;
 }
 
-.hydro-link-card:hover .hydro-link-card__meta strong {
+.hydro-link-card:hover .hydro-link-card__meta strong,
+.hydro-link-card:focus-visible .hydro-link-card__meta strong {
   background: linear-gradient(90deg, var(--hydro-coral), var(--hydro-teal));
   -webkit-background-clip: text;
   background-clip: text;
@@ -2187,44 +2229,56 @@ html.lenis body {
 /* 外链箭头 */
 .hydro-link-card__arrow {
   flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-  fill: none;
-  stroke: rgb(var(--hydro-ink-rgb) / 0%);
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-left: 0.25rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 8%);
+  border-radius: 999px;
+  fill: rgb(var(--hydro-paper-rgb) / 35%);
+  stroke: rgb(var(--hydro-ink-rgb) / 24%);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 1.8;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transform: translate(-0.25rem, 0.25rem);
+  transform: translate(-0.125rem, 0.125rem);
 }
 
-.hydro-link-card:hover .hydro-link-card__arrow {
+.hydro-link-card:hover .hydro-link-card__arrow,
+.hydro-link-card:focus-visible .hydro-link-card__arrow {
+  border-color: rgb(var(--hydro-coral-rgb) / 35%);
   stroke: var(--hydro-coral);
+  fill: rgb(var(--hydro-coral-rgb) / 8%);
   transform: translate(0, 0);
 }
 
-/* 描述：默认隐藏，hover 展开 */
+/* 描述使用固定信息区，hover 不再撑开栅格行高 */
 .hydro-link-card__desc {
-  max-height: 0;
+  align-self: end;
+  min-height: 3.25rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 6%);
   overflow: hidden;
-  opacity: 0;
+  overflow: clip;
+  opacity: 0.78;
   transition:
-    max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.4s ease,
-    margin 0.4s ease;
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
-.hydro-link-card:hover .hydro-link-card__desc {
-  max-height: 3.5rem;
+.hydro-link-card:hover .hydro-link-card__desc,
+.hydro-link-card:focus-visible .hydro-link-card__desc {
   opacity: 1;
-  margin-top: 0.75rem;
+  border-color: rgb(var(--hydro-ink-rgb) / 10%);
+  transform: translateY(-0.125rem);
 }
 
 .hydro-link-card__desc p {
   margin: 0;
-  padding-top: 0.625rem;
-  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 6%);
   color: var(--hydro-muted);
   font-size: 0.8125rem;
   line-height: 1.6;

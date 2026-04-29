@@ -83,6 +83,8 @@
               class="hydro-link-card"
               th:each="link, linkStat : ${group.links}"
               th:href="${link.spec.url}"
+              th:title="${link.spec.description}"
+              th:attr="aria-label=|访问 ${link.spec.displayName}|"
               target="_blank"
               rel="noreferrer noopener"
               th:style="|animation-delay: ${linkStat.index * 60}ms|"
