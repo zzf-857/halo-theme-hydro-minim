@@ -2044,6 +2044,9 @@ html.lenis body {
 
 /* ── 友链卡 ──────────────────────────────────────────────── */
 .hydro-link-card {
+  --hydro-link-glow-x: 50%;
+  --hydro-link-glow-y: 50%;
+  --hydro-link-reveal-y: 0rem;
   isolation: isolate;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -2058,13 +2061,13 @@ html.lenis body {
   overflow: hidden;
   overflow: clip;
   cursor: pointer;
-  opacity: 0;
-  animation: hydro-link-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transition:
     border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(var(--hydro-link-reveal-y));
+  will-change: opacity, transform;
 }
 
 .hydro-link-card::before {
@@ -2087,6 +2090,11 @@ html.lenis body {
   z-index: -1;
   height: 55%;
   background:
+    radial-gradient(
+      circle at var(--hydro-link-glow-x) var(--hydro-link-glow-y),
+      rgb(var(--hydro-coral-rgb) / 16%),
+      transparent 36%
+    ),
     radial-gradient(circle at 18% 100%, rgb(var(--hydro-coral-rgb) / 13%), transparent 46%),
     radial-gradient(circle at 82% 100%, rgb(var(--hydro-teal-rgb) / 12%), transparent 42%);
   opacity: 0;
@@ -2097,17 +2105,6 @@ html.lenis body {
   pointer-events: none;
 }
 
-@keyframes hydro-link-enter {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .hydro-link-card:hover,
 .hydro-link-card:focus-visible {
   border-color: rgb(var(--hydro-ink-rgb) / 16%);
@@ -2115,7 +2112,6 @@ html.lenis body {
     linear-gradient(135deg, rgb(var(--hydro-paper-rgb) / 76%), rgb(var(--hydro-paper-rgb) / 36%)),
     rgb(var(--hydro-paper-rgb) / 55%);
   box-shadow: 0 8px 24px rgb(var(--hydro-shadow-rgb) / 8%);
-  transform: translateY(-0.25rem);
   outline: none;
 }
 

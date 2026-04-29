@@ -602,16 +602,64 @@ initScrollTilt();
 initFooterMarquee();
 
 function initLinkCards() {
-  if (!motionEnabled) return;
-  document.querySelectorAll<HTMLElement>("[data-link-card]").forEach((card) => {
+  if (!motionEnabled) {
+    return;
+  }
+
+  document.querySelectorAll<HTMLElement>(".hydro-links-grid").forEach((grid) => {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(".hydro-link-card"));
+    if (cards.length === 0) {
+      return;
+    }
+
+    gsap.set(cards, {
+      "--hydro-link-reveal-y": "1.4rem",
+      autoAlpha: 0,
+      clipPath: "inset(12% 0% 0% 0% round 0.5rem)",
+      filter: "blur(10px)",
+    });
+
+    const revealCards = (velocity: number) => {
+      const speed = Math.abs(velocity);
+      const duration = gsap.utils.clamp(0.38, 0.9, 0.88 - speed / 3600);
+      const stagger = gsap.utils.clamp(0.035, 0.13, 0.13 - speed / 18000);
+
+      gsap.killTweensOf(cards);
+      gsap.to(cards, {
+        "--hydro-link-reveal-y": "0rem",
+        autoAlpha: 1,
+        clipPath: "inset(0% 0% 0% 0% round 0.5rem)",
+        duration,
+        ease: "expo.out",
+        filter: "blur(0px)",
+        stagger: { each: stagger, from: "start" },
+      });
+    };
+
+    const resetCards = () => {
+      gsap.killTweensOf(cards);
+      gsap.set(cards, {
+        "--hydro-link-reveal-y": "1.4rem",
+        autoAlpha: 0,
+        clipPath: "inset(12% 0% 0% 0% round 0.5rem)",
+        filter: "blur(10px)",
+      });
+    };
+
+    ScrollTrigger.create({
+      trigger: grid,
+      start: "top 84%",
+      onEnter: (self) => revealCards(self.getVelocity()),
+      onEnterBack: (self) => revealCards(self.getVelocity()),
+      onLeaveBack: resetCards,
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>(".hydro-link-card").forEach((card) => {
     card.addEventListener("mousemove", (event) => {
       const rect = card.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
-      const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
-      gsap.to(card, { duration: 0.3, ease: "power2.out", rotateX: -y, rotateY: x });
-    });
-    card.addEventListener("mouseleave", () => {
-      gsap.to(card, { duration: 0.5, ease: "expo.out", rotateX: 0, rotateY: 0 });
+      card.style.setProperty("--hydro-link-glow-x", `${event.clientX - rect.left}px`);
+      card.style.setProperty("--hydro-link-glow-y", `${event.clientY - rect.top}px`);
     });
   });
 }
