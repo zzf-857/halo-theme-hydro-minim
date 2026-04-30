@@ -667,7 +667,7 @@ input {
 }
 
 .hydro-section {
-  padding: 8rem 0;
+  padding: clamp(5rem, 8vw, 7rem) 0;
 }
 
 .hydro-latest {
@@ -683,7 +683,7 @@ input {
   max-width: min(100%, 18rem);
   align-items: center;
   gap: 0.85rem;
-  margin: 0 0 3rem;
+  margin: 0 0 clamp(1.75rem, 4vw, 2.75rem);
   color: rgb(var(--hydro-ink-rgb) / 88%);
   font-size: clamp(1.75rem, 3vw, 2.55rem);
   font-weight: 700;
@@ -839,7 +839,7 @@ input {
 }
 
 .hydro-section-action {
-  margin-top: 4rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
   text-align: center;
 }
 
@@ -877,7 +877,7 @@ input {
 }
 
 .hydro-latest .hydro-section-heading {
-  margin-bottom: 3rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
 }
 
 .hydro-category-slices {
@@ -3137,7 +3137,7 @@ html.lenis body {
   }
 
   .hydro-section {
-    padding: 4.75rem 0;
+    padding: 3.75rem 0;
   }
 
   .hydro-section-title {
@@ -4056,21 +4056,21 @@ html.lenis body {
   }
 
   .hydro-section {
-    padding: clamp(7rem, 9vw, 9.5rem) 0;
+    padding: clamp(5rem, 7vw, 7.25rem) 0;
   }
 
   .hydro-categories {
-    padding-top: clamp(2.75rem, 4vw, 4rem);
-    padding-bottom: clamp(4.75rem, 6vw, 6.5rem);
+    padding-top: clamp(1.1rem, 1.8vw, 2rem);
+    padding-bottom: clamp(4rem, 5vw, 5.5rem);
   }
 
   .hydro-section-heading {
-    margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+    margin-bottom: clamp(1.25rem, 2vw, 1.9rem);
   }
 
   .hydro-section-title {
     max-width: 13ch;
-    margin-bottom: clamp(3rem, 5vw, 4.5rem);
+    margin-bottom: clamp(2rem, 3vw, 3rem);
     letter-spacing: 0;
   }
 
@@ -4122,7 +4122,7 @@ html.lenis body {
   }
 
   .hydro-hero__content {
-    padding: clamp(3rem, 5vw, 5rem) 0 clamp(5rem, 7vw, 7rem);
+    padding: clamp(3rem, 5vw, 5rem) 0 clamp(3.5rem, 5vw, 5rem);
   }
 
   .hydro-hero__grid {
@@ -4154,12 +4154,12 @@ html.lenis body {
   }
 
   .hydro-latest {
-    padding-top: clamp(4.25rem, 5.5vw, 5.75rem);
-    padding-bottom: clamp(3rem, 4vw, 4.5rem);
+    padding-top: clamp(3rem, 4vw, 4.5rem);
+    padding-bottom: clamp(1.4rem, 2.2vw, 2.5rem);
   }
 
   .hydro-latest .hydro-section-heading {
-    margin-bottom: clamp(1.75rem, 3vw, 2.6rem);
+    margin-bottom: clamp(1.5rem, 2.2vw, 2rem);
   }
 
   .hydro-article-grid,
@@ -4201,7 +4201,7 @@ html.lenis body {
   }
 
   .hydro-section-action {
-    margin-top: clamp(2rem, 3.2vw, 3rem);
+    margin-top: clamp(1.45rem, 2.1vw, 2.15rem);
   }
 
   .hydro-pill-link {
@@ -4212,7 +4212,7 @@ html.lenis body {
 
   .hydro-category-slices {
     width: min(100% - clamp(3rem, 7vw, 8rem), 84rem);
-    min-height: clamp(18rem, 27vw, 24rem);
+    min-height: clamp(16.5rem, 24vw, 21.5rem);
     margin-inline: auto;
     overflow: hidden;
     border: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
