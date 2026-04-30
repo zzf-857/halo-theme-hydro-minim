@@ -217,6 +217,9 @@ input {
 }
 
 .hydro-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
@@ -225,6 +228,25 @@ input {
 
 .hydro-logo:hover {
   transform: scale(1.05);
+}
+
+.hydro-logo__mark {
+  display: block;
+  width: 1.8rem;
+  height: 1.8rem;
+  object-fit: contain;
+}
+
+.hydro-logo__mark--dark {
+  display: none;
+}
+
+:root[data-hydro-theme="dark"] .hydro-logo__mark--light {
+  display: none;
+}
+
+:root[data-hydro-theme="dark"] .hydro-logo__mark--dark {
+  display: block;
 }
 
 .hydro-nav__links {
@@ -852,6 +874,10 @@ input {
 
 .hydro-section-heading .hydro-section-title {
   margin-bottom: 0;
+}
+
+.hydro-latest .hydro-section-heading {
+  margin-bottom: 3rem;
 }
 
 .hydro-category-slices {
@@ -3121,6 +3147,10 @@ html.lenis body {
     line-height: 1.05;
   }
 
+  .hydro-latest .hydro-section-heading {
+    margin-bottom: 1.35rem;
+  }
+
   .hydro-nav {
     padding: calc(0.75rem + env(safe-area-inset-top)) 0.875rem 0.75rem;
   }
@@ -3165,11 +3195,21 @@ html.lenis body {
     backdrop-filter: blur(18px);
   }
 
+  .hydro-logo__mark {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
   .hydro-nav.is-scrolled .hydro-logo {
     min-width: 2.25rem;
     min-height: 2.25rem;
     border: 0;
     background: transparent;
+  }
+
+  .hydro-nav.is-scrolled .hydro-logo__mark {
+    width: 1.55rem;
+    height: 1.55rem;
   }
 
   .hydro-nav__actions {
@@ -4118,7 +4158,7 @@ html.lenis body {
     padding-bottom: clamp(3rem, 4vw, 4.5rem);
   }
 
-  .hydro-latest .hydro-section-title {
+  .hydro-latest .hydro-section-heading {
     margin-bottom: clamp(1.75rem, 3vw, 2.6rem);
   }
 

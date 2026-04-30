@@ -1,6 +1,18 @@
-<header class="hydro-nav" data-hydro-nav th:with="menu = ${menuFinder.getPrimary()}">
+<header
+  class="hydro-nav"
+  data-hydro-nav
+  th:with="
+    menu = ${menuFinder.getPrimary()},
+    logoSrc = ${theme.config.brand == null || #strings.isEmpty(theme.config.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.brand.logo},
+    darkLogoSrc = ${theme.config.brand == null || #strings.isEmpty(theme.config.brand.dark_logo) ? logoSrc : theme.config.brand.dark_logo},
+    logoAlt = ${theme.config.brand == null || #strings.isEmpty(theme.config.brand.logo_alt) ? '氢·简 Hydro-Minim' : theme.config.brand.logo_alt}
+  "
+>
   <div class="hydro-nav__inner">
-    <a class="hydro-logo" th:href="@{/}" aria-label="Hydro-Minim">氢</a>
+    <a class="hydro-logo" th:href="@{/}" th:attr="aria-label=${logoAlt}">
+      <img class="hydro-logo__mark hydro-logo__mark--light" th:src="${logoSrc}" alt="" aria-hidden="true" />
+      <img class="hydro-logo__mark hydro-logo__mark--dark" th:src="${darkLogoSrc}" alt="" aria-hidden="true" />
+    </a>
 
     <nav class="hydro-nav__links" aria-label="Primary">
       <th:block th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">

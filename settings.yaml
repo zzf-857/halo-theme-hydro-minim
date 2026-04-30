@@ -4,6 +4,21 @@ metadata:
   name: halo-theme-hydro-minim-setting
 spec:
   forms:
+    - group: brand
+      label: 品牌
+      formSchema:
+        - $formkit: attachment
+          name: logo
+          label: 浅色模式 Logo
+          value: /themes/halo-theme-hydro-minim/assets/brand/hydro-minim-mark.svg
+        - $formkit: attachment
+          name: dark_logo
+          label: 深色模式 Logo
+          value: /themes/halo-theme-hydro-minim/assets/brand/hydro-minim-mark-dark.svg
+        - $formkit: text
+          name: logo_alt
+          label: Logo 替代文本
+          value: 氢·简 Hydro-Minim
     - group: style
       label: 样式
       formSchema:
