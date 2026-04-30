@@ -6,6 +6,7 @@ import "./styles/main.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const motionEnabled = document.body.dataset.enableMotion !== "false";
 const colorSchemeStorageKey = "hydro-color-scheme";
 type ColorSchemeMode = "auto" | "dark" | "light";
@@ -55,6 +56,7 @@ function initLenis() {
     wheelMultiplier: 1,
   });
 
+  (window as unknown as { __lenis?: typeof lenis }).__lenis = lenis;
   lenis.on("scroll", () => ScrollTrigger.update());
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -384,6 +386,8 @@ function initHero() {
       .join("");
   }
 
+  const setHeroImageY = image ? gsap.quickTo(image, "y", { duration: 0.12, ease: "power1.out" }) : undefined;
+
   const ctx = gsap.context(() => {
     gsap.fromTo(
       image,
@@ -407,7 +411,7 @@ function initHero() {
       end: "bottom top",
       scrub: true,
       onUpdate: (self) => {
-        gsap.to(image, { duration: 0.1, y: self.progress * -50 });
+        setHeroImageY?.(self.progress * -50);
       },
     });
   }, hero);
@@ -440,35 +444,44 @@ function initRevealAnimations() {
 
   document.querySelectorAll<HTMLElement>("[data-reveal-section]").forEach((section) => {
     const title = section.querySelector("[data-reveal-title]");
-    const cards = section.querySelectorAll("[data-tilt-card]");
+    const cards = Array.from(section.querySelectorAll("[data-tilt-card]"));
+    const targets = [title, ...cards].filter(Boolean);
 
-    gsap.fromTo(
-      title,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "expo.out",
-        scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reverse" },
-      },
-    );
+    if (targets.length === 0) {
+      return;
+    }
 
-    cards.forEach((card, index) => {
-      gsap.fromTo(
-        card,
-        { opacity: 0, rotateX: 45, y: 100 },
+    gsap.set(title, { opacity: 0, y: 50, force3D: true });
+    gsap.set(cards, {
+      opacity: 0,
+      rotateX: prefersReducedMotion.matches ? 0 : 36,
+      transformPerspective: 1000,
+      transformOrigin: "50% 70%",
+      y: prefersReducedMotion.matches ? 20 : 90,
+      force3D: true,
+    });
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          once: true,
+        },
+      })
+      .to(title, { opacity: 1, duration: prefersReducedMotion.matches ? 0.35 : 0.68, ease: "expo.out", y: 0 })
+      .to(
+        cards,
         {
           opacity: 1,
           rotateX: 0,
-          y: 0,
-          duration: 0.8,
+          duration: prefersReducedMotion.matches ? 0.35 : 0.72,
           ease: "expo.out",
-          delay: index * 0.1,
-          scrollTrigger: { trigger: section, start: "top 70%", toggleActions: "play none none reverse" },
+          stagger: prefersReducedMotion.matches ? 0.03 : 0.08,
+          y: 0,
+          onComplete: () => gsap.set(cards, { clearProps: "willChange" }),
         },
+        "-=0.18",
       );
-    });
   });
 
   const about = document.querySelector<HTMLElement>("[data-about-section]");
@@ -488,7 +501,88 @@ function initRevealAnimations() {
   }
 }
 
+function scheduleIdleWork(callback: () => void, timeout = 900) {
+  const idleWindow = window as typeof window & {
+    requestIdleCallback?: (handler: () => void, options?: { timeout: number }) => number;
+  };
+
+  if (idleWindow.requestIdleCallback) {
+    idleWindow.requestIdleCallback(callback, { timeout });
+    return;
+  }
+
+  window.setTimeout(callback, 120);
+}
+
+function decodeWhenReady(image: HTMLImageElement) {
+  const decode = () => {
+    if (typeof image.decode !== "function") {
+      return;
+    }
+    image.decode().catch(() => {
+      // Browsers may reject decode() for cross-origin or cancelled images; the normal load path still works.
+    });
+  };
+
+  if (image.complete && image.naturalWidth > 0) {
+    decode();
+    return;
+  }
+
+  image.addEventListener("load", decode, { once: true });
+}
+
+function initArticleMediaPrewarm() {
+  const section = document.querySelector<HTMLElement>("#articles");
+  if (!section) {
+    return;
+  }
+
+  const images = Array.from(section.querySelectorAll<HTMLImageElement>("[data-prewarm-image]"));
+  if (images.length === 0) {
+    return;
+  }
+
+  let warmed = false;
+  const warmImages = () => {
+    if (warmed) {
+      return;
+    }
+    warmed = true;
+
+    images.forEach((image) => {
+      image.loading = "eager";
+      image.decoding = "async";
+      decodeWhenReady(image);
+    });
+  };
+
+  scheduleIdleWork(warmImages, 1200);
+
+  if (!("IntersectionObserver" in window)) {
+    warmImages();
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) {
+        return;
+      }
+      warmImages();
+      observer.disconnect();
+    },
+    { rootMargin: "1100px 0px" },
+  );
+
+  observer.observe(section);
+}
+
 function initTiltCards() {
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    return;
+  }
+
   document.querySelectorAll<HTMLElement>("[data-tilt-card]").forEach((card) => {
     card.addEventListener("mousemove", (event) => {
       if (!motionEnabled) {
@@ -529,14 +623,28 @@ function initCategoryCursor() {
 }
 
 function initScrollTilt() {
-  if (!motionEnabled) {
+  if (!motionEnabled || prefersReducedMotion.matches) {
     return;
   }
 
-  const tiltTarget = ".tilt-on-scroll";
+  const tiltTargets = gsap.utils.toArray<HTMLElement>(".tilt-on-scroll");
+  if (tiltTargets.length === 0) {
+    return;
+  }
+
   let lastScrollY = window.scrollY;
   let settleTimer: number | undefined;
   let ticking = false;
+  const setters = tiltTargets.map((target) =>
+    gsap.quickTo(target, "rotateX", {
+      duration: 0.18,
+      ease: "power2.out",
+    }),
+  );
+
+  const setTilt = (rotateX: number) => {
+    setters.forEach((setter) => setter(rotateX));
+  };
 
   window.addEventListener(
     "scroll",
@@ -547,19 +655,17 @@ function initScrollTilt() {
       window.requestAnimationFrame(() => {
         const currentScrollY = window.scrollY;
         const velocity = currentScrollY - lastScrollY;
-        const rotateX = Math.max(-2, Math.min(2, velocity * 0.05));
-        gsap.killTweensOf(tiltTarget);
-        gsap.to(tiltTarget, { duration: 0.3, ease: "power2.out", rotateX });
+        const rotateX = Math.max(-0.8, Math.min(0.8, velocity * 0.018));
+        tiltTargets.forEach((target) => target.classList.add("is-scroll-tilting"));
+        setTilt(rotateX);
         if (settleTimer) {
           window.clearTimeout(settleTimer);
         }
         settleTimer = window.setTimeout(() => {
-          gsap.to(tiltTarget, {
-            clearProps: "transform",
-            duration: 0.35,
-            ease: "power2.out",
-            rotateX: 0,
-          });
+          setTilt(0);
+          window.setTimeout(() => {
+            tiltTargets.forEach((target) => target.classList.remove("is-scroll-tilting"));
+          }, 220);
         }, 140);
         lastScrollY = currentScrollY;
         ticking = false;
@@ -595,6 +701,7 @@ initNavigation();
 initScrambleLinks();
 initLenis();
 initHero();
+initArticleMediaPrewarm();
 initRevealAnimations();
 initTiltCards();
 initCategoryCursor();

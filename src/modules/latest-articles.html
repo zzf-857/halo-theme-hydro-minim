@@ -2,7 +2,11 @@
   <div class="hydro-container">
     <h2 class="hydro-section-title" data-reveal-title>最新文章</h2>
 
-    <div class="hydro-article-grid" th:if="${posts.total gt 0}">
+    <div
+      class="hydro-article-grid"
+      th:classappend="${posts.total == 1} ? ' hydro-article-grid--single' : ''"
+      th:if="${posts.total gt 0}"
+    >
       <article
         class="hydro-card"
         data-tilt-card
@@ -10,12 +14,22 @@
         th:if="${stat.index < 3}"
         th:with="
           fallbackCover=${stat.index % 3 == 0 ? theme.config.assets.article_cover_1 : (stat.index % 3 == 1 ? theme.config.assets.article_cover_2 : theme.config.assets.article_cover_3)},
-          cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover}
+          cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover},
+          optimizedCover=${#strings.contains(cover, 'images.unsplash.com') ? cover + (#strings.contains(cover, '?') ? '&w=960&fit=crop&auto=format' : '?w=960&fit=crop&auto=format') : cover}
         "
       >
         <a th:href="@{${post.status.permalink}}">
           <div class="hydro-card__media">
-            <img th:src="${cover}" th:alt="${post.spec.title}" />
+            <img
+              th:src="${optimizedCover}"
+              th:alt="${post.spec.title}"
+              width="960"
+              height="640"
+              loading="eager"
+              decoding="async"
+              fetchpriority="low"
+              data-prewarm-image
+            />
             <div class="hydro-card__shade" aria-hidden="true"></div>
             <span
               class="hydro-card__badge"
