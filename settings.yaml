@@ -47,7 +47,7 @@ spec:
           label: 深色长方形 Logo（顶部菜单）
           value: /themes/halo-theme-hydro-minim/assets/brand/hydro-minim-lockup-dark.svg
         - $formkit: text
-          if: $get(brand_logo_display).value !== logo
+          if: $get(brand_logo_display).value === logo
           id: brand_logo_alt
           key: brand_logo_alt
           name: logo_alt
