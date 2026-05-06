@@ -1921,13 +1921,10 @@ input {
   box-shadow:
     0 18px 46px rgb(var(--hydro-shadow-rgb) / 5%),
     inset 0 1px 0 rgb(var(--hydro-paper-rgb) / 72%);
-  opacity: 0;
+  opacity: 1;
   transform: translate(calc((var(--tag-drift) - 3) * 0.45rem), calc((var(--tag-lane) - 4) * 0.34rem))
     rotate(calc((var(--tag-lane) - 4) * 1.4deg));
-  animation:
-    hydro-tag-chip-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    hydro-tag-float calc(7s + var(--tag-lane) * 0.65s) ease-in-out calc(var(--tag-order) * -0.31s) infinite;
-  animation-delay: calc(var(--tag-order) * 24ms);
+  animation: hydro-tag-float calc(7s + var(--tag-lane) * 0.65s) ease-in-out calc(var(--tag-order) * -0.31s) infinite;
   transition:
     background 0.28s ease,
     border-color 0.28s ease,
@@ -2496,14 +2493,6 @@ input {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes hydro-tag-chip-in {
-  to {
-    opacity: 1;
-    transform: translate(calc((var(--tag-drift) - 3) * 0.18rem), calc((var(--tag-lane) - 4) * 0.12rem))
-      rotate(calc((var(--tag-lane) - 4) * 0.8deg));
   }
 }
 
