@@ -32,19 +32,32 @@
 
       <!-- 瀑布流图片 -->
       <div class="hydro-photos-masonry" th:if="${not #lists.isEmpty(photos.items)}">
-        <button
-          class="hydro-photo-item"
+        <div
+          class="hydro-photo-card"
           th:each="photo : ${photos.items}"
-          th:attr="data-src=${photo.spec.url},data-alt=${photo.spec.displayName}"
-          data-lightbox-trigger
         >
-          <img th:src="${photo.spec.url}" th:alt="${photo.spec.displayName}" loading="lazy" />
-          <div class="hydro-photo-item__overlay">
-            <span th:if="${not #strings.isEmpty(photo.spec.displayName)}" th:text="${photo.spec.displayName}"
-              >图片名称</span
-            >
-          </div>
-        </button>
+          <button
+            class="hydro-photo-card__inner"
+            th:attr="data-src=${photo.spec.url},data-alt=${photo.spec.displayName}"
+            data-lightbox-trigger
+          >
+            <img th:src="${photo.spec.url}" th:alt="${photo.spec.displayName}" loading="lazy" />
+            <div class="hydro-photo-card__overlay">
+              <div class="hydro-photo-card__info">
+                <h3
+                  th:if="${not #strings.isEmpty(photo.spec.displayName)}"
+                  th:text="${photo.spec.displayName}"
+                  class="hydro-photo-card__title"
+                >图片名称</h3>
+                <p
+                  th:if="${not #strings.isEmpty(photo.spec.description)}"
+                  th:text="${photo.spec.description}"
+                  class="hydro-photo-card__desc"
+                ></p>
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
 
       <div th:if="${#lists.isEmpty(photos.items)}" class="hydro-empty">暂无图片。</div>
