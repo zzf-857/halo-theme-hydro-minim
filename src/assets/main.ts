@@ -17,6 +17,38 @@ type HydroLenis = {
   start?: () => void;
   stop?: () => void;
 };
+type LinkSubmitVerifyType = "email" | "captcha" | "none";
+type LinkSubmitGroup = {
+  groupId?: string;
+  groupName?: string;
+};
+type LinkSubmitResult<T = unknown> = {
+  code?: number;
+  msg?: string;
+  data?: T;
+};
+type LinksSubmitApi = {
+  submit: (
+    data: Record<string, unknown>,
+    verifyCode: string,
+    verifyType?: "email" | "captcha",
+  ) => Promise<LinkSubmitResult>;
+  update?: (
+    data: Record<string, unknown>,
+    verifyCode: string,
+    verifyType?: "email" | "captcha",
+  ) => Promise<LinkSubmitResult>;
+  getLinkGroups?: () => Promise<LinkSubmitGroup[]>;
+  sendVerifyCode?: (email: string) => Promise<LinkSubmitResult>;
+  getLinkDetail?: (url: string) => Promise<LinkSubmitResult<Record<string, string>>>;
+  getCaptchaUrl?: () => string;
+};
+
+declare global {
+  interface Window {
+    LinksSubmit?: LinksSubmitApi;
+  }
+}
 
 function isColorSchemeMode(value: string | null): value is ColorSchemeMode {
   return value === "auto" || value === "dark" || value === "light";
@@ -1133,6 +1165,486 @@ function initPostRelatedCards() {
   }
 }
 
+function initLinksPage() {
+  const linksSection = document.querySelector<HTMLElement>(".hydro-links-section");
+  if (!linksSection) {
+    return;
+  }
+
+  const copyHandlers = linksSection.querySelectorAll<HTMLButtonElement>("[data-copy]");
+  copyHandlers.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const text = button.dataset.copyText;
+      if (!text) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        button.classList.add("is-copied");
+        window.setTimeout(() => {
+          button.classList.remove("is-copied");
+        }, 1500);
+      } catch {
+        // Ignore clipboard failures silently.
+      }
+    });
+  });
+
+  linksSection.querySelectorAll<HTMLButtonElement>("[data-random-link]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const links = (button.dataset.links || "").split(",").filter(Boolean);
+      if (links.length === 0) {
+        return;
+      }
+      const pick = links[Math.floor(Math.random() * links.length)];
+      window.open(pick, "_blank", "noreferrer");
+    });
+  });
+
+  const config = document.getElementById("hydro-link-submit-config");
+  if (!config || config.dataset.enableSubmit !== "true") {
+    return;
+  }
+
+  const enableUpdate = config.dataset.enableUpdate === "true";
+  const verifyType = (config.dataset.verifyType || "email") as LinkSubmitVerifyType;
+  const submitModal = document.getElementById("hydro-link-submit-modal");
+  const submitEntry = document.getElementById("hydro-link-submit-entry");
+  const updateEntry = document.getElementById("hydro-link-update-entry");
+  const unavailableEntry = document.getElementById("hydro-link-submit-unavailable");
+  const submitForm = document.getElementById("hydro-link-submit-form") as HTMLFormElement | null;
+  const submitMessageEl = document.getElementById("hydro-link-submit-message");
+  const autoFetchBtn = document.getElementById("hydro-link-auto-fetch-btn") as HTMLButtonElement | null;
+  const sendCodeBtn = document.getElementById("hydro-link-send-code-btn") as HTMLButtonElement | null;
+  const captchaImg = document.getElementById("hydro-link-captcha-img") as HTMLImageElement | null;
+  const groupSelect = document.getElementById("hydro-link-group") as HTMLSelectElement | null;
+  const groupWrapper = document.getElementById("hydro-link-group-wrapper");
+
+  const updateModal = document.getElementById("hydro-link-update-modal");
+  const updateForm = document.getElementById("hydro-link-update-form") as HTMLFormElement | null;
+  const updateMessageEl = document.getElementById("hydro-link-update-message");
+  const updateAutoFetchBtn = document.getElementById("hydro-link-update-auto-fetch-btn") as HTMLButtonElement | null;
+  const updateSendCodeBtn = document.getElementById("hydro-link-update-send-code-btn") as HTMLButtonElement | null;
+  const updateCaptchaImg = document.getElementById("hydro-link-update-captcha-img") as HTMLImageElement | null;
+  const updateGroupSelect = document.getElementById("hydro-link-update-group") as HTMLSelectElement | null;
+  const updateGroupWrapper = document.getElementById("hydro-link-update-group-wrapper");
+
+  const mountModalToBody = (modal: HTMLElement | null) => {
+    if (!modal || modal.parentElement === document.body) {
+      return;
+    }
+    document.body.append(modal);
+  };
+
+  mountModalToBody(submitModal);
+  mountModalToBody(updateModal);
+
+  if (!submitModal || !submitForm || !submitMessageEl) {
+    return;
+  }
+
+  let submitReady = false;
+  let submitCodeCountdown = 0;
+  let updateCodeCountdown = 0;
+
+  const getLinksSubmitApi = () => window.LinksSubmit;
+  const showMessage = (container: HTMLElement | null, message: string, type: "success" | "error") => {
+    if (!container) {
+      return;
+    }
+    container.textContent = message;
+    container.className = `hydro-link-submit-message is-${type}`;
+    container.style.display = "block";
+  };
+  const setButtonLoading = (
+    button: HTMLButtonElement | null,
+    loading: boolean,
+    pendingText: string,
+    fallbackText: string,
+  ) => {
+    if (!button) {
+      return;
+    }
+    if (!button.dataset.defaultText) {
+      button.dataset.defaultText = button.textContent?.trim() || fallbackText;
+    }
+    button.disabled = loading;
+    button.textContent = loading ? pendingText : button.dataset.defaultText;
+  };
+  const openModal = (modal: HTMLElement) => {
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("hydro-menu-lock");
+    document.body.style.overflow = "hidden";
+    getHydroLenis()?.stop?.();
+  };
+  const closeModal = (modal: HTMLElement) => {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("hydro-menu-lock");
+    document.body.style.overflow = "";
+    getHydroLenis()?.start?.();
+  };
+  const openSubmitModal = () => {
+    if (!submitReady) {
+      showMessage(submitMessageEl, "未检测到 LinksSubmit 插件，请稍后重试。", "error");
+      return;
+    }
+    openModal(submitModal);
+    loadLinkGroups("submit");
+    if (verifyType === "captcha") {
+      refreshCaptcha("submit");
+    }
+  };
+  const openUpdateModal = () => {
+    if (!enableUpdate || !updateModal || !updateForm || !updateMessageEl) {
+      return;
+    }
+    if (!submitReady) {
+      showMessage(updateMessageEl, "未检测到 LinksSubmit 插件，请稍后重试。", "error");
+      return;
+    }
+    openModal(updateModal);
+    loadLinkGroups("update");
+    if (verifyType === "captcha") {
+      refreshCaptcha("update");
+    }
+  };
+  const refreshCaptcha = (mode: "submit" | "update") => {
+    const api = getLinksSubmitApi();
+    const targetImg = mode === "update" ? updateCaptchaImg : captchaImg;
+    if (!targetImg || !api || typeof api.getCaptchaUrl !== "function") {
+      return;
+    }
+    targetImg.src = api.getCaptchaUrl();
+  };
+  const loadLinkGroups = (mode: "submit" | "update") => {
+    const api = getLinksSubmitApi();
+    const select = mode === "update" ? updateGroupSelect : groupSelect;
+    const wrapper = mode === "update" ? updateGroupWrapper : groupWrapper;
+    if (!select || !wrapper || !api || typeof api.getLinkGroups !== "function") {
+      return;
+    }
+
+    api
+      .getLinkGroups()
+      .then((groups) => {
+        if (!Array.isArray(groups) || groups.length === 0) {
+          return;
+        }
+        select.innerHTML = "";
+        select.append(new Option("默认分组", ""));
+        groups.forEach((group) => {
+          select.append(new Option(group.groupName || "未命名分组", group.groupId || group.groupName || ""));
+        });
+        wrapper.style.display = "";
+      })
+      .catch(() => {
+        // Ignore group loading failures.
+      });
+  };
+  const initEntries = () => {
+    window.setTimeout(() => {
+      const api = getLinksSubmitApi();
+      if (api) {
+        submitReady = true;
+        if (submitEntry) {
+          submitEntry.style.display = "";
+        }
+        if (enableUpdate && updateEntry) {
+          updateEntry.style.display = "";
+        }
+        if (unavailableEntry) {
+          unavailableEntry.style.display = "none";
+        }
+        if (window.location.hash === "#add") {
+          openSubmitModal();
+        } else if (window.location.hash === "#edit") {
+          openUpdateModal();
+        }
+        return;
+      }
+
+      submitReady = false;
+      if (submitEntry) {
+        submitEntry.style.display = "none";
+      }
+      if (updateEntry) {
+        updateEntry.style.display = "none";
+      }
+      if (unavailableEntry) {
+        unavailableEntry.style.display = "";
+      }
+    }, 500);
+  };
+  const autoFetchSiteInfo = (mode: "submit" | "update") => {
+    const api = getLinksSubmitApi();
+    if (!api || typeof api.getLinkDetail !== "function") {
+      return;
+    }
+    const urlInputId = mode === "update" ? "hydro-update-url" : "hydro-link-url";
+    const nameInputId = mode === "update" ? "hydro-update-name" : "hydro-link-name";
+    const logoInputId = mode === "update" ? "hydro-update-logo" : "hydro-link-logo";
+    const descriptionInputId = mode === "update" ? "hydro-update-description" : "hydro-link-description";
+    const messageContainer = mode === "update" ? updateMessageEl : submitMessageEl;
+    const button = mode === "update" ? updateAutoFetchBtn : autoFetchBtn;
+    const url = (document.getElementById(urlInputId) as HTMLInputElement | null)?.value.trim() || "";
+    if (!url) {
+      showMessage(messageContainer, "请先输入网站地址。", "error");
+      return;
+    }
+    setButtonLoading(button, true, "获取中...", "自动填充");
+
+    api
+      .getLinkDetail(url)
+      .then((res) => {
+        if (res.code !== 200 || !res.data) {
+          showMessage(messageContainer, res.msg || "自动填充失败，请手动填写。", "error");
+          return;
+        }
+
+        const data = res.data;
+        const nameInput = document.getElementById(nameInputId) as HTMLInputElement | null;
+        const logoInput = document.getElementById(logoInputId) as HTMLInputElement | null;
+        const descriptionInput = document.getElementById(descriptionInputId) as HTMLTextAreaElement | null;
+
+        if (nameInput && data.title) {
+          nameInput.value = data.title;
+        }
+        if (logoInput && (data.image || data.icon)) {
+          logoInput.value = data.image || data.icon;
+        }
+        if (descriptionInput && data.description) {
+          descriptionInput.value = data.description;
+        }
+        showMessage(messageContainer, "已自动填充，请检查后提交。", "success");
+      })
+      .catch(() => {
+        showMessage(messageContainer, "自动填充失败，请手动填写。", "error");
+      })
+      .finally(() => {
+        setButtonLoading(button, false, "", "自动填充");
+      });
+  };
+  const sendVerifyCode = (mode: "submit" | "update") => {
+    const api = getLinksSubmitApi();
+    const isCountingDown = mode === "update" ? updateCodeCountdown > 0 : submitCodeCountdown > 0;
+    if (!api || typeof api.sendVerifyCode !== "function" || isCountingDown) {
+      return;
+    }
+    const emailInputId = mode === "update" ? "hydro-update-email" : "hydro-link-email";
+    const email = (document.getElementById(emailInputId) as HTMLInputElement | null)?.value.trim() || "";
+    const messageContainer = mode === "update" ? updateMessageEl : submitMessageEl;
+    const button = mode === "update" ? updateSendCodeBtn : sendCodeBtn;
+    if (!email) {
+      showMessage(messageContainer, "请先输入联系邮箱。", "error");
+      return;
+    }
+
+    setButtonLoading(button, true, "发送中...", "发送验证码");
+    api
+      .sendVerifyCode(email)
+      .then((res) => {
+        if (res.code !== 200) {
+          throw new Error(res.msg || "发送失败");
+        }
+        showMessage(messageContainer, "验证码已发送，请注意查收邮箱。", "success");
+        if (mode === "update") {
+          updateCodeCountdown = 60;
+        } else {
+          submitCodeCountdown = 60;
+        }
+        const timer = window.setInterval(() => {
+          if (mode === "update") {
+            updateCodeCountdown -= 1;
+          } else {
+            submitCodeCountdown -= 1;
+          }
+          const currentCountdown = mode === "update" ? updateCodeCountdown : submitCodeCountdown;
+          if (button) {
+            button.textContent = `${currentCountdown}s`;
+          }
+          if (currentCountdown <= 0) {
+            window.clearInterval(timer);
+            setButtonLoading(button, false, "", "发送验证码");
+          }
+        }, 1000);
+      })
+      .catch((error: unknown) => {
+        const msg = error instanceof Error ? error.message : "发送失败，请稍后重试。";
+        showMessage(messageContainer, msg, "error");
+        setButtonLoading(button, false, "", "发送验证码");
+      });
+  };
+  const parseVerifyCode = (formData: FormData, mode: "submit" | "update") => {
+    const messageContainer = mode === "update" ? updateMessageEl : submitMessageEl;
+    let verifyCode = "";
+
+    if (verifyType === "email") {
+      const emailVerifyValue = formData.get("verifyCode");
+      verifyCode = typeof emailVerifyValue === "string" ? emailVerifyValue.trim() : "";
+      if (!verifyCode) {
+        showMessage(messageContainer, "请输入邮箱验证码。", "error");
+        return null;
+      }
+    }
+
+    if (verifyType === "captcha") {
+      const captchaVerifyValue = formData.get("captcha");
+      verifyCode = typeof captchaVerifyValue === "string" ? captchaVerifyValue.trim() : "";
+      if (!verifyCode) {
+        showMessage(messageContainer, "请输入图形验证码。", "error");
+        return null;
+      }
+    }
+
+    return verifyCode;
+  };
+  const handleSubmit = (event: SubmitEvent) => {
+    event.preventDefault();
+    const api = getLinksSubmitApi();
+    if (!api) {
+      return;
+    }
+
+    const formData = new FormData(submitForm);
+    const verifyCode = parseVerifyCode(formData, "submit");
+    if (verifyCode == null) {
+      return;
+    }
+
+    const payload: Record<string, unknown> = {
+      displayName: formData.get("displayName"),
+      url: formData.get("url"),
+      logo: formData.get("logo") || undefined,
+      email: formData.get("email"),
+      description: formData.get("description") || undefined,
+      linkPageUrl: formData.get("linkPageUrl") || undefined,
+      groupName: formData.get("groupName") || undefined,
+      rssUrl: formData.get("rssUrl") || undefined,
+    };
+
+    const submitBtn = document.getElementById("hydro-link-submit-btn") as HTMLButtonElement | null;
+    setButtonLoading(submitBtn, true, "提交中...", "提交申请");
+
+    api
+      .submit(payload, verifyCode, verifyType === "none" ? undefined : verifyType)
+      .then((res) => {
+        if (res.code === 200) {
+          showMessage(submitMessageEl, res.msg || "提交成功，请等待审核。", "success");
+          submitForm.reset();
+          window.setTimeout(() => {
+            closeModal(submitModal);
+          }, 1500);
+          return;
+        }
+        showMessage(submitMessageEl, res.msg || "提交失败，请稍后重试。", "error");
+      })
+      .catch(() => {
+        showMessage(submitMessageEl, "提交失败，请稍后重试。", "error");
+      })
+      .finally(() => {
+        if (verifyType === "captcha") {
+          refreshCaptcha("submit");
+        }
+        setButtonLoading(submitBtn, false, "", "提交申请");
+      });
+  };
+  const handleUpdateSubmit = (event: SubmitEvent) => {
+    event.preventDefault();
+    const api = getLinksSubmitApi();
+    if (!api || typeof api.update !== "function" || !updateForm) {
+      showMessage(updateMessageEl, "当前插件不支持在线修改。", "error");
+      return;
+    }
+
+    const formData = new FormData(updateForm);
+    const verifyCode = parseVerifyCode(formData, "update");
+    if (verifyCode == null) {
+      return;
+    }
+
+    const payload: Record<string, unknown> = {
+      oldUrl: formData.get("oldUrl"),
+      displayName: formData.get("displayName"),
+      url: formData.get("url"),
+      logo: formData.get("logo") || undefined,
+      email: formData.get("email"),
+      description: formData.get("description") || undefined,
+      linkPageUrl: formData.get("linkPageUrl") || undefined,
+      groupName: formData.get("groupName") || undefined,
+      rssUrl: formData.get("rssUrl") || undefined,
+    };
+
+    const updateSubmitBtn = document.getElementById("hydro-link-update-submit-btn") as HTMLButtonElement | null;
+    setButtonLoading(updateSubmitBtn, true, "提交中...", "提交修改");
+
+    api
+      .update(payload, verifyCode, verifyType === "none" ? undefined : verifyType)
+      .then((res) => {
+        if (res.code === 200) {
+          showMessage(updateMessageEl, res.msg || "修改成功。", "success");
+          updateForm.reset();
+          window.setTimeout(() => {
+            if (updateModal) {
+              closeModal(updateModal);
+            }
+          }, 1500);
+          return;
+        }
+        showMessage(updateMessageEl, res.msg || "修改失败，请稍后重试。", "error");
+      })
+      .catch(() => {
+        showMessage(updateMessageEl, "修改失败，请稍后重试。", "error");
+      })
+      .finally(() => {
+        if (verifyType === "captcha") {
+          refreshCaptcha("update");
+        }
+        setButtonLoading(updateSubmitBtn, false, "", "提交修改");
+      });
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-link-submit-open]").forEach((button) => {
+    button.addEventListener("click", openSubmitModal);
+  });
+  document.querySelectorAll<HTMLElement>("[data-link-submit-close]").forEach((button) => {
+    button.addEventListener("click", () => closeModal(submitModal));
+  });
+  document.querySelectorAll<HTMLElement>("[data-link-update-open]").forEach((button) => {
+    button.addEventListener("click", openUpdateModal);
+  });
+  document.querySelectorAll<HTMLElement>("[data-link-update-close]").forEach((button) => {
+    if (!updateModal) {
+      return;
+    }
+    button.addEventListener("click", () => closeModal(updateModal));
+  });
+  autoFetchBtn?.addEventListener("click", () => autoFetchSiteInfo("submit"));
+  updateAutoFetchBtn?.addEventListener("click", () => autoFetchSiteInfo("update"));
+  sendCodeBtn?.addEventListener("click", () => sendVerifyCode("submit"));
+  updateSendCodeBtn?.addEventListener("click", () => sendVerifyCode("update"));
+  captchaImg?.addEventListener("click", () => refreshCaptcha("submit"));
+  updateCaptchaImg?.addEventListener("click", () => refreshCaptcha("update"));
+  submitForm.addEventListener("submit", handleSubmit);
+  updateForm?.addEventListener("submit", handleUpdateSubmit);
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#add") {
+      openSubmitModal();
+    } else if (window.location.hash === "#edit") {
+      openUpdateModal();
+    }
+  });
+
+  initEntries();
+}
+
 initColorScheme();
 initNavigation();
 initScrambleLinks();
@@ -1357,6 +1869,7 @@ function initLightbox() {
 }
 
 initLinkCards();
+initLinksPage();
 initMomentsContent();
 initMomentActions();
 initMomentsReveal();

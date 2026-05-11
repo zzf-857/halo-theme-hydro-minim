@@ -92,6 +92,7 @@ body.hydro-page {
 
 body.hydro-menu-lock {
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .tilt-on-scroll.is-scroll-tilting {
@@ -2826,7 +2827,14 @@ html.lenis body {
 
 /* ── 站点信息 ─────────────────────────────────────────────── */
 .hydro-site-info {
-  padding: 0 0 4rem;
+  padding: 0 0 1.5rem;
+}
+
+.hydro-links-top {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 1.25rem;
+  align-items: start;
 }
 
 .hydro-site-info__card {
@@ -3279,13 +3287,14 @@ html.lenis body {
 
 /* ── 申请友链 ─────────────────────────────────────────────── */
 .hydro-links-apply {
-  padding: 6rem 0;
-  background: linear-gradient(to bottom, transparent, rgb(var(--hydro-ink-rgb) / 2%), transparent);
+  padding: 0 0 4rem;
+  background: none;
 }
 
 .hydro-links-apply__inner {
-  max-width: 52rem;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: 3rem;
   border: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
   border-radius: 1rem;
@@ -3318,6 +3327,338 @@ html.lenis body {
   font-weight: 700;
 }
 
+.hydro-links-submit-note {
+  margin: 0;
+  color: var(--hydro-muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.hydro-links-submit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+}
+
+.hydro-links-submit-entry {
+  display: contents;
+}
+
+.hydro-links-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 14%);
+  border-radius: 0.55rem;
+  background: rgb(var(--hydro-paper-rgb) / 55%);
+  color: var(--hydro-ink);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hydro-links-submit-btn svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.hydro-links-submit-btn:hover {
+  border-color: var(--hydro-solid);
+  transform: translateY(-1px);
+}
+
+.hydro-links-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.hydro-links-submit-btn--primary {
+  border-color: var(--hydro-solid);
+  background: var(--hydro-solid);
+  color: var(--hydro-solid-contrast);
+}
+
+.hydro-links-submit-btn--primary:hover {
+  background: color-mix(in srgb, var(--hydro-solid), transparent 6%);
+}
+
+.hydro-links-submit-unavailable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgb(var(--hydro-ink-rgb) / 56%);
+  font-size: 0.8125rem;
+}
+
+.hydro-links-submit-unavailable svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.hydro-link-submit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  overflow: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.hydro-link-submit-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hydro-link-submit-modal__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgb(var(--hydro-ink-rgb) / 40%);
+  cursor: pointer;
+}
+
+.hydro-link-submit-modal__panel {
+  position: relative;
+  width: min(44rem, 100%);
+  height: min(44rem, calc(100dvh - 2rem));
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  border-radius: 0.9rem;
+  background: rgb(var(--hydro-paper-rgb) / 93%);
+  box-shadow: 0 24px 70px rgb(var(--hydro-shadow-rgb) / 20%);
+}
+
+.hydro-link-submit-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem 0.95rem;
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+}
+
+.hydro-link-submit-modal__title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.hydro-link-submit-modal__title svg {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.1rem;
+  fill: none;
+  stroke: var(--hydro-coral);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.hydro-link-submit-modal__title h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.hydro-link-submit-modal__title p {
+  margin: 0.4rem 0 0;
+  color: var(--hydro-muted);
+  font-size: 0.8125rem;
+}
+
+.hydro-link-submit-modal__close {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: rgb(var(--hydro-ink-rgb) / 54%);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.hydro-link-submit-modal__close:hover {
+  border-color: rgb(var(--hydro-ink-rgb) / 20%);
+  color: var(--hydro-ink);
+}
+
+.hydro-link-submit-modal__close svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.hydro-link-submit-message {
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 14%);
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.hydro-link-submit-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.95rem 1.25rem;
+}
+
+.hydro-link-submit-modal__footer {
+  flex-shrink: 0;
+  padding: 0.85rem 1.25rem 1rem;
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+  background: rgb(var(--hydro-paper-rgb) / 92%);
+}
+
+.hydro-link-submit-message.is-success {
+  border-color: rgb(var(--hydro-teal-rgb) / 35%);
+  background: rgb(var(--hydro-teal-rgb) / 10%);
+  color: color-mix(in srgb, var(--hydro-teal), var(--hydro-ink) 40%);
+}
+
+.hydro-link-submit-message.is-error {
+  border-color: rgb(var(--hydro-coral-rgb) / 35%);
+  background: rgb(var(--hydro-coral-rgb) / 8%);
+  color: color-mix(in srgb, var(--hydro-coral), var(--hydro-ink) 36%);
+}
+
+.hydro-link-submit-form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.hydro-link-submit-form__section {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 8%);
+  border-radius: 0.55rem;
+  background: rgb(var(--hydro-paper-rgb) / 35%);
+}
+
+.hydro-link-submit-form__section-title {
+  color: rgb(var(--hydro-ink-rgb) / 60%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hydro-link-submit-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.hydro-link-submit-form__group {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.hydro-link-submit-form__group label {
+  color: rgb(var(--hydro-ink-rgb) / 62%);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.hydro-link-submit-form__group label span {
+  color: var(--hydro-coral);
+}
+
+.hydro-link-submit-form__group input,
+.hydro-link-submit-form__group textarea,
+.hydro-link-submit-form__group select {
+  width: 100%;
+  min-height: 2.3rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  border-radius: 0.45rem;
+  background: rgb(var(--hydro-paper-rgb) / 68%);
+  color: var(--hydro-ink);
+  font-size: 0.8125rem;
+}
+
+.hydro-link-submit-form__group textarea {
+  min-height: 4.4rem;
+  resize: vertical;
+}
+
+.hydro-link-submit-form__group input:focus,
+.hydro-link-submit-form__group textarea:focus,
+.hydro-link-submit-form__group select:focus {
+  border-color: var(--hydro-solid);
+  outline: none;
+}
+
+.hydro-link-submit-form__inline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.hydro-link-submit-form__captcha {
+  width: 7rem;
+  height: 2.3rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  border-radius: 0.45rem;
+  background: rgb(var(--hydro-paper-rgb) / 75%);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.hydro-link-submit-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 0;
+}
+
 .hydro-links-comments {
   padding: 4rem 0 7rem;
 }
@@ -3329,6 +3670,14 @@ html.lenis body {
 }
 
 @media (max-width: 64rem) {
+  .hydro-links-top {
+    grid-template-columns: 1fr;
+  }
+
+  .hydro-links-apply__inner {
+    padding: 2rem;
+  }
+
   .hydro-links-grid {
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   }
@@ -3345,6 +3694,37 @@ html.lenis body {
 
   .hydro-links-apply__inner {
     padding: 2rem 1.5rem;
+  }
+
+  .hydro-link-submit-modal__panel {
+    width: 100%;
+    height: calc(100dvh - 2rem);
+  }
+
+  .hydro-link-submit-modal__header {
+    padding: 1rem 1rem 0.8rem;
+  }
+
+  .hydro-link-submit-modal__body {
+    padding: 0.75rem 1rem;
+  }
+
+  .hydro-link-submit-modal__footer {
+    padding: 0.7rem 1rem 0.9rem;
+  }
+
+  .hydro-link-submit-form__row,
+  .hydro-link-submit-form__inline {
+    grid-template-columns: 1fr;
+  }
+
+  .hydro-link-submit-form__captcha {
+    width: 100%;
+  }
+
+  .hydro-link-submit-form__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
   }
 
   .hydro-site-info__card {
@@ -4195,7 +4575,8 @@ html.lenis body {
   border-radius: 0.75rem;
   overflow: hidden;
   position: relative;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -7540,7 +7921,8 @@ html.lenis body {
   background: rgb(var(--hydro-paper-rgb) / 30%);
   backdrop-filter: blur(12px);
   padding: clamp(1.5rem, 2.5vw, 2rem);
-  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

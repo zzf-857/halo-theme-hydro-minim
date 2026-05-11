@@ -11,42 +11,109 @@
     </div>
   </section>
 
-  <!-- 站点信息 -->
-  <section class="hydro-site-info" th:if="${not #lists.isEmpty(groups)}">
+  <!-- 站点信息 + 友链申请 -->
+  <section class="hydro-site-info">
     <div class="hydro-container">
-      <div class="hydro-site-info__card">
-        <div class="hydro-site-info__header">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            <path d="M2 12h20"></path>
-          </svg>
-          <h2>我的站点信息</h2>
-          <span>方便你回链</span>
+      <div class="hydro-links-top">
+        <div class="hydro-site-info__card">
+          <div class="hydro-site-info__header">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path
+                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+              ></path>
+              <path d="M2 12h20"></path>
+            </svg>
+            <h2>我的站点信息</h2>
+            <span>方便你回链</span>
+          </div>
+          <div class="hydro-site-info__grid">
+            <div class="hydro-site-info__row">
+              <span class="hydro-site-info__label">站名</span>
+              <span class="hydro-site-info__value" th:text="${site.title}">站点名称</span>
+              <button class="hydro-copy-btn" data-copy th:data-copy-text="${site.title}" aria-label="复制站名">
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="hydro-site-info__row">
+              <span class="hydro-site-info__label">链接</span>
+              <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${site.url}"
+                >https://example.com</span
+              >
+              <button class="hydro-copy-btn" data-copy th:data-copy-text="${site.url}" aria-label="复制链接">
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="hydro-site-info__grid">
-          <div class="hydro-site-info__row">
-            <span class="hydro-site-info__label">站名</span>
-            <span class="hydro-site-info__value" th:text="${site.title}">站点名称</span>
-            <button class="hydro-copy-btn" data-copy th:data-copy-text="${site.title}" aria-label="复制站名">
-              <svg viewBox="0 0 24 24">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            </button>
+
+        <div
+          class="hydro-links-apply__inner"
+          th:if="${not #strings.isEmpty(singlePage.content.content) or theme.config.links?.enable_submit}"
+        >
+          <div class="hydro-links-apply__header">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2v20M2 12h20"></path>
+            </svg>
+            <h2>申请友链</h2>
           </div>
-          <div class="hydro-site-info__row">
-            <span class="hydro-site-info__label">链接</span>
-            <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${site.url}"
-              >https://example.com</span
-            >
-            <button class="hydro-copy-btn" data-copy th:data-copy-text="${site.url}" aria-label="复制链接">
-              <svg viewBox="0 0 24 24">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            </button>
-          </div>
+
+          <div
+            class="hydro-prose"
+            th:if="${not #strings.isEmpty(singlePage.content.content)}"
+            th:utext="${singlePage.content.content}"
+          ></div>
+
+          <th:block th:if="${theme.config.links?.enable_submit}">
+            <p class="hydro-links-submit-note" th:if="${#strings.isEmpty(singlePage.content.content)}">
+              支持在线提交友链申请，填写后将进入站点审核流程。
+            </p>
+
+            <div class="hydro-links-submit-actions">
+              <div id="hydro-link-submit-entry" class="hydro-links-submit-entry" style="display: none">
+                <button
+                  type="button"
+                  class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+                  data-link-submit-open
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 4v16M4 12h16"></path>
+                  </svg>
+                  <span>在线提交</span>
+                </button>
+              </div>
+
+              <div
+                th:if="${theme.config.links?.enable_update}"
+                id="hydro-link-update-entry"
+                class="hydro-links-submit-entry"
+                style="display: none"
+              >
+                <button type="button" class="hydro-links-submit-btn" data-link-update-open>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 5 4 4"></path>
+                    <path d="M4 20h4l10-10-4-4L4 16z"></path>
+                  </svg>
+                  <span>修改友链</span>
+                </button>
+              </div>
+
+              <div id="hydro-link-submit-unavailable" class="hydro-links-submit-unavailable" style="display: none">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 8v5"></path>
+                  <path d="M12 16.5h.01"></path>
+                  <path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.8 3h16.8a2 2 0 0 0 1.8-3L13.7 3.8a2 2 0 0 0-3.4 0z"></path>
+                </svg>
+                <span>未检测到 LinksSubmit 插件，暂不可在线提交</span>
+              </div>
+            </div>
+          </th:block>
         </div>
       </div>
     </div>
@@ -122,20 +189,324 @@
     </div>
   </section>
 
-  <!-- 申请友链 -->
-  <section class="hydro-links-apply" th:if="${not #strings.isEmpty(singlePage.content.content)}">
-    <div class="hydro-container">
-      <div class="hydro-links-apply__inner">
-        <div class="hydro-links-apply__header">
+  <!-- 在线提交弹窗 -->
+  <div
+    th:if="${theme.config.links?.enable_submit}"
+    id="hydro-link-submit-modal"
+    class="hydro-link-submit-modal"
+    aria-hidden="true"
+  >
+    <button class="hydro-link-submit-modal__overlay" data-link-submit-close aria-label="关闭提交弹窗"></button>
+
+    <div
+      class="hydro-link-submit-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hydro-link-submit-title"
+    >
+      <div class="hydro-link-submit-modal__header">
+        <div class="hydro-link-submit-modal__title">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2v20M2 12h20"></path>
+            <path d="M10 13a5 5 0 0 1 0-7l1.8-1.8a5 5 0 0 1 7 7L17 13"></path>
+            <path d="M14 11a5 5 0 0 1 0 7l-1.8 1.8a5 5 0 0 1-7-7L7 11"></path>
           </svg>
-          <h2>申请友链</h2>
+          <div>
+            <h3 id="hydro-link-submit-title">提交友链申请</h3>
+            <p>填写你的网站信息，审核通过后将展示在友链页</p>
+          </div>
         </div>
-        <div class="hydro-prose" th:utext="${singlePage.content.content}"></div>
+
+        <button type="button" class="hydro-link-submit-modal__close" data-link-submit-close aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hydro-link-submit-modal__body" data-lenis-prevent>
+        <div id="hydro-link-submit-message" class="hydro-link-submit-message" style="display: none"></div>
+
+        <form id="hydro-link-submit-form" class="hydro-link-submit-form">
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">基本信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-url">网站地址 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-link-url" name="url" type="url" placeholder="https://example.com" required />
+                <button
+                  type="button"
+                  id="hydro-link-auto-fetch-btn"
+                  class="hydro-links-submit-btn"
+                  data-link-auto-fetch
+                >
+                  自动填充
+                </button>
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-name">网站名称 <span>*</span></label>
+                <input id="hydro-link-name" name="displayName" type="text" placeholder="我的博客" required />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-logo">网站图标</label>
+                <input id="hydro-link-logo" name="logo" type="url" placeholder="Logo URL（可选）" />
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-description">网站描述</label>
+              <textarea
+                id="hydro-link-description"
+                name="description"
+                rows="2"
+                placeholder="一句话介绍你的网站（可选）"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更多信息（可选）</div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-page-url">友链页面</label>
+                <input id="hydro-link-page-url" name="linkPageUrl" type="url" placeholder="友链页面 URL" />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-rss-url">RSS 地址</label>
+                <input id="hydro-link-rss-url" name="rssUrl" type="url" placeholder="RSS 订阅地址" />
+              </div>
+            </div>
+
+            <div id="hydro-link-group-wrapper" class="hydro-link-submit-form__group" style="display: none">
+              <label for="hydro-link-group">申请分组</label>
+              <select id="hydro-link-group" name="groupName">
+                <option value="">默认分组</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">验证信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-email">联系邮箱 <span>*</span></label>
+              <input id="hydro-link-email" name="email" type="email" placeholder="your@email.com" required />
+            </div>
+
+            <div
+              th:if="${theme.config.links?.verify_type == 'email' or theme.config.links?.verify_type == null}"
+              class="hydro-link-submit-form__group"
+            >
+              <label for="hydro-link-verify-code">邮箱验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-link-verify-code" name="verifyCode" type="text" placeholder="请输入邮箱验证码" />
+                <button type="button" id="hydro-link-send-code-btn" class="hydro-links-submit-btn" data-link-send-code>
+                  发送验证码
+                </button>
+              </div>
+            </div>
+
+            <div th:if="${theme.config.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+              <label for="hydro-link-captcha">图形验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-link-captcha" name="captcha" type="text" placeholder="请输入图中字符" />
+                <img id="hydro-link-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="hydro-link-submit-modal__footer">
+        <div class="hydro-link-submit-form__actions">
+          <button type="button" class="hydro-links-submit-btn" data-link-submit-close>取消</button>
+          <button
+            type="submit"
+            form="hydro-link-submit-form"
+            id="hydro-link-submit-btn"
+            class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+          >
+            提交申请
+          </button>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+
+  <!-- 在线修改弹窗 -->
+  <div
+    th:if="${theme.config.links?.enable_submit and theme.config.links?.enable_update}"
+    id="hydro-link-update-modal"
+    class="hydro-link-submit-modal"
+    aria-hidden="true"
+  >
+    <button class="hydro-link-submit-modal__overlay" data-link-update-close aria-label="关闭修改弹窗"></button>
+
+    <div
+      class="hydro-link-submit-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hydro-link-update-title"
+    >
+      <div class="hydro-link-submit-modal__header">
+        <div class="hydro-link-submit-modal__title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m15 5 4 4"></path>
+            <path d="M4 20h4l10-10-4-4L4 16z"></path>
+          </svg>
+          <div>
+            <h3 id="hydro-link-update-title">修改友链信息</h3>
+            <p>请使用原友链邮箱验证身份后提交修改</p>
+          </div>
+        </div>
+
+        <button type="button" class="hydro-link-submit-modal__close" data-link-update-close aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hydro-link-submit-modal__body" data-lenis-prevent>
+        <div id="hydro-link-update-message" class="hydro-link-submit-message" style="display: none"></div>
+
+        <form id="hydro-link-update-form" class="hydro-link-submit-form">
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">原始信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-old-url">原网站地址 <span>*</span></label>
+              <input
+                id="hydro-update-old-url"
+                name="oldUrl"
+                type="url"
+                placeholder="原友链地址 https://example.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更新内容</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-url">新网站地址 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-update-url" name="url" type="url" placeholder="https://example.com" required />
+                <button type="button" id="hydro-link-update-auto-fetch-btn" class="hydro-links-submit-btn">
+                  自动填充
+                </button>
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-name">网站名称 <span>*</span></label>
+                <input id="hydro-update-name" name="displayName" type="text" placeholder="我的博客" required />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-logo">网站图标</label>
+                <input id="hydro-update-logo" name="logo" type="url" placeholder="Logo URL（可选）" />
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-description">网站描述</label>
+              <textarea
+                id="hydro-update-description"
+                name="description"
+                rows="2"
+                placeholder="一句话介绍你的网站（可选）"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更多信息（可选）</div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-page-url">友链页面</label>
+                <input id="hydro-update-page-url" name="linkPageUrl" type="url" placeholder="友链页面 URL" />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-rss-url">RSS 地址</label>
+                <input id="hydro-update-rss-url" name="rssUrl" type="url" placeholder="RSS 订阅地址" />
+              </div>
+            </div>
+
+            <div id="hydro-link-update-group-wrapper" class="hydro-link-submit-form__group" style="display: none">
+              <label for="hydro-link-update-group">申请分组</label>
+              <select id="hydro-link-update-group" name="groupName">
+                <option value="">默认分组</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">验证信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-email">联系邮箱 <span>*</span></label>
+              <input id="hydro-update-email" name="email" type="email" placeholder="your@email.com" required />
+            </div>
+
+            <div
+              th:if="${theme.config.links?.verify_type == 'email' or theme.config.links?.verify_type == null}"
+              class="hydro-link-submit-form__group"
+            >
+              <label for="hydro-update-verify-code">邮箱验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-update-verify-code" name="verifyCode" type="text" placeholder="请输入邮箱验证码" />
+                <button type="button" id="hydro-link-update-send-code-btn" class="hydro-links-submit-btn">
+                  发送验证码
+                </button>
+              </div>
+            </div>
+
+            <div th:if="${theme.config.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+              <label for="hydro-update-captcha">图形验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input id="hydro-update-captcha" name="captcha" type="text" placeholder="请输入图中字符" />
+                <img id="hydro-link-update-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="hydro-link-submit-modal__footer">
+        <div class="hydro-link-submit-form__actions">
+          <button type="button" class="hydro-links-submit-btn" data-link-update-close>取消</button>
+          <button
+            type="submit"
+            form="hydro-link-update-form"
+            id="hydro-link-update-submit-btn"
+            class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+          >
+            提交修改
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    th:if="${theme.config.links?.enable_submit}"
+    id="hydro-link-submit-config"
+    th:attr="data-enable-submit=${theme.config.links?.enable_submit},data-enable-update=${theme.config.links?.enable_update},data-verify-type=${theme.config.links?.verify_type ?: 'email'}"
+    hidden
+  ></div>
 
   <!-- 评论 -->
   <section id="comment" class="hydro-links-comments" th:if="${haloCommentEnabled}">
@@ -144,35 +515,4 @@
       <halo:comment group="plugin.halo.run" kind="Plugin" th:attr="name=${pluginName}" />
     </div>
   </section>
-
-  <!-- 友链页交互 -->
-  <script th:inline="javascript">
-    /* 复制按钮 */
-    document.querySelectorAll("[data-copy]").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var text = btn.dataset.copyText;
-        if (!text) return;
-        navigator.clipboard.writeText(text).then(function () {
-          btn.classList.add("is-copied");
-          setTimeout(function () {
-            btn.classList.remove("is-copied");
-          }, 1500);
-        });
-      });
-    });
-
-    /* 随机访问 */
-    document.querySelectorAll("[data-random-link]").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var links = (btn.dataset.links || "").split(",").filter(Boolean);
-        if (links.length === 0) return;
-        var pick = links[Math.floor(Math.random() * links.length)];
-        window.open(pick, "_blank", "noreferrer");
-      });
-    });
-  </script>
 </include>
