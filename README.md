@@ -37,7 +37,7 @@ dist/halo-theme-hydro-minim-1.0.0.zip
 
 - `跳转链接`：保持原有链接跳转能力，可配置是否新标签打开。
 - `主题内置动作`：支持打开搜索、切换深浅色、返回顶部、复制当前链接、打印页面、打开移动菜单、滚动到评论区。
-- `自定义函数`：在“高级 / 自定义 JavaScript”中注册 `window.HydroMinimActions`，快捷项填写函数名和 JSON 参数。
+- `自定义函数`：在“高级 / 自定义 JavaScript”中注册 `window.HydroMinimActions`，也支持直接填写 `window.LinksSubmit.openSubmitPopup` 这类全局方法路径，快捷项填写函数名和 JSON 参数。
 
 页面规则示例：
 

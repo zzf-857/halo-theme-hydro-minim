@@ -332,7 +332,7 @@ spec:
               name: custom_handler
               label: 自定义函数名
               value: ""
-              help: 在高级设置的自定义 JavaScript 中注册 window.HydroMinimActions 后填写函数名。
+              help: 在高级设置的自定义 JavaScript 中注册 window.HydroMinimActions，或直接填写 window.LinksSubmit.openSubmitPopup 这类方法路径。
             - $formkit: code
               if: "$value.type === 'custom'"
               key: navigation_fab_item_payload
@@ -447,7 +447,7 @@ spec:
                   name: custom_handler
                   label: 自定义函数名
                   value: ""
-                  help: 在高级设置的自定义 JavaScript 中注册 window.HydroMinimActions 后填写函数名。
+                  help: 在高级设置的自定义 JavaScript 中注册 window.HydroMinimActions，或直接填写 window.LinksSubmit.openSubmitPopup 这类方法路径。
                 - $formkit: code
                   if: "$value.type === 'custom'"
                   key: navigation_fab_profile_item_payload
