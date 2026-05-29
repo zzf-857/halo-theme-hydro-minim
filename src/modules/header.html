@@ -10,7 +10,7 @@
     darkNavLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.dark_nav_logo) ? #theme.assets('/brand/hydro-minim-lockup-dark.svg') : theme.config.site.dark_nav_logo},
     logoAlt = ${theme.config.site == null || #strings.isEmpty(theme.config.site.logo_alt) ? site.title : theme.config.site.logo_alt},
     showSearch = ${theme.config.navigation == null or theme.config.navigation.show_search != false},
-    enableBuiltinSearch = ${theme.config.navigation == null or theme.config.navigation.enable_builtin_search != false},
+    searchEntryMode = ${theme.config.navigation == null or #strings.isEmpty(theme.config.navigation.search_entry_mode) ? 'modal' : theme.config.navigation.search_entry_mode},
     allowColorSwitch = ${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false},
     hasSearchWidget = ${pluginFinder.available('PluginSearchWidget')},
     searchLabel = ${theme.config.search?.title ?: '搜索'},
@@ -108,22 +108,12 @@
     </nav>
 
     <div class="hydro-nav__actions">
-      <a
-        th:if="${showSearch and hasSearchWidget}"
-        class="hydro-icon-button"
-        href="javascript:SearchWidget.open()"
-        th:attr="aria-label=${searchLabel},title=${searchLabel}"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-3.5-3.5"></path>
-        </svg>
-      </a>
       <button
-        th:if="${showSearch and not hasSearchWidget and enableBuiltinSearch}"
+        th:if="${showSearch and hasSearchWidget and searchEntryMode != 'page'}"
         class="hydro-icon-button"
         type="button"
-        data-hydro-search-toggle
+        data-hydro-plugin-search-toggle
+        data-hydro-search-entry
         th:attr="aria-label=${searchLabel},title=${searchLabel}"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -131,6 +121,18 @@
           <path d="m20 20-3.5-3.5"></path>
         </svg>
       </button>
+      <a
+        th:if="${showSearch and hasSearchWidget and searchEntryMode == 'page'}"
+        class="hydro-icon-button"
+        th:href="@{/search}"
+        data-hydro-search-entry
+        th:attr="aria-label=${searchLabel},title=${searchLabel}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+      </a>
       <button
         th:if="${allowColorSwitch}"
         class="hydro-icon-button hydro-theme-toggle hydro-nav__theme-toggle"
@@ -249,22 +251,6 @@
         </svg>
       </button>
     </div>
-  </div>
-
-  <div
-    th:if="${showSearch and not hasSearchWidget and enableBuiltinSearch}"
-    class="hydro-search-panel"
-    data-hydro-search-panel
-  >
-    <form th:action="@{/search}" method="get">
-      <input
-        name="keyword"
-        type="search"
-        th:placeholder="${theme.config.search?.placeholder ?: '搜索文章...'}"
-        autocomplete="off"
-      />
-      <input type="hidden" name="limit" th:value="${theme.config.search?.limit ?: 20}" />
-    </form>
   </div>
 </header>
 

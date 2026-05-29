@@ -184,11 +184,16 @@ spec:
           name: show_search
           label: 显示搜索入口
           value: true
-        - $formkit: switch
-          name: enable_builtin_search
-          label: 未安装搜索插件时启用内置搜索页
-          value: true
-          help: 开启后 Header 搜索会跳转到 /search，关闭后仅在安装 PluginSearchWidget 时显示搜索入口。
+        - $formkit: radio
+          name: search_entry_mode
+          label: 搜索入口方式
+          value: modal
+          help: 需要安装并启用 PluginSearchWidget。弹窗搜索调用插件弹窗，页面搜索跳转到 /search。
+          options:
+            - label: 弹窗搜索
+              value: modal
+            - label: 页面搜索
+              value: page
         - $formkit: switch
           name: allow_color_switch
           label: 允许访客切换深浅色

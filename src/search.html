@@ -44,7 +44,7 @@
 
       <form class="hydro-search-form" th:action="@{/search}" method="get">
         <label>
-          <span>Keyword</span>
+          <span th:text="${searchConfig?.keyword_label ?: 'Keyword'}">Keyword</span>
           <input
             name="keyword"
             type="search"

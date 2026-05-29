@@ -171,11 +171,14 @@ async function runBuiltinAction(
       return;
     }
     case "search": {
-      if (typeof win.SearchWidget?.open === "function") {
-        win.SearchWidget.open();
+      const searchEntry = findClickable(dependencies.root, "[data-hydro-search-entry]");
+      if (searchEntry) {
+        searchEntry.click();
         return;
       }
-      findClickable(dependencies.root, "[data-hydro-search-toggle]")?.click();
+      if (typeof win.SearchWidget?.open === "function") {
+        win.SearchWidget.open();
+      }
       return;
     }
     case "theme-toggle":

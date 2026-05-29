@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { initCommentWidgetSkin } from "./comment-widget-skin";
 import { runHydroFabAction, type HydroFabActionDependencies } from "./fab-actions";
+import { initSearchWidgetSkin } from "./search-widget-skin";
 
 import "./styles/main.css";
 
@@ -93,6 +94,9 @@ type SteamGamesResult = {
 declare global {
   interface Window {
     LinksSubmit?: LinksSubmitApi;
+    SearchWidget?: {
+      open?: () => void;
+    };
   }
 }
 
@@ -416,8 +420,7 @@ function initColorScheme() {
 
 function initNavigation() {
   const nav = document.querySelector<HTMLElement>("[data-hydro-nav]");
-  const searchToggle = document.querySelector<HTMLButtonElement>("[data-hydro-search-toggle]");
-  const searchPanel = document.querySelector<HTMLElement>("[data-hydro-search-panel]");
+  const searchToggles = document.querySelectorAll<HTMLButtonElement>("[data-hydro-plugin-search-toggle]");
   const mobileToggle = document.querySelector<HTMLButtonElement>("[data-hydro-mobile-toggle]");
   const mobileMenu = document.querySelector<HTMLElement>("[data-hydro-mobile-menu]");
   type NavMode = "top" | "pill";
@@ -929,11 +932,10 @@ function initNavigation() {
     syncNav(true);
   });
 
-  searchToggle?.addEventListener("click", () => {
-    const isOpen = searchPanel?.classList.toggle("is-open");
-    if (isOpen) {
-      searchPanel?.querySelector<HTMLInputElement>("input")?.focus();
-    }
+  searchToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      window.SearchWidget?.open?.();
+    });
   });
 
   mobileToggle?.addEventListener("click", () => {
@@ -2314,6 +2316,7 @@ initPostShare();
 initPostReadingProgress();
 initPostRelatedCards();
 initCommentWidgetSkin();
+initSearchWidgetSkin();
 
 function initLinkCards() {
   if (!motionEnabled) {

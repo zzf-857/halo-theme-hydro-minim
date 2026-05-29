@@ -33,6 +33,24 @@
   --hydro-theme-transition-x: 50vw;
   --hydro-theme-transition-y: 4rem;
   --hydro-theme-transition-radius: 120vmax;
+  --hydro-search-accent-rgb: var(--hydro-coral-rgb);
+  --hydro-search-selection-bg: rgb(var(--hydro-search-accent-rgb) / 14%);
+  --hydro-search-selection-border: rgb(var(--hydro-search-accent-rgb) / 56%);
+  --hydro-search-highlight-bg: rgb(var(--hydro-search-accent-rgb) / 24%);
+  --hydro-search-highlight-text: rgb(var(--hydro-ink-rgb) / 92%);
+  --halo-search-widget-primary-color: var(--hydro-coral);
+  --halo-search-widget-muted-color: rgb(var(--hydro-ink-rgb) / 52%);
+  --halo-search-widget-content-color: rgb(var(--hydro-ink-rgb) / 86%);
+  --halo-search-widget-hit-bg-color: rgb(var(--hydro-ink-rgb) / 2.5%);
+  --halo-search-widget-modal-bg-color: rgb(var(--hydro-paper-rgb) / 94%);
+  --halo-search-widget-modal-layer-color: rgb(var(--hydro-shadow-rgb) / 34%);
+  --halo-search-widget-base-bg-color: rgb(var(--hydro-paper-rgb) / 92%);
+  --halo-search-widget-divider-color: rgb(var(--hydro-ink-rgb) / 10%);
+  --halo-search-widget-kbd-border-color: rgb(var(--hydro-ink-rgb) / 12%);
+  --halo-search-widget-kbd-shadow: none;
+  --halo-search-widget-base-rounded: 0.56rem;
+  --halo-search-widget-base-font-size: 0.92rem;
+  --halo-search-widget-base-font-family: "Space Mono", monospace;
 }
 
 :root[data-hydro-theme="dark"] {
@@ -53,6 +71,19 @@
   --hydro-image-shade: rgb(0 0 0 / 52%);
   --hydro-code-bg: rgb(255 255 255 / 8%);
   --hydro-code-text: var(--hydro-solid);
+  --hydro-search-selection-bg: rgb(var(--hydro-search-accent-rgb) / 18%);
+  --hydro-search-selection-border: rgb(var(--hydro-search-accent-rgb) / 64%);
+  --hydro-search-highlight-bg: rgb(var(--hydro-search-accent-rgb) / 28%);
+  --hydro-search-highlight-text: rgb(var(--hydro-ink-rgb) / 94%);
+  --halo-search-widget-primary-color: var(--hydro-coral);
+  --halo-search-widget-muted-color: rgb(var(--hydro-ink-rgb) / 58%);
+  --halo-search-widget-content-color: rgb(var(--hydro-ink-rgb) / 88%);
+  --halo-search-widget-hit-bg-color: rgb(var(--hydro-paper-rgb) / 40%);
+  --halo-search-widget-modal-bg-color: rgb(var(--hydro-paper-rgb) / 94%);
+  --halo-search-widget-modal-layer-color: rgb(0 0 0 / 62%);
+  --halo-search-widget-base-bg-color: rgb(var(--hydro-paper-rgb) / 92%);
+  --halo-search-widget-divider-color: rgb(var(--hydro-ink-rgb) / 12%);
+  --halo-search-widget-kbd-border-color: rgb(var(--hydro-ink-rgb) / 16%);
 }
 
 *,
@@ -1017,37 +1048,11 @@ body.hydro-auth-page .returntosite-content a:hover {
   display: block;
 }
 
-.hydro-search-panel {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 1rem;
-  right: 1rem;
-  display: none;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgb(var(--hydro-ink-rgb) / 5%);
-  border-radius: 1rem;
-  background: rgb(var(--hydro-paper-rgb) / 90%);
-  box-shadow: 0 16px 40px rgb(var(--hydro-shadow-rgb) / 10%);
-  backdrop-filter: blur(22px);
-}
-
-.hydro-search-panel.is-open {
-  display: block;
-}
-
-.hydro-search-panel input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--hydro-solid);
-  font-size: 0.875rem;
-}
-
 .hydro-search-page {
   position: relative;
-  min-height: 100vh;
-  padding: 10rem 0 8rem;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: clamp(8rem, 12vw, 10rem) 0 clamp(5rem, 8vw, 7rem);
 }
 
 .hydro-search-page::before {
@@ -1055,24 +1060,25 @@ body.hydro-auth-page .returntosite-content a:hover {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgb(var(--hydro-ink-rgb) / 4%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--hydro-ink-rgb) / 4%) 1px, transparent 1px);
-  background-size: 56px 56px;
+    linear-gradient(rgb(var(--hydro-ink-rgb) / 3.5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--hydro-ink-rgb) / 3.5%) 1px, transparent 1px);
+  background-size: 52px 52px;
   content: "";
   pointer-events: none;
 }
 
 .hydro-search-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.28fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: end;
-  border-bottom: 1px solid var(--hydro-solid);
-  padding-bottom: 2rem;
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 16%);
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 16%);
+  padding: clamp(1.4rem, 3vw, 2rem) 0;
 }
 
 .hydro-search-hero__copy {
-  max-width: 54rem;
+  max-width: 56rem;
 }
 
 .hydro-search-hero__copy p,
@@ -1080,59 +1086,70 @@ body.hydro-auth-page .returntosite-content a:hover {
 .hydro-search-state span,
 .hydro-search-recommendations .hydro-plugin-section__head span {
   margin: 0 0 1rem;
-  color: var(--hydro-muted);
-  font-size: 0.78rem;
-  letter-spacing: 0;
+  color: rgb(var(--hydro-ink-rgb) / 46%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .hydro-search-hero h1 {
   margin: 0;
-  font-size: clamp(3.25rem, 12vw, 8rem);
-  line-height: 0.9;
+  color: rgb(var(--hydro-ink-rgb) / 88%);
+  font-size: clamp(2.45rem, 8vw, 5.4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-wrap: balance;
 }
 
 .hydro-search-hero__copy span {
   display: block;
-  max-width: 42rem;
-  margin-top: 1.25rem;
-  color: var(--hydro-muted);
-  font-size: clamp(1rem, 2vw, 1.25rem);
+  max-width: 38rem;
+  margin-top: 1rem;
+  color: rgb(var(--hydro-ink-rgb) / 58%);
+  font-size: clamp(0.92rem, 1.6vw, 1.08rem);
   line-height: 1.8;
 }
 
 .hydro-search-hero__meta {
   display: grid;
-  min-width: 12rem;
-  border: 1px solid var(--hydro-solid);
+  min-width: 0;
+  border-left: 1px solid rgb(var(--hydro-ink-rgb) / 14%);
   margin: 0;
+  padding-left: clamp(1rem, 2vw, 1.35rem);
 }
 
 .hydro-search-hero__meta div {
-  padding: 1rem;
+  padding: 0.85rem 0;
 }
 
 .hydro-search-hero__meta div + div {
-  border-top: 1px solid var(--hydro-solid);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-search-hero__meta dt {
   margin-bottom: 0.4rem;
-  color: var(--hydro-muted);
+  color: rgb(var(--hydro-ink-rgb) / 44%);
   font-size: 0.7rem;
   text-transform: uppercase;
 }
 
 .hydro-search-hero__meta dd {
   margin: 0;
-  font-size: 1.7rem;
+  color: rgb(var(--hydro-ink-rgb) / 84%);
+  font-size: 1.55rem;
+  font-weight: 800;
 }
 
 .hydro-search-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0;
-  margin: 3rem 0;
+  gap: 0.75rem;
+  margin: clamp(1.8rem, 4vw, 2.7rem) 0;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 13%);
+  border-radius: 0.72rem;
+  padding: 0.72rem;
+  background: rgb(var(--hydro-paper-rgb) / 34%);
 }
 
 .hydro-search-form label {
@@ -1141,23 +1158,34 @@ body.hydro-auth-page .returntosite-content a:hover {
 }
 
 .hydro-search-form label span {
-  border: 1px solid var(--hydro-solid);
-  border-bottom: 0;
-  padding: 0.65rem 1rem;
-  color: var(--hydro-muted);
+  margin-bottom: 0.46rem;
+  color: rgb(var(--hydro-ink-rgb) / 46%);
   font-size: 0.72rem;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .hydro-search-form input[type="search"] {
   width: 100%;
   min-width: 0;
-  border: 1px solid var(--hydro-solid);
+  min-height: 3.35rem;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  border-radius: 0.5rem;
   outline: none;
-  background: rgb(var(--hydro-paper-rgb) / 32%);
-  color: var(--hydro-text);
-  font-size: clamp(1.4rem, 4vw, 3.4rem);
-  padding: 1.1rem 1rem 1.25rem;
+  background: rgb(var(--hydro-paper-rgb) / 42%);
+  color: rgb(var(--hydro-ink-rgb) / 88%);
+  font-size: clamp(1.08rem, 2vw, 1.45rem);
+  padding: 0.85rem 1rem;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hydro-search-form input[type="search"]:focus {
+  border-color: rgb(var(--hydro-ink-rgb) / 28%);
+  background: rgb(var(--hydro-paper-rgb) / 58%);
+  box-shadow: 0 0 0 2px rgb(var(--hydro-ink-rgb) / 4%);
 }
 
 .hydro-search-form input[type="search"]::placeholder {
@@ -1170,15 +1198,28 @@ body.hydro-auth-page .returntosite-content a:hover {
   justify-content: center;
   align-self: end;
   gap: 0.55rem;
-  min-width: 8.5rem;
-  min-height: 5.8rem;
+  min-width: 7.8rem;
+  min-height: 3.35rem;
   border: 1px solid var(--hydro-solid);
-  border-left: 0;
+  border-radius: 0.5rem;
   background: var(--hydro-solid);
   color: var(--hydro-solid-contrast);
   cursor: pointer;
   font-size: 0.9rem;
-  padding: 0 1.5rem;
+  font-weight: 800;
+  padding: 0 1.35rem;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hydro-search-form button:hover,
+.hydro-search-form button:focus-visible {
+  opacity: 0.88;
+}
+
+.hydro-search-form button:active {
+  transform: translateY(1px);
 }
 
 .hydro-search-form button svg {
@@ -1192,7 +1233,7 @@ body.hydro-auth-page .returntosite-content a:hover {
   display: flex;
   gap: 0.75rem;
   align-items: baseline;
-  border-bottom: 1px solid var(--hydro-faint);
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
   margin-bottom: 1.25rem;
   padding-bottom: 1rem;
 }
@@ -1208,25 +1249,38 @@ body.hydro-auth-page .returntosite-content a:hover {
 .hydro-search-results {
   display: grid;
   gap: 0;
-  border-top: 1px solid var(--hydro-solid);
+  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 14%);
 }
 
 .hydro-search-result {
-  border-bottom: 1px solid var(--hydro-solid);
+  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
 }
 
 .hydro-search-result a {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) 3rem;
-  gap: 1.25rem;
+  grid-template-columns: 3.2rem minmax(0, 1fr) 2.75rem;
+  gap: clamp(0.8rem, 2vw, 1.25rem);
   align-items: center;
-  min-height: 8.5rem;
-  padding: 1.15rem 0;
+  min-height: 6.6rem;
+  border-left: 2px solid transparent;
+  padding: 1rem 0.25rem;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    padding-inline 0.2s ease;
+}
+
+.hydro-search-result a:hover,
+.hydro-search-result a:focus-visible {
+  border-left-color: var(--hydro-search-selection-border);
+  background: var(--hydro-search-selection-bg);
+  padding-inline: 0.75rem;
 }
 
 .hydro-search-result__index {
-  color: var(--hydro-muted);
-  font-size: 0.9rem;
+  color: rgb(var(--hydro-ink-rgb) / 38%);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .hydro-search-result__body {
@@ -1236,14 +1290,15 @@ body.hydro-auth-page .returntosite-content a:hover {
 }
 
 .hydro-search-result__body strong {
-  font-size: clamp(1.15rem, 2.6vw, 2rem);
-  line-height: 1.25;
+  color: rgb(var(--hydro-ink-rgb) / 86%);
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  line-height: 1.35;
 }
 
 .hydro-search-result__body span {
   display: -webkit-box;
   overflow: hidden;
-  color: var(--hydro-muted);
+  color: rgb(var(--hydro-ink-rgb) / 58%);
   line-height: 1.7;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -1251,24 +1306,29 @@ body.hydro-auth-page .returntosite-content a:hover {
 
 .hydro-search-result__body mark,
 .hydro-search-result__body b {
-  background: rgb(var(--hydro-coral-rgb) / 22%);
-  color: var(--hydro-text);
-  font-weight: 700;
+  border-radius: 0.2rem;
+  background: var(--hydro-search-highlight-bg);
+  box-shadow: 0 0 0 1px rgb(var(--hydro-search-accent-rgb) / 18%) inset;
+  color: var(--hydro-search-highlight-text);
+  font-weight: 800;
+  padding: 0.02em 0.18em;
 }
 
 .hydro-search-result__body time {
-  color: var(--hydro-muted);
-  font-size: 0.8rem;
+  color: rgb(var(--hydro-ink-rgb) / 42%);
+  font-size: 0.74rem;
 }
 
 .hydro-search-result__arrow {
   display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.35rem;
+  height: 2.35rem;
   place-items: center;
-  border: 1px solid var(--hydro-solid);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 14%);
   border-radius: 50%;
+  color: rgb(var(--hydro-ink-rgb) / 62%);
   transition:
+    border-color 0.25s ease,
     background-color 0.25s ease,
     color 0.25s ease,
     transform 0.25s ease;
@@ -1283,6 +1343,7 @@ body.hydro-auth-page .returntosite-content a:hover {
 
 .hydro-search-result a:hover .hydro-search-result__arrow,
 .hydro-search-result a:focus-visible .hydro-search-result__arrow {
+  border-color: var(--hydro-solid);
   background: var(--hydro-solid);
   color: var(--hydro-solid-contrast);
   transform: rotate(8deg);
@@ -1291,9 +1352,11 @@ body.hydro-auth-page .returntosite-content a:hover {
 .hydro-search-state {
   display: grid;
   gap: 0.75rem;
-  border: 1px solid var(--hydro-solid);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 13%);
+  border-radius: 0.72rem;
   margin: 2rem 0;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 1.8rem);
+  background: rgb(var(--hydro-paper-rgb) / 28%);
 }
 
 .hydro-search-state span {
@@ -1302,12 +1365,13 @@ body.hydro-auth-page .returntosite-content a:hover {
 
 .hydro-search-state strong {
   max-width: 42rem;
-  font-size: clamp(1.2rem, 3vw, 2.4rem);
-  line-height: 1.2;
+  color: rgb(var(--hydro-ink-rgb) / 78%);
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  line-height: 1.45;
 }
 
 .hydro-search-recommendations {
-  margin-top: 3rem;
+  margin-top: clamp(2.4rem, 5vw, 3.6rem);
 }
 
 .hydro-dropdown {
@@ -4431,13 +4495,6 @@ html.lenis body {
     display: none;
   }
 
-  .hydro-search-panel {
-    right: 0;
-    left: 0;
-    margin-inline: auto;
-    min-width: min(80vw, 18rem);
-  }
-
   .hydro-search-page {
     padding: 8rem 0 6rem;
   }
@@ -4452,11 +4509,16 @@ html.lenis body {
     width: 100%;
     min-width: 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+    border-left: 0;
+    padding-top: 0.75rem;
+    padding-left: 0;
   }
 
   .hydro-search-hero__meta div + div {
     border-top: 0;
-    border-left: 1px solid var(--hydro-solid);
+    border-left: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+    padding-left: 1rem;
   }
 
   .hydro-hero__grid,
@@ -4563,8 +4625,6 @@ html.lenis body {
 
   .hydro-search-form button {
     min-height: 3.25rem;
-    border-top: 0;
-    border-left: 1px solid var(--hydro-solid);
   }
 
   .hydro-search-result a {
@@ -7159,21 +7219,6 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
     opacity: 0;
     pointer-events: none;
     transform: translateY(0.75rem);
-  }
-
-  .hydro-search-panel {
-    position: fixed;
-    top: calc(4.5rem + env(safe-area-inset-top));
-    right: 1rem;
-    left: 1rem;
-    min-width: 0;
-    padding: 1rem;
-    border-radius: 1rem;
-  }
-
-  .hydro-search-panel input {
-    min-height: 2.75rem;
-    font-size: 1rem;
   }
 
   .hydro-hero {
