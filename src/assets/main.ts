@@ -2465,6 +2465,102 @@ function initMomentActions() {
       button.setAttribute("aria-expanded", String(nextExpanded));
     });
   });
+
+  const poster = document.querySelector<HTMLElement>("[data-hydro-moment-poster]");
+  const posterOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-hydro-moment-poster-open]"));
+  const posterCloseButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-hydro-moment-poster-close]"),
+  );
+  const posterDialog = poster?.querySelector<HTMLElement>(".hydro-moment-poster__dialog") ?? null;
+  const posterInitialFocus = poster?.querySelector<HTMLButtonElement>("[data-hydro-poster-download]") ?? null;
+  const posterFocusableSelector = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(",");
+  let posterTrigger: HTMLButtonElement | null = null;
+  let posterCloseTimer: number | null = null;
+
+  const getPosterFocusable = () =>
+    Array.from(posterDialog?.querySelectorAll<HTMLElement>(posterFocusableSelector) ?? []).filter(
+      (element) => element.getClientRects().length > 0,
+    );
+
+  const syncPosterState = (expanded: boolean) => {
+    if (!poster) return;
+    if (posterCloseTimer !== null) {
+      window.clearTimeout(posterCloseTimer);
+      posterCloseTimer = null;
+    }
+    if (expanded) {
+      poster.hidden = false;
+      poster.setAttribute("aria-hidden", "false");
+      document.body.classList.add("hydro-menu-lock");
+      getHydroLenis()?.stop?.();
+      window.requestAnimationFrame(() => {
+        poster.classList.add("is-open");
+        posterInitialFocus?.focus({ preventScroll: true });
+      });
+    } else {
+      poster.classList.remove("is-open");
+      poster.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("hydro-menu-lock");
+      getHydroLenis()?.start?.();
+      posterCloseTimer = window.setTimeout(
+        () => {
+          poster.hidden = true;
+          posterCloseTimer = null;
+        },
+        prefersReducedMotion.matches || !motionEnabled ? 0 : 240,
+      );
+      posterTrigger?.focus({ preventScroll: true });
+    }
+    posterOpenButtons.forEach((button) => {
+      button.classList.toggle("is-active", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+    });
+  };
+
+  posterOpenButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const expanded = poster?.hidden !== false;
+      posterTrigger = button;
+      syncPosterState(expanded);
+    });
+  });
+
+  posterCloseButtons.forEach((button) => {
+    button.addEventListener("click", () => syncPosterState(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (poster?.hidden !== false) return;
+    if (event.key === "Escape") {
+      syncPosterState(false);
+      return;
+    }
+    if (event.key !== "Tab") return;
+
+    const focusable = getPosterFocusable();
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
 }
 
 function initLightbox() {
@@ -2548,57 +2644,156 @@ function toAbsoluteShareUrl(value: string | undefined) {
   }
 }
 
-function initPosterShare() {
-  const page = document.querySelector<HTMLElement>("[data-hydro-poster-page]");
-  if (!page) return;
-  const copiedText = page.dataset.copiedText || document.body.dataset.shareCopiedText || "已复制";
-  const copyPromptTitle = page.dataset.copyPromptTitle || document.body.dataset.shareCopyPromptTitle || "复制链接";
-  const qrServiceUrl = document.body.dataset.qrServiceUrl || "https://api.qrserver.com/v1/create-qr-code/";
+function normalizePosterFilename(value: string | undefined) {
+  const filename = (value || "hydro-moment-poster.png")
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, "-")
+    .replace(/\s+/g, "-");
+  return filename.toLowerCase().endsWith(".png") ? filename : `${filename}.png`;
+}
 
-  page.querySelectorAll<HTMLImageElement>("[data-hydro-poster-qr]").forEach((img) => {
-    const shareUrl = toAbsoluteShareUrl(img.dataset.url);
-    const encoded = encodeURIComponent(shareUrl);
-    const separator = qrServiceUrl.includes("?") ? "&" : "?";
-    img.src = `${qrServiceUrl}${separator}size=220x220&margin=12&data=${encoded}`;
+function inlinePosterComputedStyles(source: Element, target: Element) {
+  const computed = window.getComputedStyle(source);
+  const targetElement = target as HTMLElement;
+  for (let index = 0; index < computed.length; index += 1) {
+    const property = computed.item(index);
+    const value = computed.getPropertyValue(property);
+    if (value.includes("url(")) {
+      continue;
+    }
+    targetElement.style.setProperty(property, value, computed.getPropertyPriority(property));
+  }
+
+  Array.from(source.children).forEach((sourceChild, index) => {
+    const targetChild = target.children.item(index);
+    if (targetChild) {
+      inlinePosterComputedStyles(sourceChild, targetChild);
+    }
   });
+}
 
-  page.querySelectorAll<HTMLAnchorElement>("[data-hydro-poster-url]").forEach((anchor) => {
-    const shareUrl = toAbsoluteShareUrl(anchor.getAttribute("href") || anchor.textContent || "");
-    anchor.href = shareUrl;
-    anchor.textContent = shareUrl;
-  });
-
-  page.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-copy]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const shareUrl = toAbsoluteShareUrl(button.dataset.url);
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        const label = button.textContent || "复制链接";
-        button.textContent = copiedText;
-        button.classList.add("is-copied");
-        window.setTimeout(() => {
-          button.textContent = label;
-          button.classList.remove("is-copied");
-        }, 1400);
-      } catch {
-        window.prompt(copyPromptTitle, shareUrl);
-      }
+function createPosterExportClone(card: HTMLElement, width: number, height: number) {
+  const clone = card.cloneNode(true) as HTMLElement;
+  inlinePosterComputedStyles(card, clone);
+  clone
+    .querySelectorAll("audio, canvas, embed, iframe, img, object, picture, script, source, style, video")
+    .forEach((node) => {
+      node.remove();
     });
+  clone.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+  clone.style.width = `${width}px`;
+  clone.style.height = `${height}px`;
+  clone.style.maxWidth = "none";
+  clone.style.margin = "0";
+  clone.style.transform = "none";
+  clone.style.animation = "none";
+  clone.style.transition = "none";
+  clone.querySelectorAll<HTMLElement>("*").forEach((element) => {
+    element.style.animation = "none";
+    element.style.transition = "none";
   });
+  return clone;
+}
 
-  page.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-print]").forEach((button) => {
-    button.addEventListener("click", () => window.print());
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function loadImageFromUrl(url: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("Poster image failed to load"));
+    image.src = url;
   });
+}
 
-  page.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-back]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (window.history.length > 1) {
-        window.history.back();
+function canvasToPngBlob(canvas: HTMLCanvasElement) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
         return;
       }
-      window.location.href = "/";
+      reject(new Error("Poster canvas export failed"));
+    }, "image/png");
+  });
+}
+
+async function downloadPosterCard(card: HTMLElement, filename: string) {
+  const rect = card.getBoundingClientRect();
+  const width = Math.ceil(rect.width || card.offsetWidth);
+  const height = Math.ceil(rect.height || card.offsetHeight);
+  if (width <= 0 || height <= 0) {
+    throw new Error("Poster card has no exportable size");
+  }
+
+  const clone = createPosterExportClone(card, width, height);
+  const serialized = new XMLSerializer().serializeToString(clone);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject width="100%" height="100%">${serialized}</foreignObject></svg>`;
+  const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  try {
+    const image = await loadImageFromUrl(svgUrl);
+    const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 2));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.ceil(width * scale);
+    canvas.height = Math.ceil(height * scale);
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("Poster canvas context is unavailable");
+    }
+    context.scale(scale, scale);
+    context.drawImage(image, 0, 0, width, height);
+    const pngBlob = await canvasToPngBlob(canvas);
+    downloadBlob(pngBlob, filename);
+  } catch (error) {
+    console.warn("[Hydro] Poster PNG export failed, downloading SVG fallback.", error);
+    downloadBlob(svgBlob, filename.replace(/\.png$/i, ".svg"));
+  } finally {
+    URL.revokeObjectURL(svgUrl);
+  }
+}
+
+function initPosterShareScope(scope: HTMLElement) {
+  scope.querySelectorAll<HTMLElement>("[data-hydro-poster-url-text]").forEach((element) => {
+    element.textContent = toAbsoluteShareUrl(element.dataset.url || element.textContent || "");
+  });
+
+  scope.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-download]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const card = scope.querySelector<HTMLElement>("[data-hydro-poster-card]");
+      if (!card) {
+        return;
+      }
+
+      button.disabled = true;
+      button.classList.add("is-downloading");
+      button.setAttribute("aria-busy", "true");
+      try {
+        await downloadPosterCard(card, normalizePosterFilename(button.dataset.filename));
+      } finally {
+        button.disabled = false;
+        button.classList.remove("is-downloading");
+        button.removeAttribute("aria-busy");
+      }
     });
   });
+}
+
+function initPosterShare() {
+  const scopes = new Set<HTMLElement>(Array.from(document.querySelectorAll<HTMLElement>("[data-hydro-poster-scope]")));
+  scopes.forEach((scope) => initPosterShareScope(scope));
 }
 
 function initHydroPluginFilters() {

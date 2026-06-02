@@ -1238,33 +1238,9 @@ spec:
           label: 瞬间卡片标签
           value: Moment
         - $formkit: text
-          name: qr_alt
-          label: 二维码替代文本
-          value: 分享二维码
-        - $formkit: text
-          name: panel_eyebrow
-          label: 操作面板标签
-          value: Share
-        - $formkit: text
-          name: panel_title
-          label: 操作面板标题
-          value: 生成与分享
-        - $formkit: textarea
-          name: panel_description
-          label: 操作面板描述
-          value: 二维码会在浏览器中按当前链接生成；如果二维码服务无法访问，也可以直接复制链接分享。
-        - $formkit: text
-          name: copy_label
-          label: 复制按钮文案
-          value: 复制链接
-        - $formkit: text
-          name: print_label
-          label: 打印按钮文案
-          value: 打印/保存
-        - $formkit: text
-          name: back_label
-          label: 返回按钮文案
-          value: 返回上一页
+          name: download_label
+          label: 下载按钮文案
+          value: 下载海报
         - $formkit: text
           name: empty_title
           label: 空状态标题
@@ -1273,14 +1249,6 @@ spec:
           name: empty_description
           label: 空状态描述
           value: 请检查分享类型和内容名称是否正确。
-        - $formkit: text
-          name: copied_text
-          label: 复制成功文案
-          value: 已复制
-        - $formkit: text
-          name: copy_prompt_title
-          label: 复制失败提示标题
-          value: 复制链接
     - group: links
       label: 友链
       formSchema:
@@ -2110,11 +2078,6 @@ spec:
           label: 自定义 JavaScript
           language: javascript
           value: ""
-        - $formkit: url
-          name: qr_service_url
-          label: 海报二维码服务
-          value: https://api.qrserver.com/v1/create-qr-code/
-          help: 需要支持 size、margin、data 查询参数。
         - $formkit: number
           name: steam_cache_ttl_minutes
           label: Steam 前端缓存分钟数

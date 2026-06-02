@@ -36,14 +36,11 @@
       data-theme-to-dark-label=${theme.config.appearance?.theme_to_dark_label ?: '切换为深色模式'},
       data-allow-color-switch=${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false},
       data-back-to-top-threshold=${theme.config.navigation?.back_to_top_threshold ?: 100},
-      data-share-copied-text=${theme.config.share?.copied_text ?: '已复制'},
-      data-share-copy-prompt-title=${theme.config.share?.copy_prompt_title ?: '复制链接'},
       data-post-share-copied-text=${theme.config.post?.share_copied_text ?: '已复制'},
       data-post-share-copy-prompt-title=${theme.config.post?.copy_prompt_title ?: '复制链接'},
       data-post-upvote-error-text=${theme.config.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
       data-moment-upvote-error-text=${theme.config.moments?.upvote_error_text ?: (theme.config.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
-      data-doc-toc-empty-text=${theme.config.docs?.toc_empty_text ?: '无目录'},
-      data-qr-service-url=${theme.config.advanced?.qr_service_url ?: 'https://api.qrserver.com/v1/create-qr-code/'}
+      data-doc-toc-empty-text=${theme.config.docs?.toc_empty_text ?: '无目录'}
     "
   >
     <div

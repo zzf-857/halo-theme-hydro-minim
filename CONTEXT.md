@@ -10,6 +10,9 @@
 - Cloud tags use stable pseudo-random placement derived from label text, loop index, display-name length, and post count. Their size should respond to display-name length and post count so short labels stay light while longer labels get larger cloud bodies.
 - Desktop tag clouds use a percentage-based sky coordinate system (`--tag-x`, `--tag-y`) with lightweight collision scoring for scattered floating placement. Small screens fall back to readable flow layout.
 - Dark mode for tag sky remains low contrast and misty. It must not turn into pure black, neon weather UI, or a decorative illustrated scene.
+- Route-free moment poster means the moment detail page owns its own poster modal. The share entry opens an in-page dialog instead of navigating to a synthetic `/posterShare/{type}/{name}` route.
+- Poster scope means a share-poster surface that can render a finished poster card locally and export it as a downloadable image. In Hydro-Minim, moment poster scope lives inside the moment detail modal.
+- Poster image means the visible poster card itself, not a utility panel. Auxiliary controls should stay minimal: download plus an icon-only close affordance for dialog accessibility.
 
 ## Current Decisions
 
@@ -20,3 +23,6 @@
 - Cloud motion layers include a soft arrival, inner SVG cloud mist reveal, cloud outline drawing, delayed text/count reveal, and slow orbital drifting. Avoid bounce or elastic motion; the material is mist, not rubber.
 - The `src/assets/tag-cloud.ts` module owns desktop cloud placement. Thymeleaf still outputs semantic tag links and CSS sizing variables; JavaScript refines coordinates after real styles are available.
 - Cloud tag hover and focus feedback must keep the outer link hit area stable. Do not move the anchor itself on hover; emphasize the inner SVG cloud, text color, stroke, and shadow instead.
+- Moment share poster must not rely on registering a custom Halo theme route for `/posterShare/moment/{name}`. Use the existing `/moments/{name}` route and reveal the embedded poster dialog there.
+- Embedded moment poster content must stay poster-first: no copy-link, print, close-text, or share-operation panel in the modal.
+- Moment poster download is dependency-free. It exports the rendered poster card through SVG `foreignObject` and canvas to PNG, with an SVG fallback if PNG rendering fails.
