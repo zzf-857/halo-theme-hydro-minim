@@ -1515,6 +1515,160 @@ function slugifyHeading(text: string, index: number) {
   return base ? `post-${base}` : `post-section-${index + 1}`;
 }
 
+type PostTocNode = {
+  children: PostTocNode[];
+  depth: number;
+  heading: HTMLElement;
+  id: string;
+  title: string;
+};
+
+function createPostHeadingAnchor(heading: HTMLElement, id: string) {
+  if (heading.querySelector(":scope > .hydro-post-heading-anchor")) {
+    return;
+  }
+
+  const anchor = document.createElement("a");
+  anchor.className = "hydro-post-heading-anchor";
+  anchor.href = `#${id}`;
+  anchor.setAttribute("aria-label", "复制此段落链接");
+  anchor.textContent = "#";
+  anchor.addEventListener("click", async (event) => {
+    event.preventDefault();
+    scrollToElement(heading);
+    const url = new URL(window.location.href);
+    url.hash = id;
+    history.replaceState(null, "", url);
+    try {
+      await navigator.clipboard.writeText(url.href);
+      anchor.classList.add("is-copied");
+      window.setTimeout(() => anchor.classList.remove("is-copied"), 900);
+    } catch {
+      // Hash navigation still works when clipboard access is blocked.
+    }
+  });
+
+  heading.append(anchor);
+}
+
+function buildPostTocTree(headings: HTMLElement[]): PostTocNode[] {
+  const roots: PostTocNode[] = [];
+  const stack: PostTocNode[] = [];
+
+  headings.forEach((heading) => {
+    const anchor = heading.querySelector(".hydro-post-heading-anchor");
+    const title = Array.from(heading.childNodes)
+      .filter((node) => node !== anchor)
+      .map((node) => node.textContent ?? "")
+      .join("")
+      .trim();
+    const depth = Number.parseInt(heading.tagName.replace("H", ""), 10);
+    const node: PostTocNode = {
+      children: [],
+      depth,
+      heading,
+      id: heading.id,
+      title,
+    };
+
+    while (stack.length > 0 && stack[stack.length - 1].depth >= depth) {
+      stack.pop();
+    }
+
+    const parent = stack[stack.length - 1];
+    if (parent) {
+      parent.children.push(node);
+    } else {
+      roots.push(node);
+    }
+
+    stack.push(node);
+  });
+
+  return roots;
+}
+
+function setPostTocActive(container: HTMLElement, id: string) {
+  container.querySelectorAll<HTMLElement>(".hydro-post-toc__item").forEach((item) => {
+    item.classList.remove("is-active", "has-active");
+  });
+
+  const activeItem = container.querySelector<HTMLElement>(`.hydro-post-toc__item[data-target-id="${CSS.escape(id)}"]`);
+  if (!activeItem) {
+    return;
+  }
+
+  activeItem.classList.add("is-active");
+  let parent = activeItem.parentElement?.closest<HTMLElement>(".hydro-post-toc__item");
+  while (parent) {
+    parent.classList.add("has-active", "is-expanded");
+    const toggle = parent.querySelector<HTMLButtonElement>(":scope > .hydro-post-toc__row > .hydro-post-toc__toggle");
+    toggle?.setAttribute("aria-expanded", "true");
+    parent = parent.parentElement?.closest<HTMLElement>(".hydro-post-toc__item") ?? null;
+  }
+
+  activeItem.scrollIntoView({ block: "nearest" });
+}
+
+function renderPostTocNodes(nodes: PostTocNode[], linkMap: Map<string, HTMLAnchorElement>) {
+  const list = document.createElement("ol");
+  list.className = "hydro-post-toc__list";
+
+  nodes.forEach((node) => {
+    const item = document.createElement("li");
+    item.className = "hydro-post-toc__item";
+    item.dataset.depth = String(node.depth);
+    item.dataset.targetId = node.id;
+
+    const row = document.createElement("div");
+    row.className = "hydro-post-toc__row";
+
+    const toggle = document.createElement("button");
+    toggle.className = "hydro-post-toc__toggle";
+    toggle.type = "button";
+    toggle.setAttribute("aria-label", `展开 ${node.title}`);
+    toggle.setAttribute("aria-expanded", node.children.length > 0 ? "true" : "false");
+    toggle.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"></path></svg>';
+
+    if (node.children.length === 0) {
+      toggle.hidden = true;
+      toggle.disabled = true;
+    } else {
+      item.classList.add("is-expanded");
+      toggle.addEventListener("click", () => {
+        const expanded = !item.classList.contains("is-expanded");
+        item.classList.toggle("is-expanded", expanded);
+        toggle.setAttribute("aria-expanded", String(expanded));
+      });
+    }
+
+    const link = document.createElement("a");
+    link.className = "hydro-post-toc__link";
+    link.href = `#${node.id}`;
+    link.dataset.depth = String(node.depth);
+    link.textContent = node.title;
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      scrollToElement(node.heading);
+      history.replaceState(null, "", `#${node.id}`);
+      node.heading.classList.add("toc-highlight");
+      window.setTimeout(() => node.heading.classList.remove("toc-highlight"), 1400);
+    });
+
+    row.append(toggle, link);
+    item.append(row);
+    linkMap.set(node.id, link);
+
+    if (node.children.length > 0) {
+      item.append(renderPostTocNodes(node.children, linkMap));
+    }
+
+    list.append(item);
+  });
+
+  return list;
+}
+
 function initPostToc() {
   const page = document.querySelector<HTMLElement>(".hydro-post-page");
   if (!page || !readBooleanData(page.dataset.postEnableToc)) {
@@ -1529,7 +1683,7 @@ function initPostToc() {
     return;
   }
 
-  const headings = Array.from(content.querySelectorAll<HTMLElement>("h1, h2, h3, h4")).filter((heading) => {
+  const headings = Array.from(content.querySelectorAll<HTMLElement>("h2, h3, h4, h5")).filter((heading) => {
     return (heading.textContent ?? "").trim().length > 0;
   });
 
@@ -1558,25 +1712,16 @@ function initPostToc() {
 
     usedIds.add(resolvedId);
     heading.id = resolvedId;
-
-    const link = document.createElement("a");
-    link.className = "hydro-post-toc__link";
-    link.href = `#${resolvedId}`;
-    link.dataset.depth = heading.tagName.replace("H", "");
-    link.textContent = (heading.textContent ?? "").trim();
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      scrollToElement(heading);
-    });
-
-    tocContainer.append(link);
-    linkMap.set(resolvedId, link);
+    createPostHeadingAnchor(heading, resolvedId);
   });
+
+  tocContainer.append(renderPostTocNodes(buildPostTocTree(headings), linkMap));
 
   const activateLink = (id: string) => {
     linkMap.forEach((link, key) => {
       link.classList.toggle("is-active", key === id);
     });
+    setPostTocActive(tocContainer, id);
   };
 
   const firstId = headings[0].id;
@@ -1604,6 +1749,71 @@ function initPostToc() {
   headings.forEach((heading) => observer.observe(heading));
 }
 
+function initPostContentEnhancements() {
+  const page = document.querySelector<HTMLElement>(".hydro-post-page");
+  const content = page?.querySelector<HTMLElement>("[data-post-content]");
+  if (!page || !content) {
+    return;
+  }
+
+  content.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+    const code = pre.querySelector<HTMLElement>("code");
+    const languageClass = Array.from(code?.classList ?? []).find((className) => className.startsWith("language-"));
+    const language = pre.dataset.language || languageClass?.replace("language-", "");
+    if (language && !pre.dataset.language) {
+      pre.dataset.language = language;
+    }
+    pre.setAttribute("tabindex", "0");
+  });
+
+  content.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
+    if (table.parentElement?.classList.contains("hydro-post-table-wrap")) {
+      return;
+    }
+    const wrapper = document.createElement("div");
+    wrapper.className = "hydro-post-table-wrap";
+    table.parentNode?.insertBefore(wrapper, table);
+    wrapper.append(table);
+  });
+
+  content.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((link) => {
+    const href = link.getAttribute("href") || "";
+    const isExternal =
+      /^https?:\/\//i.test(href) && new URL(href, window.location.href).origin !== window.location.origin;
+    if (isExternal) {
+      link.target = link.target || "_blank";
+      link.rel = link.rel || "noopener noreferrer";
+    }
+  });
+
+  if (!readBooleanData(page.dataset.postEnableLightbox, lightboxEnabled)) {
+    return;
+  }
+
+  const lightboxImages = Array.from(content.querySelectorAll<HTMLImageElement>("img")).filter((image) => {
+    return !image.closest("a") && !image.classList.contains("icon") && !image.classList.contains("no-lightbox");
+  });
+
+  lightboxImages.forEach((image) => {
+    image.dataset.lightboxTrigger = "";
+    image.dataset.src = image.currentSrc || image.src;
+    image.dataset.alt = image.alt || "";
+    const caption = image.closest("figure")?.querySelector("figcaption")?.textContent?.trim();
+    if (caption) {
+      image.dataset.caption = caption;
+    }
+    image.setAttribute("role", "button");
+    image.setAttribute("tabindex", "0");
+    image.setAttribute("aria-label", image.alt ? `查看图片：${image.alt}` : "查看图片");
+    image.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        image.click();
+      }
+    });
+  });
+}
+
 function initPostReadingProgress() {
   const page = document.querySelector<HTMLElement>(".hydro-post-page");
   if (!page || !readBooleanData(page.dataset.postEnableReadingProgress)) {
@@ -1611,6 +1821,7 @@ function initPostReadingProgress() {
   }
 
   const progressBar = page.querySelector<HTMLElement>("[data-post-reading-progress]");
+  const progressPercent = page.querySelector<HTMLElement>("[data-post-reading-percent]");
   const content = page.querySelector<HTMLElement>("#post-content");
   if (!progressBar || !content) {
     return;
@@ -1622,7 +1833,11 @@ function initPostReadingProgress() {
     const total = rect.height + viewportHeight * 0.35;
     const passed = Math.max(0, Math.min(total, viewportHeight * 0.35 - rect.top));
     const progress = total <= 0 ? 0 : (passed / total) * 100;
-    progressBar.style.width = `${Math.max(0, Math.min(100, progress)).toFixed(2)}%`;
+    const safeProgress = Math.max(0, Math.min(100, progress));
+    progressBar.style.width = `${safeProgress.toFixed(2)}%`;
+    if (progressPercent) {
+      progressPercent.textContent = `${Math.round(safeProgress)}%`;
+    }
   };
 
   updateProgress();
@@ -1638,6 +1853,11 @@ function initPostShare() {
 
   const shareButtons = Array.from(page.querySelectorAll<HTMLButtonElement>("[data-post-action='share']"));
   if (shareButtons.length === 0) {
+    return;
+  }
+
+  const linkShareButtons = shareButtons.filter((button) => !button.hasAttribute("data-hydro-poster-open"));
+  if (linkShareButtons.length === 0) {
     return;
   }
 
@@ -1666,7 +1886,7 @@ function initPostShare() {
     }
   };
 
-  shareButtons.forEach((button) => {
+  linkShareButtons.forEach((button) => {
     button.addEventListener("click", async () => {
       const url = window.location.href;
       if (typeof navigator.share === "function") {
@@ -1685,6 +1905,164 @@ function initPostShare() {
       }
       await copyLink(button, url);
     });
+  });
+}
+
+function initPosterDialogs() {
+  const dialogs = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-hydro-poster-dialog], [data-hydro-moment-poster]"),
+  );
+  if (dialogs.length === 0) {
+    return;
+  }
+
+  const focusableSelector = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(",");
+  const closeDelay = prefersReducedMotion.matches || !motionEnabled ? 0 : 240;
+  let activeDialog: HTMLElement | null = null;
+  let activeTrigger: HTMLButtonElement | null = null;
+  const closeTimers = new WeakMap<HTMLElement, number>();
+
+  const getDialogById = (id: string | undefined) => {
+    if (!id) {
+      return dialogs.length === 1 ? dialogs[0] : null;
+    }
+    return dialogs.find((dialog) => dialog.id === id) ?? null;
+  };
+
+  const getOpenButtons = (dialog: HTMLElement) =>
+    Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-open], [data-hydro-moment-poster-open]"),
+    ).filter(
+      (button) => getDialogById(button.getAttribute("aria-controls") || button.dataset.hydroPosterTarget) === dialog,
+    );
+
+  const getCloseButtons = (dialog: HTMLElement) =>
+    Array.from(
+      dialog.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-close], [data-hydro-moment-poster-close]"),
+    );
+
+  const getFocusable = (dialog: HTMLElement) =>
+    Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+      (element) => element.getClientRects().length > 0,
+    );
+
+  const setOpenButtonState = (dialog: HTMLElement, expanded: boolean) => {
+    getOpenButtons(dialog).forEach((button) => {
+      button.classList.toggle("is-active", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+    });
+  };
+
+  const closeDialog = (dialog: HTMLElement, restoreFocus = true) => {
+    const timer = closeTimers.get(dialog);
+    if (timer !== undefined) {
+      window.clearTimeout(timer);
+      closeTimers.delete(dialog);
+    }
+
+    dialog.classList.remove("is-open");
+    dialog.setAttribute("aria-hidden", "true");
+    setOpenButtonState(dialog, false);
+    if (activeDialog === dialog) {
+      activeDialog = null;
+      document.body.classList.remove("hydro-menu-lock");
+      getHydroLenis()?.start?.();
+    }
+
+    const nextTimer = window.setTimeout(() => {
+      dialog.hidden = true;
+      closeTimers.delete(dialog);
+    }, closeDelay);
+    closeTimers.set(dialog, nextTimer);
+
+    if (restoreFocus) {
+      activeTrigger?.focus({ preventScroll: true });
+    }
+  };
+
+  const openDialog = (dialog: HTMLElement, trigger: HTMLButtonElement) => {
+    if (activeDialog && activeDialog !== dialog) {
+      closeDialog(activeDialog, false);
+    }
+
+    const timer = closeTimers.get(dialog);
+    if (timer !== undefined) {
+      window.clearTimeout(timer);
+      closeTimers.delete(dialog);
+    }
+
+    activeDialog = dialog;
+    activeTrigger = trigger;
+    dialog.hidden = false;
+    dialog.setAttribute("aria-hidden", "false");
+    document.body.classList.add("hydro-menu-lock");
+    getHydroLenis()?.stop?.();
+    setOpenButtonState(dialog, true);
+
+    const initialFocus = dialog.querySelector<HTMLButtonElement>("[data-hydro-poster-download]");
+    window.requestAnimationFrame(() => {
+      dialog.classList.add("is-open");
+      initialFocus?.focus({ preventScroll: true });
+    });
+  };
+
+  dialogs.forEach((dialog) => {
+    getCloseButtons(dialog).forEach((button) => {
+      button.addEventListener("click", () => closeDialog(dialog));
+    });
+  });
+
+  Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-hydro-poster-open], [data-hydro-moment-poster-open]"),
+  ).forEach((button) => {
+    const dialog = getDialogById(button.getAttribute("aria-controls") || button.dataset.hydroPosterTarget);
+    if (!dialog) {
+      return;
+    }
+    button.addEventListener("click", () => {
+      if (dialog.hidden === false) {
+        closeDialog(dialog);
+        return;
+      }
+      openDialog(dialog, button);
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!activeDialog || activeDialog.hidden !== false) {
+      return;
+    }
+    if (event.key === "Escape") {
+      closeDialog(activeDialog);
+      return;
+    }
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const focusable = getFocusable(activeDialog);
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 }
 
@@ -2311,10 +2689,12 @@ initCategoryCursor();
 initScrollTilt();
 initFooterMarquee();
 initAuthorPage();
+initPostContentEnhancements();
 initPostToc();
 initPostActions();
 initPostUpvote();
 initPostShare();
+initPosterDialogs();
 initPostReadingProgress();
 initPostRelatedCards();
 initHydroTagCloud();
@@ -2465,102 +2845,6 @@ function initMomentActions() {
       button.setAttribute("aria-expanded", String(nextExpanded));
     });
   });
-
-  const poster = document.querySelector<HTMLElement>("[data-hydro-moment-poster]");
-  const posterOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-hydro-moment-poster-open]"));
-  const posterCloseButtons = Array.from(
-    document.querySelectorAll<HTMLButtonElement>("[data-hydro-moment-poster-close]"),
-  );
-  const posterDialog = poster?.querySelector<HTMLElement>(".hydro-moment-poster__dialog") ?? null;
-  const posterInitialFocus = poster?.querySelector<HTMLButtonElement>("[data-hydro-poster-download]") ?? null;
-  const posterFocusableSelector = [
-    "a[href]",
-    "button:not([disabled])",
-    "input:not([disabled])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "[tabindex]:not([tabindex='-1'])",
-  ].join(",");
-  let posterTrigger: HTMLButtonElement | null = null;
-  let posterCloseTimer: number | null = null;
-
-  const getPosterFocusable = () =>
-    Array.from(posterDialog?.querySelectorAll<HTMLElement>(posterFocusableSelector) ?? []).filter(
-      (element) => element.getClientRects().length > 0,
-    );
-
-  const syncPosterState = (expanded: boolean) => {
-    if (!poster) return;
-    if (posterCloseTimer !== null) {
-      window.clearTimeout(posterCloseTimer);
-      posterCloseTimer = null;
-    }
-    if (expanded) {
-      poster.hidden = false;
-      poster.setAttribute("aria-hidden", "false");
-      document.body.classList.add("hydro-menu-lock");
-      getHydroLenis()?.stop?.();
-      window.requestAnimationFrame(() => {
-        poster.classList.add("is-open");
-        posterInitialFocus?.focus({ preventScroll: true });
-      });
-    } else {
-      poster.classList.remove("is-open");
-      poster.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("hydro-menu-lock");
-      getHydroLenis()?.start?.();
-      posterCloseTimer = window.setTimeout(
-        () => {
-          poster.hidden = true;
-          posterCloseTimer = null;
-        },
-        prefersReducedMotion.matches || !motionEnabled ? 0 : 240,
-      );
-      posterTrigger?.focus({ preventScroll: true });
-    }
-    posterOpenButtons.forEach((button) => {
-      button.classList.toggle("is-active", expanded);
-      button.setAttribute("aria-expanded", String(expanded));
-    });
-  };
-
-  posterOpenButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const expanded = poster?.hidden !== false;
-      posterTrigger = button;
-      syncPosterState(expanded);
-    });
-  });
-
-  posterCloseButtons.forEach((button) => {
-    button.addEventListener("click", () => syncPosterState(false));
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (poster?.hidden !== false) return;
-    if (event.key === "Escape") {
-      syncPosterState(false);
-      return;
-    }
-    if (event.key !== "Tab") return;
-
-    const focusable = getPosterFocusable();
-    if (focusable.length === 0) {
-      event.preventDefault();
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  });
 }
 
 function initLightbox() {
@@ -2587,6 +2871,7 @@ function initLightbox() {
   const prevBtn = lightbox.querySelector<HTMLButtonElement>("[data-lightbox-prev]");
   const nextBtn = lightbox.querySelector<HTMLButtonElement>("[data-lightbox-next]");
   const counter = lightbox.querySelector<HTMLElement>("[data-lightbox-counter]");
+  const caption = lightbox.querySelector<HTMLElement>("[data-lightbox-caption]");
 
   const triggers = Array.from(document.querySelectorAll<HTMLElement>("[data-lightbox-trigger]"));
   let currentIndex = 0;
@@ -2595,6 +2880,7 @@ function initLightbox() {
     currentIndex = index;
     const src = triggers[index].dataset.src ?? "";
     const alt = triggers[index].dataset.alt ?? "";
+    const captionText = triggers[index].dataset.caption ?? alt;
     if (!img) return;
     img.classList.add("is-loading");
     img.src = src;
@@ -2605,6 +2891,10 @@ function initLightbox() {
     document.body.classList.add("hydro-menu-lock");
     getHydroLenis()?.stop?.();
     if (counter) counter.textContent = `${index + 1} / ${triggers.length}`;
+    if (caption) {
+      caption.textContent = captionText;
+      caption.hidden = captionText.length === 0;
+    }
     if (prevBtn) prevBtn.style.display = triggers.length > 1 ? "" : "none";
     if (nextBtn) nextBtn.style.display = triggers.length > 1 ? "" : "none";
   };

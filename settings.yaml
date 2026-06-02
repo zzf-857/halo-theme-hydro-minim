@@ -169,7 +169,8 @@ spec:
           value: true
         - $formkit: switch
           name: enable_lightbox
-          label: 启用图片灯箱
+          label: 启用图片灯箱（文章/图库/瞬间）
+          help: 关闭后，文章正文图片、图库和瞬间图片都不再弹出灯箱。
           value: true
         - $formkit: text
           name: theme_to_light_label
@@ -835,7 +836,7 @@ spec:
         - $formkit: text
           name: action_share_value_label
           label: 分享按钮值文案
-          value: Link
+          value: Poster
         - $formkit: text
           name: action_top_label
           label: 操作栏回到顶部文案
