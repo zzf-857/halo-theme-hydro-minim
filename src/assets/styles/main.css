@@ -678,6 +678,97 @@ body.hydro-auth-page .hydro-auth-captcha .altcha {
   width: 100%;
 }
 
+body.hydro-auth-page .hydro-auth-captcha altcha-widget {
+  --altcha-max-width: 100%;
+  --altcha-border-radius: 0.95rem;
+  --altcha-color-base: rgb(var(--hydro-paper-rgb) / 82%);
+  --altcha-color-border: rgb(var(--hydro-ink-rgb) / 12%);
+  --altcha-color-footer-bg: rgb(var(--hydro-ink-rgb) / 4%);
+  --altcha-color-footer-border: rgb(var(--hydro-ink-rgb) / 10%);
+  --altcha-color-footer-text: rgb(var(--hydro-ink-rgb) / 52%);
+  --altcha-color-input-bg: rgb(var(--hydro-paper-rgb) / 88%);
+  --altcha-color-text: rgb(var(--hydro-ink-rgb) / 78%);
+  display: block;
+}
+
+body.hydro-auth-page .hydro-auth-captcha altcha-widget::part(widget) {
+  border-color: rgb(var(--hydro-ink-rgb) / 12%);
+  background: rgb(var(--hydro-paper-rgb) / 82%);
+  color: rgb(var(--hydro-ink-rgb) / 78%);
+  box-shadow: 0 0.75rem 1.8rem rgb(var(--hydro-shadow-rgb) / 8%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  max-width: 100%;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha,
+body.hydro-auth-page .altcha[data-floating] {
+  border-color: rgb(var(--hydro-ink-rgb) / 12%) !important;
+  border-radius: 0.95rem;
+  background: rgb(var(--hydro-paper-rgb) / 92%) !important;
+  color: rgb(var(--hydro-ink-rgb) / 78%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha[data-floating],
+body.hydro-auth-page .altcha[data-floating] {
+  position: fixed !important;
+  top: var(--hydro-auth-altcha-y, 50%) !important;
+  left: var(--hydro-auth-altcha-x, 50%) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(14rem, calc(100vw - 2rem)) !important;
+  max-width: min(14rem, calc(100vw - 2rem)) !important;
+  transform: translateX(-50%) !important;
+  z-index: 10000;
+  box-shadow: 0 1.1rem 2.2rem rgb(var(--hydro-shadow-rgb) / 16%) !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-main,
+body.hydro-auth-page .altcha[data-floating] .altcha-main {
+  align-items: center;
+  background: transparent !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-footer,
+body.hydro-auth-page .altcha[data-floating] .altcha-footer {
+  border-top-color: rgb(var(--hydro-ink-rgb) / 10%) !important;
+  background: rgb(var(--hydro-ink-rgb) / 4%) !important;
+  color: rgb(var(--hydro-ink-rgb) / 52%) !important;
+  text-align: center;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-label,
+body.hydro-auth-page .altcha[data-floating] .altcha-label {
+  color: rgb(var(--hydro-ink-rgb) / 78%) !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-logo svg,
+body.hydro-auth-page .altcha[data-floating] .altcha-logo svg {
+  fill: rgb(var(--hydro-ink-rgb) / 58%) !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-checkbox input[type="checkbox"],
+body.hydro-auth-page .altcha[data-floating] .altcha-checkbox input[type="checkbox"] {
+  accent-color: var(--hydro-highlight-solid) !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-footer a,
+body.hydro-auth-page .altcha[data-floating] .altcha-footer a {
+  color: var(--hydro-highlight-solid) !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha .altcha-anchor-arrow,
+body.hydro-auth-page .altcha[data-floating] .altcha-anchor-arrow {
+  border-color: rgb(var(--hydro-paper-rgb) / 92%) transparent transparent transparent !important;
+}
+
+body.hydro-auth-page .hydro-auth-captcha .altcha[data-floating="bottom"] .altcha-anchor-arrow,
+body.hydro-auth-page .altcha[data-floating="bottom"] .altcha-anchor-arrow {
+  border-color: transparent transparent rgb(var(--hydro-paper-rgb) / 92%) transparent !important;
+}
+
 body.hydro-auth-page .halo-form .form-item-compact label {
   flex: 1;
   margin: 0;

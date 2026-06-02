@@ -236,6 +236,43 @@ function scrollToElement(element: HTMLElement, offset = -92) {
   scrollToPosition(top);
 }
 
+function initAuthAltchaFloatingAnchor() {
+  const form = document.getElementById("login-form") as HTMLFormElement | null;
+  const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  if (!document.body.classList.contains("hydro-auth-page") || !form || !submitButton) {
+    return;
+  }
+
+  const syncAnchor = () => {
+    const rect = submitButton.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) {
+      return;
+    }
+
+    const viewportPadding = 16;
+    const floatingGap = 10;
+    const floatingWidth = Math.min(224, Math.max(0, window.innerWidth - viewportPadding * 2));
+    const halfWidth = floatingWidth / 2;
+    const x = Math.min(
+      Math.max(rect.left + rect.width / 2, viewportPadding + halfWidth),
+      window.innerWidth - viewportPadding - halfWidth,
+    );
+    const y = Math.max(rect.bottom + floatingGap, viewportPadding);
+
+    document.body.style.setProperty("--hydro-auth-altcha-x", `${Math.round(x)}px`);
+    document.body.style.setProperty("--hydro-auth-altcha-y", `${Math.round(y)}px`);
+  };
+
+  const scheduleSync = () => window.requestAnimationFrame(syncAnchor);
+
+  scheduleSync();
+  submitButton.addEventListener("pointerdown", scheduleSync);
+  submitButton.addEventListener("click", scheduleSync);
+  form.addEventListener("submit", scheduleSync);
+  window.addEventListener("resize", scheduleSync, { passive: true });
+  window.addEventListener("scroll", scheduleSync, { passive: true });
+}
+
 async function copyTextToClipboard(text: string, promptTitle = "复制链接") {
   try {
     await navigator.clipboard.writeText(text);
@@ -2677,6 +2714,7 @@ function initLinksPage() {
 }
 
 initAppearanceState();
+initAuthAltchaFloatingAnchor();
 initColorScheme();
 initNavigation();
 initScrambleLinks();
