@@ -601,13 +601,16 @@
                 th:text="${post.owner != null and not #strings.isEmpty(post.owner.displayName ?: post.owner.name) ? (post.owner.displayName ?: post.owner.name) : site.title}"
                 >Hydro</strong
               >
-              <span
-                data-hydro-poster-url-text
-                th:attr="data-url=${post.status.permalink}"
-                th:text="${post.status.permalink}"
-              >
-                /archives/post
-              </span>
+              <span th:text="${site.title}">Hydro-Minim</span>
+              <em th:text="${theme.config.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
+            </div>
+            <div
+              class="hydro-poster-qr"
+              data-hydro-poster-qr
+              th:attr="data-url=${post.status.permalink},aria-label=|扫码阅读：${post.spec.title}|"
+              role="img"
+            >
+              <span class="hydro-poster-qr__fallback" aria-hidden="true">QR</span>
             </div>
           </footer>
         </article>

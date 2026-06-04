@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { initAuthAltchaFloatingAnchor } from "./auth-altcha";
 import { initCommentWidgetSkin } from "./comment-widget-skin";
 import { runHydroFabAction, type HydroFabActionDependencies } from "./fab-actions";
+import { createHydroQrSvg, createHydroQrSvgDataUrl } from "./poster-qr";
 import { initSearchWidgetSkin } from "./search-widget-skin";
 import { initHydroTagCloud } from "./tag-cloud";
 
@@ -346,9 +347,16 @@ function initColorScheme() {
         resolvedMode === "dark"
           ? document.body.dataset.themeToLightLabel || "切换为浅色模式"
           : document.body.dataset.themeToDarkLabel || "切换为深色模式";
+      const nextShortLabel = resolvedMode === "dark" ? "浅色模式" : "深色模式";
       toggle.setAttribute("aria-label", nextLabel);
       toggle.setAttribute("title", nextLabel);
       toggle.setAttribute("aria-pressed", String(resolvedMode === "dark"));
+      toggle.dataset.hydroThemeNext = resolvedMode === "dark" ? "light" : "dark";
+
+      const mobileLabel = toggle.querySelector<HTMLElement>("[data-hydro-theme-toggle-label]");
+      if (mobileLabel) {
+        mobileLabel.textContent = nextShortLabel;
+      }
     });
   };
   const setTransitionVars = (origin: ReturnType<typeof getTransitionOrigin>) => {
@@ -947,14 +955,6 @@ function initNavigation() {
     mobileMenu?.classList.toggle("is-open");
     document.body.classList.toggle("hydro-menu-lock", mobileMenu?.classList.contains("is-open"));
   });
-
-  const firstMobileBranch = mobileMenu?.querySelector<HTMLElement>(
-    ".hydro-mobile-menu__tree > .hydro-mobile-menu__item--branch",
-  );
-  firstMobileBranch?.classList.add("is-expanded");
-  firstMobileBranch
-    ?.querySelector<HTMLButtonElement>(":scope > .hydro-mobile-menu__row [data-hydro-mobile-submenu-toggle]")
-    ?.setAttribute("aria-expanded", "true");
 
   const currentUrl = new URL(window.location.href);
   const scoreMobileMenuLink = (link: HTMLAnchorElement) => {
@@ -3102,6 +3102,29 @@ function toAbsoluteShareUrl(value: string | undefined) {
   }
 }
 
+function getPosterQrColor(element: HTMLElement, property: "backgroundColor" | "color", fallback: string) {
+  const value = window.getComputedStyle(element)[property];
+  return value && value !== "rgba(0, 0, 0, 0)" ? value : fallback;
+}
+
+function readPosterQrUrl(card: HTMLElement, qrElement?: HTMLElement | null) {
+  return toAbsoluteShareUrl(qrElement?.dataset.url || card.dataset.shareUrl || window.location.href);
+}
+
+function createPosterQrSvgForElement(value: string, element: HTMLElement) {
+  return createHydroQrSvg(value, {
+    background: getPosterQrColor(element, "backgroundColor", "#f8f5ed"),
+    foreground: getPosterQrColor(element, "color", "#181714"),
+  });
+}
+
+function createPosterQrDataUrlForElement(value: string, element: HTMLElement) {
+  return createHydroQrSvgDataUrl(value, {
+    background: getPosterQrColor(element, "backgroundColor", "#f8f5ed"),
+    foreground: getPosterQrColor(element, "color", "#181714"),
+  });
+}
+
 function normalizePosterFilename(value: string | undefined) {
   const filename = (value || "hydro-moment-poster.png")
     .trim()
@@ -3290,9 +3313,18 @@ function syncPosterCardCaptionState(card: HTMLElement) {
     normalizePosterText(caption.dataset.hydroPosterCaptionFallback || caption.textContent || "");
 }
 
+function syncPosterCardQrState(card: HTMLElement) {
+  card.querySelectorAll<HTMLElement>("[data-hydro-poster-qr]").forEach((element) => {
+    const shareUrl = readPosterQrUrl(card, element);
+    element.dataset.hydroPosterQrUrl = shareUrl;
+    element.innerHTML = createPosterQrSvgForElement(shareUrl, element);
+  });
+}
+
 function syncPosterCardState(card: HTMLElement) {
   syncPosterCardCopyState(card);
   syncPosterCardCaptionState(card);
+  syncPosterCardQrState(card);
   return syncPosterCardMediaState(card);
 }
 
@@ -3877,6 +3909,8 @@ async function drawPosterFooter(context: CanvasRenderingContext2D, card: HTMLEle
   const footerRect = getPosterSelectorRect(card, ".hydro-poster-card__footer");
   const sealRect = getPosterSelectorRect(card, ".hydro-poster-card__seal");
   const siteRect = getPosterSelectorRect(card, ".hydro-poster-site");
+  const qrElement = card.querySelector<HTMLElement>("[data-hydro-poster-qr]");
+  const qrRect = getPosterRelativeRect(card, qrElement);
   if (!footerRect || !sealRect || !siteRect) {
     return;
   }
@@ -3926,18 +3960,45 @@ async function drawPosterFooter(context: CanvasRenderingContext2D, card: HTMLEle
   context.stroke();
 
   const siteName = card.querySelector<HTMLElement>(".hydro-poster-site strong");
-  const siteUrl = card.querySelector<HTMLElement>(".hydro-poster-site span");
+  const siteSubtitle = card.querySelector<HTMLElement>(".hydro-poster-site span");
+  const siteHint = card.querySelector<HTMLElement>(".hydro-poster-site em");
   const siteNameRect = getPosterRelativeRect(card, siteName);
-  const siteUrlRect = getPosterRelativeRect(card, siteUrl);
+  const siteSubtitleRect = getPosterRelativeRect(card, siteSubtitle);
+  const siteHintRect = getPosterRelativeRect(card, siteHint);
   if (siteName && siteNameRect) {
     context.fillStyle = getPosterComputedColor(siteName, posterRgba(ink, 0.95));
     context.font = getPosterComputedFont(siteName, "700 14px system-ui, sans-serif");
     drawPosterSingleLine(context, siteName.textContent || "", siteNameRect.x, siteNameRect.y, siteNameRect.width);
   }
-  if (siteUrl && siteUrlRect) {
-    context.fillStyle = getPosterComputedColor(siteUrl, posterRgba(ink, 0.46));
-    context.font = getPosterComputedFont(siteUrl, "400 11px system-ui, sans-serif");
-    drawPosterSingleLine(context, siteUrl.textContent || "", siteUrlRect.x, siteUrlRect.y, siteUrlRect.width);
+  if (siteSubtitle && siteSubtitleRect) {
+    context.fillStyle = getPosterComputedColor(siteSubtitle, posterRgba(ink, 0.46));
+    context.font = getPosterComputedFont(siteSubtitle, "400 11px system-ui, sans-serif");
+    drawPosterSingleLine(
+      context,
+      siteSubtitle.textContent || "",
+      siteSubtitleRect.x,
+      siteSubtitleRect.y,
+      siteSubtitleRect.width,
+    );
+  }
+  if (siteHint && siteHintRect) {
+    context.fillStyle = getPosterComputedColor(siteHint, posterRgba(ink, 0.62));
+    context.font = getPosterComputedFont(siteHint, "700 10px Space Mono, monospace");
+    drawPosterSingleLine(context, siteHint.textContent || "", siteHintRect.x, siteHintRect.y, siteHintRect.width);
+  }
+
+  if (qrElement && qrRect) {
+    try {
+      const qrImage = await loadImageFromUrl(
+        createPosterQrDataUrlForElement(
+          qrElement.dataset.hydroPosterQrUrl || readPosterQrUrl(card, qrElement),
+          qrElement,
+        ),
+      );
+      context.drawImage(qrImage, qrRect.x, qrRect.y, qrRect.width, qrRect.height);
+    } catch (error) {
+      console.debug("[Hydro] Poster QR skipped in canvas renderer.", error);
+    }
   }
 }
 
@@ -4041,10 +4102,6 @@ async function downloadPosterCard(card: HTMLElement, filename: string) {
 }
 
 function initPosterShareScope(scope: HTMLElement) {
-  scope.querySelectorAll<HTMLElement>("[data-hydro-poster-url-text]").forEach((element) => {
-    element.textContent = toAbsoluteShareUrl(element.dataset.url || element.textContent || "");
-  });
-
   scope.querySelectorAll<HTMLElement>("[data-hydro-poster-card]").forEach((card) => {
     syncPosterCardState(card);
   });

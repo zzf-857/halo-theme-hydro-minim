@@ -18,6 +18,8 @@
 - Mobile neighbor pills means the phone-only previous/next navigation uses static thumb-sized pill buttons, not a swipe lane. Two available neighbors sit as a two-button grid; a single neighbor spans the available width.
 - Compact reading flow means phone layouts for related posts use horizontal scroll lanes and snap-friendly compact cards, so article completion recommendations do not stretch the page into a long stack.
 - Reader action rail means the desktop/tablet side panel containing reading progress, TOC, post actions, and top action. It remains sticky on PC and becomes the drawer source on phones.
+- Mobile menu current branch means phone navigation groups stay collapsed by default, and only the branch containing the current route expands automatically.
+- Mobile theme action means the phone menu theme switch shows the next available mode, including matching text and icon, instead of a static "dark/light" label.
 
 ## Current Decisions
 
@@ -34,3 +36,4 @@
 - Article details use two reading-control layouts: PC keeps the sticky reader action rail, while phones use the mobile reading bar plus TOC drawer. Do not let `.hydro-post-aside` fall through as a normal content block at the end of the article on phones.
 - Mobile article controls must reuse existing post action contracts: `data-post-action`, `data-post-reading-progress`, `data-post-upvote-count`, and `data-hydro-poster-open`. Shared state such as reading percent and upvote count should broadcast to all matching elements.
 - Future phone article affordances should attach to the mobile reading bar or TOC drawer semantics before adding another floating utility surface.
+- Mobile menu branches must not open the first group by default. Current-route scoring should choose the deepest matching link and expand only its parent branch chain.

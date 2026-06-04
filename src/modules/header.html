@@ -199,7 +199,7 @@
             </a>
           </li>
           <li>
-            <a th:href="@{/console/profile}">
+            <a th:href="@{/uc/profile}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -440,18 +440,31 @@
           </span>
           <span class="hydro-mobile-menu__action-label">控制台</span>
         </a>
-        <a sec:authorize="isAuthenticated()" th:href="@{/console/profile}" class="hydro-mobile-menu__action">
-          <span class="hydro-mobile-menu__action-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
+        <a
+          sec:authorize="isAuthenticated()"
+          th:href="@{/uc/profile}"
+          class="hydro-mobile-menu__action hydro-mobile-menu__action--profile"
+          th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
+          aria-label="个人中心"
+          title="个人中心"
+        >
+          <span class="hydro-mobile-menu__action-icon hydro-mobile-menu__profile-avatar" aria-hidden="true">
+            <img
+              th:if="${not #strings.isEmpty(currentUser?.avatar)}"
+              th:src="${currentUser.avatar}"
+              alt=""
+              loading="lazy"
+            />
+            <svg th:if="${#strings.isEmpty(currentUser?.avatar)}" viewBox="0 0 24 24">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </span>
-          <span class="hydro-mobile-menu__action-label">个人</span>
+          <span class="hydro-mobile-menu__action-label">个人中心</span>
         </a>
         <button
           th:if="${allowColorSwitch}"
-          class="hydro-mobile-menu__action hydro-mobile-menu__action--button hydro-theme-toggle"
+          class="hydro-mobile-menu__action hydro-mobile-menu__action--button hydro-mobile-menu__theme-action hydro-theme-toggle"
           type="button"
           data-hydro-theme-toggle
           aria-label="切换深浅色"
@@ -467,7 +480,7 @@
               <path d="M20.99 12.37A8 8 0 1 1 11.63 3.01 6.5 6.5 0 0 0 20.99 12.37z"></path>
             </svg>
           </span>
-          <span class="hydro-mobile-menu__action-label">深浅色</span>
+          <span class="hydro-mobile-menu__action-label" data-hydro-theme-toggle-label>深色模式</span>
         </button>
         <a
           sec:authorize="isAuthenticated()"

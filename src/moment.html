@@ -303,13 +303,16 @@
                     th:text="${moment.owner != null and not #strings.isEmpty(moment.owner.displayName) ? moment.owner.displayName : site.title}"
                     >Hydro</strong
                   >
-                  <span
-                    data-hydro-poster-url-text
-                    th:attr="data-url=|/moments/${moment.metadata.name}|"
-                    th:text="|/moments/${moment.metadata.name}|"
-                  >
-                    /moments/name
-                  </span>
+                  <span th:text="${site.title}">Hydro-Minim</span>
+                  <em th:text="${theme.config.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
+                </div>
+                <div
+                  class="hydro-poster-qr"
+                  data-hydro-poster-qr
+                  th:attr="data-url=|/moments/${moment.metadata.name}|,aria-label=|扫码查看瞬间：${moment.metadata.name}|"
+                  role="img"
+                >
+                  <span class="hydro-poster-qr__fallback" aria-hidden="true">QR</span>
                 </div>
               </footer>
             </article>

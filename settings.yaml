@@ -1243,6 +1243,10 @@ spec:
           label: 瞬间海报副文案
           value: 这一刻很轻，但值得被认真保存。
         - $formkit: text
+          name: qr_hint
+          label: 二维码提示文案
+          value: 扫码阅读完整内容
+        - $formkit: text
           name: download_label
           label: 下载按钮文案
           value: 下载海报
