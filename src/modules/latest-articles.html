@@ -50,8 +50,13 @@
             >
               文章
             </span>
-            <div class="hydro-card__stats" aria-label="文章统计">
-              <time th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
+            <time
+              class="hydro-card__date"
+              aria-label="文章发布时间"
+              th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd')}"
+              >2024.01.15</time
+            >
+            <div class="hydro-card__metrics" aria-label="文章互动统计">
               <span th:text="|${theme.config.post?.visit_label ?: '阅读'} ${post.stats.visit ?: 0}|">阅读 0</span>
               <span th:text="|${theme.config.post?.upvote_label ?: '点赞'} ${post.stats.upvote ?: 0}|">点赞 0</span>
             </div>

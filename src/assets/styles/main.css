@@ -2841,44 +2841,49 @@ html[data-hydro-motion="off"] .hydro-card:hover .hydro-card__arrow {
   transition: color 0.5s ease;
 }
 
-.hydro-card__stats {
+.hydro-card__date,
+.hydro-card__metrics {
   position: absolute;
-  bottom: 0.78rem;
-  left: 0.78rem;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.38rem;
-  max-width: calc(100% - 1.56rem);
   margin: 0;
   border: 1px solid rgb(var(--hydro-paper-rgb) / 38%);
-  border-radius: 0.48rem;
+  border-radius: 999px;
   background: rgb(var(--hydro-paper-rgb) / 72%);
   box-shadow:
     0 0.85rem 2rem rgb(var(--hydro-shadow-rgb) / 14%),
     inset 0 1px 0 rgb(var(--hydro-paper-rgb) / 42%);
-  color: rgb(var(--hydro-ink-rgb) / 66%);
+  color: rgb(var(--hydro-ink-rgb) / 68%);
   font-size: 0.72rem;
   line-height: 1.25;
-  padding: 0.42rem 0.58rem;
+  white-space: nowrap;
   backdrop-filter: blur(18px) saturate(1.08);
 }
 
-.hydro-card__stats time {
-  flex: 0 0 auto;
+.hydro-card__date {
+  top: 0.9rem;
+  right: 0.9rem;
   color: rgb(var(--hydro-ink-rgb) / 78%);
   font-weight: 600;
+  padding: 0.28rem 0.62rem;
 }
 
-.hydro-card__stats span {
+.hydro-card__metrics {
+  right: 0.78rem;
+  bottom: 0.78rem;
+  gap: 0.38rem;
+  max-width: calc(100% - 1.56rem);
+  padding: 0.38rem 0.58rem;
+}
+
+.hydro-card__metrics span {
   display: inline-flex;
   align-items: center;
   gap: 0.28rem;
   min-width: 0;
 }
 
-.hydro-card__stats time + span::before,
-.hydro-card__stats span + span::before {
+.hydro-card__metrics span + span::before {
   width: 0.2rem;
   height: 0.2rem;
   flex: 0 0 auto;
