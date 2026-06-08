@@ -11,15 +11,59 @@ export type HydroMinimActionHandler = (context: HydroFabActionContext) => void |
 export type HydroFabActionDependencies = {
   copyText: (text: string) => Promise<void>;
   getWindow: () => Window;
+  navigateTo?: (url: string) => void;
   root: ParentNode;
   scrollToElement: (element: HTMLElement) => void;
   scrollToPosition: (top: number) => void;
   warn?: (message: string) => void;
 };
 
+type HydroMemberSignInStatus = {
+  authenticated?: boolean;
+  continuousDays?: number;
+  loginUrl?: string;
+  message?: string;
+  signed?: boolean;
+};
+
+type HydroMemberSignInConfig = {
+  enabled?: boolean;
+  ucUrl?: string;
+};
+
+type HydroMemberSignInApi = {
+  getLoginUrl?: () => string;
+  getMergedConfig?: () => Promise<HydroMemberSignInConfig>;
+  getStatus: () => Promise<HydroMemberSignInStatus>;
+  signIn: () => Promise<HydroMemberSignInStatus>;
+};
+
+type HydroMemberFavoriteSubject = {
+  subjectType: "POST";
+  subjectName: string;
+  subjectTitle: string;
+  permalink: string;
+  cover: string;
+};
+
+type HydroMemberFavoriteStatus = {
+  authenticated?: boolean;
+  count?: number;
+  favorited?: boolean;
+  loginUrl?: string;
+};
+
+type HydroMemberFavoriteApi = {
+  getLoginUrl?: () => string;
+  getStatus: (subject: HydroMemberFavoriteSubject) => Promise<HydroMemberFavoriteStatus>;
+  toggle: (subject: HydroMemberFavoriteSubject) => Promise<HydroMemberFavoriteStatus>;
+};
+
 type HydroFabBuiltinAction =
   | "back-to-top"
   | "copy-current-url"
+  | "member-favorite"
+  | "member-sign-in"
   | "open-menu"
   | "print"
   | "scroll-comment"
@@ -29,6 +73,8 @@ type HydroFabBuiltinAction =
 const hydroFabBuiltinActions = new Set<string>([
   "back-to-top",
   "copy-current-url",
+  "member-favorite",
+  "member-sign-in",
   "open-menu",
   "print",
   "scroll-comment",
@@ -39,6 +85,8 @@ const hydroFabBuiltinActions = new Set<string>([
 declare global {
   interface Window {
     HydroMinimActions?: Record<string, HydroMinimActionHandler>;
+    memberFavorite?: HydroMemberFavoriteApi;
+    memberSignIn?: HydroMemberSignInApi;
     SearchWidget?: {
       open?: () => void;
     };
@@ -137,6 +185,203 @@ function markCopied(element: HTMLElement, win: Window): void {
   }, 1400);
 }
 
+function showFabNotice(win: Window, message: string, type: "success" | "error" = "success"): void {
+  const text = message.trim();
+  if (!text) {
+    return;
+  }
+
+  let notice = win.document.querySelector<HTMLElement>("[data-hydro-fab-notice]");
+  if (!notice) {
+    notice = win.document.createElement("div");
+    notice.dataset.hydroFabNotice = "";
+    notice.className = "hydro-fab-notice";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+    win.document.body.append(notice);
+  }
+
+  notice.textContent = text;
+  notice.className = `hydro-fab-notice is-${type} is-visible`;
+
+  const existingTimer = Number(notice.dataset.hydroFabNoticeTimer || 0);
+  if (existingTimer > 0) {
+    win.clearTimeout(existingTimer);
+  }
+
+  const timer = win.setTimeout(() => {
+    notice?.classList.remove("is-visible");
+  }, 2600);
+  notice.dataset.hydroFabNoticeTimer = String(timer);
+}
+
+function navigateTo(url: string | undefined, dependencies: HydroFabActionDependencies, win: Window): void {
+  if (!url) {
+    return;
+  }
+
+  if (dependencies.navigateTo) {
+    dependencies.navigateTo(url);
+    return;
+  }
+
+  win.location.href = url;
+}
+
+function markBusy(element: HTMLElement, busy: boolean): void {
+  element.classList.toggle("is-loading", busy);
+  element.setAttribute("aria-busy", String(busy));
+
+  if (element instanceof HTMLButtonElement) {
+    element.disabled = busy;
+  }
+}
+
+function waitForMemberApi<T extends "memberFavorite" | "memberSignIn">(
+  win: Window,
+  name: T,
+  timeout = 3000,
+): Promise<Window[T] | null> {
+  const startedAt = Date.now();
+
+  return new Promise((resolve) => {
+    const check = () => {
+      const api = win[name];
+      if (api) {
+        resolve(api);
+        return;
+      }
+
+      if (Date.now() - startedAt >= timeout) {
+        resolve(null);
+        return;
+      }
+
+      win.setTimeout(check, 50);
+    };
+
+    check();
+  });
+}
+
+function syncSignInElement(element: HTMLElement, status: HydroMemberSignInStatus): void {
+  const signed = Boolean(status.signed);
+  element.classList.toggle("is-signed", signed);
+  element.dataset.hydroMemberSigned = String(signed);
+  element.dataset.hydroMemberContinuousDays = String(status.continuousDays || 0);
+
+  if (signed) {
+    element.setAttribute("aria-label", `今日已签到，连续 ${status.continuousDays || 0} 天`);
+  }
+}
+
+async function runMemberSignInAction(
+  element: HTMLElement,
+  dependencies: HydroFabActionDependencies,
+  win: Window,
+): Promise<void> {
+  const memberSignIn = await waitForMemberApi(win, "memberSignIn");
+  if (!memberSignIn) {
+    element.hidden = true;
+    warn(dependencies, "Hydro-Minim FAB member sign-in API is unavailable.");
+    return;
+  }
+
+  const config = memberSignIn.getMergedConfig ? await memberSignIn.getMergedConfig() : { enabled: true };
+  if (config.enabled === false) {
+    element.hidden = true;
+    return;
+  }
+
+  const status = await memberSignIn.getStatus();
+  if (status.authenticated === false) {
+    navigateTo(status.loginUrl || memberSignIn.getLoginUrl?.(), dependencies, win);
+    return;
+  }
+
+  if (status.signed) {
+    syncSignInElement(element, status);
+    navigateTo(config.ucUrl || "/uc/member?tab=signIn", dependencies, win);
+    return;
+  }
+
+  markBusy(element, true);
+  try {
+    const result = await memberSignIn.signIn();
+    if (result.authenticated === false) {
+      navigateTo(result.loginUrl || memberSignIn.getLoginUrl?.(), dependencies, win);
+      return;
+    }
+    syncSignInElement(element, result);
+    showFabNotice(win, result.message || "签到成功", "success");
+  } finally {
+    markBusy(element, false);
+  }
+}
+
+function readCurrentPostSubject(root: ParentNode, win: Window): HydroMemberFavoriteSubject | null {
+  const post = root.querySelector<HTMLElement>(".hydro-post-page[data-post-name]");
+  const subjectName = post?.dataset.postName?.trim();
+  if (!post || !subjectName) {
+    return null;
+  }
+
+  return {
+    subjectType: "POST",
+    subjectName,
+    subjectTitle: post.dataset.postTitle?.trim() || win.document.title || subjectName,
+    permalink: post.dataset.postPermalink?.trim() || win.location.href,
+    cover: post.dataset.postCover?.trim() || "",
+  };
+}
+
+function syncFavoriteElement(element: HTMLElement, status: HydroMemberFavoriteStatus): void {
+  const favorited = Boolean(status.favorited);
+  const count = Number(status.count || 0);
+  element.classList.toggle("is-favorited", favorited);
+  element.dataset.hydroMemberFavorited = String(favorited);
+  element.dataset.hydroMemberFavoriteCount = String(count);
+  element.setAttribute("aria-label", favorited ? `已收藏 ${count}` : `收藏 ${count}`);
+}
+
+async function runMemberFavoriteAction(
+  element: HTMLElement,
+  dependencies: HydroFabActionDependencies,
+  win: Window,
+): Promise<void> {
+  const memberFavorite = await waitForMemberApi(win, "memberFavorite");
+  const subject = readCurrentPostSubject(dependencies.root, win);
+  if (!memberFavorite || !subject) {
+    element.hidden = true;
+    warn(dependencies, "Hydro-Minim FAB member favorite API or post subject is unavailable.");
+    return;
+  }
+
+  const status = await memberFavorite.getStatus(subject);
+  syncFavoriteElement(element, status);
+
+  if (status.authenticated === false) {
+    navigateTo(status.loginUrl || memberFavorite.getLoginUrl?.(), dependencies, win);
+    return;
+  }
+
+  markBusy(element, true);
+  try {
+    const result = await memberFavorite.toggle(subject);
+    if (result.authenticated === false) {
+      navigateTo(result.loginUrl || memberFavorite.getLoginUrl?.(), dependencies, win);
+      return;
+    }
+    syncFavoriteElement(element, result);
+    showFabNotice(
+      win,
+      result.favorited ? `已收藏 · ${Number(result.count || 0)}` : `已取消收藏 · ${Number(result.count || 0)}`,
+    );
+  } finally {
+    markBusy(element, false);
+  }
+}
+
 async function runBuiltinAction(
   action: HydroFabBuiltinAction,
   element: HTMLElement,
@@ -151,6 +396,12 @@ async function runBuiltinAction(
     case "copy-current-url":
       await dependencies.copyText(win.location.href);
       markCopied(element, win);
+      return;
+    case "member-favorite":
+      await runMemberFavoriteAction(element, dependencies, win);
+      return;
+    case "member-sign-in":
+      await runMemberSignInAction(element, dependencies, win);
       return;
     case "open-menu": {
       const mobileMenu = dependencies.root.querySelector<HTMLElement>("[data-hydro-mobile-menu]");

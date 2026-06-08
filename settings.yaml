@@ -328,6 +328,10 @@ spec:
                   value: back-to-top
                 - label: 复制当前链接
                   value: copy-current-url
+                - label: 会员签到
+                  value: member-sign-in
+                - label: 文章收藏
+                  value: member-favorite
                 - label: 打印页面
                   value: print
                 - label: 打开移动菜单
@@ -443,6 +447,10 @@ spec:
                       value: back-to-top
                     - label: 复制当前链接
                       value: copy-current-url
+                    - label: 会员签到
+                      value: member-sign-in
+                    - label: 文章收藏
+                      value: member-favorite
                     - label: 打印页面
                       value: print
                     - label: 打开移动菜单
@@ -762,6 +770,49 @@ spec:
           label: 协作者标签
           value: 协作
         - $formkit: switch
+          id: post_enable_reward
+          key: post_enable_reward
+          name: enable_reward
+          label: 启用作者打赏
+          value: false
+        - $formkit: text
+          if: $get(post_enable_reward).value === true
+          key: post_reward_label
+          name: reward_label
+          label: 打赏按钮文案
+          value: 打赏作者
+        - $formkit: text
+          if: $get(post_enable_reward).value === true
+          key: post_reward_eyebrow
+          name: reward_eyebrow
+          label: 打赏弹层标签
+          value: Reward
+        - $formkit: text
+          if: $get(post_enable_reward).value === true
+          key: post_reward_title
+          name: reward_title
+          label: 打赏弹层标题
+          value: 打赏作者
+        - $formkit: textarea
+          if: $get(post_enable_reward).value === true
+          key: post_reward_description
+          name: reward_description
+          label: 打赏说明
+          value: 如果这篇文章帮到了你，可以请作者喝杯咖啡。
+        - $formkit: text
+          if: $get(post_enable_reward).value === true
+          key: post_reward_qr
+          name: reward_qr
+          label: 打赏二维码图片地址
+          value: ""
+          help: 填写图片地址，例如 /upload/reward.png；为空时作者卡片不会显示打赏按钮。
+        - $formkit: text
+          if: $get(post_enable_reward).value === true
+          key: post_reward_qr_hint
+          name: reward_qr_hint
+          label: 二维码提示
+          value: 扫码打赏
+        - $formkit: switch
           name: show_neighbors
           label: 显示上一篇/下一篇
           value: true
@@ -837,6 +888,14 @@ spec:
           name: action_share_value_label
           label: 分享按钮值文案
           value: Poster
+        - $formkit: text
+          name: action_favorite_label
+          label: 操作栏收藏文案
+          value: 收藏
+        - $formkit: text
+          name: action_favorited_label
+          label: 已收藏文案
+          value: 已收藏
         - $formkit: text
           name: action_top_label
           label: 操作栏回到顶部文案

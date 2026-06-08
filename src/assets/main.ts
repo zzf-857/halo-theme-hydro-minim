@@ -61,6 +61,24 @@ type LinksSubmitApi = {
   getLinkDetail?: (url: string) => Promise<LinkSubmitResult<Record<string, string>>>;
   getCaptchaUrl?: () => string;
 };
+type MemberFavoriteSubject = {
+  subjectType: "POST";
+  subjectName: string;
+  subjectTitle: string;
+  permalink: string;
+  cover: string;
+};
+type MemberFavoriteStatus = {
+  authenticated?: boolean;
+  count?: number;
+  favorited?: boolean;
+  loginUrl?: string;
+};
+type MemberFavoriteApi = {
+  getLoginUrl?: () => string;
+  getStatus: (subject: MemberFavoriteSubject) => Promise<MemberFavoriteStatus>;
+  toggle: (subject: MemberFavoriteSubject) => Promise<MemberFavoriteStatus>;
+};
 type SteamProfile = {
   playing?: boolean;
   statusText?: string;
@@ -98,6 +116,7 @@ type SteamGamesResult = {
 declare global {
   interface Window {
     LinksSubmit?: LinksSubmitApi;
+    memberFavorite?: MemberFavoriteApi;
     SearchWidget?: {
       open?: () => void;
     };
@@ -2399,6 +2418,120 @@ function initPostUpvote() {
   });
 }
 
+function readPostFavoriteSubject(page: HTMLElement): MemberFavoriteSubject | null {
+  const subjectName = page.dataset.postName?.trim();
+  if (!subjectName) {
+    return null;
+  }
+
+  return {
+    subjectType: "POST",
+    subjectName,
+    subjectTitle: page.dataset.postTitle?.trim() || document.title || subjectName,
+    permalink: page.dataset.postPermalink?.trim() || window.location.href,
+    cover: page.dataset.postCover?.trim() || "",
+  };
+}
+
+function syncPostFavoriteButtons(buttons: HTMLButtonElement[], status: MemberFavoriteStatus) {
+  const favorited = Boolean(status.favorited);
+  const count = Number(status.count || 0);
+
+  buttons.forEach((button) => {
+    const label = button.querySelector<HTMLElement>("span");
+    const value = button.querySelector<HTMLElement>("strong");
+    button.classList.toggle("is-favorited", favorited);
+    button.dataset.postFavorited = String(favorited);
+    button.setAttribute("aria-pressed", String(favorited));
+
+    if (label) {
+      label.textContent = favorited
+        ? button.dataset.favoritedLabel || "已收藏"
+        : button.dataset.favoriteLabel || "收藏";
+    }
+
+    if (value) {
+      value.textContent = String(count);
+    }
+  });
+}
+
+function waitForMemberFavorite(timeout = 3000): Promise<MemberFavoriteApi | null> {
+  const startedAt = Date.now();
+
+  return new Promise((resolve) => {
+    const check = () => {
+      if (window.memberFavorite) {
+        resolve(window.memberFavorite);
+        return;
+      }
+
+      if (Date.now() - startedAt >= timeout) {
+        resolve(null);
+        return;
+      }
+
+      window.setTimeout(check, 50);
+    };
+
+    check();
+  });
+}
+
+function initPostFavoriteAction(page: HTMLElement) {
+  const favoriteButtons = Array.from(page.querySelectorAll<HTMLButtonElement>("[data-post-action='favorite']"));
+  const subject = readPostFavoriteSubject(page);
+  if (favoriteButtons.length === 0 || !subject) {
+    return;
+  }
+
+  favoriteButtons.forEach((button) => {
+    const label = button.querySelector<HTMLElement>("span");
+    button.dataset.favoriteLabel = label?.textContent?.trim() || "收藏";
+    button.dataset.favoritedLabel = page.dataset.postFavoritedLabel || "已收藏";
+    button.disabled = true;
+  });
+
+  void (async () => {
+    const memberFavorite = await waitForMemberFavorite();
+    if (!memberFavorite) {
+      favoriteButtons.forEach((button) => {
+        button.hidden = true;
+      });
+      return;
+    }
+
+    try {
+      const status = await memberFavorite.getStatus(subject);
+      syncPostFavoriteButtons(favoriteButtons, status);
+    } finally {
+      favoriteButtons.forEach((button) => {
+        button.disabled = false;
+      });
+    }
+
+    favoriteButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (button.disabled) {
+          return;
+        }
+
+        button.disabled = true;
+        try {
+          const result = await memberFavorite.toggle(subject);
+          if (result.authenticated === false) {
+            window.location.href = result.loginUrl || memberFavorite.getLoginUrl?.() || "/login";
+            return;
+          }
+          syncPostFavoriteButtons(favoriteButtons, result);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  })();
+}
+
 function initPostActions() {
   const page = document.querySelector<HTMLElement>(".hydro-post-page");
   if (!page || !readBooleanData(page.dataset.postEnableActionRail)) {
@@ -2422,6 +2555,55 @@ function initPostActions() {
       }
       scrollToElement(commentSection);
     });
+  });
+
+  initPostFavoriteAction(page);
+}
+
+function initPostRewardDialog() {
+  const dialog = document.querySelector<HTMLElement>("[data-hydro-reward-dialog]");
+  const openButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-hydro-reward-open]"));
+  if (!dialog || openButtons.length === 0) {
+    return;
+  }
+
+  if (dialog.parentElement !== document.body) {
+    document.body.append(dialog);
+  }
+
+  const closeButtons = Array.from(dialog.querySelectorAll<HTMLButtonElement>("[data-hydro-reward-close]"));
+  let activeTrigger: HTMLButtonElement | null = null;
+
+  const open = (trigger: HTMLButtonElement) => {
+    activeTrigger = trigger;
+    dialog.classList.add("is-open");
+    dialog.setAttribute("aria-hidden", "false");
+    trigger.setAttribute("aria-expanded", "true");
+    document.body.classList.add("hydro-reward-lock");
+    window.setTimeout(() => dialog.querySelector<HTMLButtonElement>("[data-hydro-reward-close]")?.focus(), 30);
+  };
+
+  const close = () => {
+    dialog.classList.remove("is-open");
+    dialog.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("hydro-reward-lock");
+    openButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+    activeTrigger?.focus();
+    activeTrigger = null;
+  };
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", () => open(button));
+  });
+
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", close);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && dialog.classList.contains("is-open")) {
+      close();
+    }
   });
 }
 
@@ -2975,6 +3157,7 @@ initPostActions();
 initPostUpvote();
 initPostShare();
 initPosterDialogs();
+initPostRewardDialog();
 initPostReadingProgress();
 initPostRelatedCards();
 initHydroTagCloud();

@@ -19,6 +19,8 @@
       showUpvoteMeta=${postConfig == null or postConfig.show_upvote_meta != false},
       showCommentMeta=${postConfig == null or postConfig.show_comment_meta != false},
       showAuthor=${postConfig == null or postConfig.show_author != false},
+      hasMemberPlugin=${pluginFinder.available('PluginMember')},
+      enableReward=${postConfig != null and postConfig.enable_reward == true and not #strings.isEmpty(postConfig.reward_qr)},
       showNeighbors=${postConfig == null or postConfig.show_neighbors != false},
       enablePostComment=${postConfig == null or postConfig.enable_comment != false},
       relatedSizeText=${postConfig == null or postConfig.related_posts_size == null ? '' : #strings.trim('' + postConfig.related_posts_size)},
@@ -33,12 +35,16 @@
     "
     th:attr="
       data-post-name=${post.metadata.name},
+      data-post-title=${post.spec.title},
+      data-post-permalink=${post.status.permalink},
+      data-post-cover=${post.spec.cover},
       data-post-enable-toc=${enableToc},
       data-post-enable-action-rail=${enableActionRail},
       data-post-enable-upvote=${enableUpvote},
       data-post-enable-share=${enableShare},
       data-post-enable-reading-progress=${enableReadingProgress},
       data-post-enable-lightbox=${enablePostLightbox},
+      data-post-favorited-label=${postConfig?.action_favorited_label ?: '已收藏'},
       data-post-upvote-error-text=${postConfig?.upvote_error_text ?: '点赞失败，请稍后再试'}
     "
   >
@@ -126,49 +132,65 @@
         </section>
 
         <section class="hydro-post-author" th:if="${showAuthor and post.owner != null}">
-          <div class="hydro-post-author__avatar">
-            <img
-              th:if="${not #strings.isEmpty(post.owner.avatar)}"
-              th:src="${post.owner.avatar}"
-              th:alt="${post.owner.displayName ?: post.owner.name}"
-              loading="lazy"
-            />
-            <span th:if="${#strings.isEmpty(post.owner.avatar)}" th:text="${post.owner.displayName ?: post.owner.name}"
-              >A</span
-            >
-          </div>
-          <div class="hydro-post-author__body">
-            <p class="hydro-post-author__eyebrow">
-              <span th:text="${postConfig?.author_label ?: '作者'}">作者</span>
+          <div class="hydro-post-author__identity">
+            <div class="hydro-post-author__avatar">
+              <img
+                th:if="${not #strings.isEmpty(post.owner.avatar)}"
+                th:src="${post.owner.avatar}"
+                th:alt="${post.owner.displayName ?: post.owner.name}"
+                loading="lazy"
+              />
               <span
-                th:if="${#lists.size(post.contributors) > 1}"
-                th:text="|${postConfig?.contributor_label ?: '协作'} ${#lists.size(post.contributors)} 人|"
+                th:if="${#strings.isEmpty(post.owner.avatar)}"
+                th:text="${post.owner.displayName ?: post.owner.name}"
+                >A</span
               >
-                协作 1 人
-              </span>
-            </p>
-            <a
-              class="hydro-post-author__name"
-              th:href="@{${post.owner.permalink}}"
-              th:text="${post.owner.displayName ?: post.owner.name}"
-              >作者名</a
-            >
-            <p
-              class="hydro-post-author__bio"
-              th:if="${not #strings.isEmpty(post.owner.bio)}"
-              th:text="${post.owner.bio}"
-            >
-              作者简介
-            </p>
+            </div>
+            <div class="hydro-post-author__body">
+              <p class="hydro-post-author__eyebrow">
+                <span th:text="${postConfig?.author_label ?: '作者'}">作者</span>
+                <span
+                  th:if="${#lists.size(post.contributors) > 1}"
+                  th:text="|${postConfig?.contributor_label ?: '协作'} ${#lists.size(post.contributors)} 人|"
+                >
+                  协作 1 人
+                </span>
+              </p>
+              <a
+                class="hydro-post-author__name"
+                th:href="@{${post.owner.permalink}}"
+                th:text="${post.owner.displayName ?: post.owner.name}"
+                >作者名</a
+              >
+              <p
+                class="hydro-post-author__bio"
+                th:if="${not #strings.isEmpty(post.owner.bio)}"
+                th:text="${post.owner.bio}"
+              >
+                作者简介
+              </p>
+            </div>
           </div>
-          <a
-            class="hydro-post-author__profile"
-            th:href="@{${post.owner.permalink}}"
-            th:attr="aria-label=|查看 ${(post.owner.displayName ?: post.owner.name)} 的主页|"
-            title="查看作者主页"
-          >
-            ↗
-          </a>
+          <div class="hydro-post-author__actions">
+            <button
+              type="button"
+              class="hydro-post-author__reward"
+              data-hydro-reward-open
+              aria-controls="hydro-post-reward"
+              aria-expanded="false"
+              th:if="${enableReward}"
+            >
+              <span th:text="${postConfig?.reward_label ?: '打赏作者'}">打赏作者</span>
+            </button>
+            <a
+              class="hydro-post-author__profile"
+              th:href="@{${post.owner.permalink}}"
+              th:attr="aria-label=|查看 ${(post.owner.displayName ?: post.owner.name)} 的主页|"
+              title="查看作者主页"
+            >
+              ↗
+            </a>
+          </div>
         </section>
 
         <nav
@@ -377,9 +399,17 @@
                 >Poster</strong
               >
             </button>
-            <button type="button" class="hydro-post-action" data-post-action="top">
-              <span th:text="${postConfig?.action_top_label ?: '回到顶部'}">回到顶部</span>
-              <strong>↑</strong>
+            <button
+              type="button"
+              class="hydro-post-action"
+              th:classappend="${hasMemberPlugin} ? ' hydro-post-action--favorite' : ''"
+              th:attr="data-post-action=${hasMemberPlugin ? 'favorite' : 'top'},aria-label=${hasMemberPlugin ? (postConfig?.action_favorite_label ?: '收藏文章') : (postConfig?.action_top_label ?: '回到顶部')}"
+            >
+              <span
+                th:text="${hasMemberPlugin ? (postConfig?.action_favorite_label ?: '收藏') : (postConfig?.action_top_label ?: '回到顶部')}"
+                >回到顶部</span
+              >
+              <strong th:text="${hasMemberPlugin ? '0' : '↑'}">↑</strong>
             </button>
           </section>
         </div>
@@ -640,6 +670,38 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
           </button>
         </div>
+      </div>
+    </section>
+
+    <section
+      id="hydro-post-reward"
+      class="hydro-post-reward-dialog"
+      data-hydro-reward-dialog
+      aria-hidden="true"
+      aria-labelledby="hydro-post-reward-title"
+      th:if="${enableReward}"
+    >
+      <button
+        class="hydro-post-reward-dialog__scrim"
+        type="button"
+        data-hydro-reward-close
+        aria-label="关闭打赏"
+      ></button>
+      <div class="hydro-post-reward-dialog__panel" role="dialog" aria-modal="true">
+        <button class="hydro-post-reward-dialog__close" type="button" data-hydro-reward-close aria-label="关闭打赏">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <div class="hydro-post-reward-dialog__copy">
+          <p th:text="${postConfig?.reward_eyebrow ?: 'Reward'}">Reward</p>
+          <h2 id="hydro-post-reward-title" th:text="${postConfig?.reward_title ?: '打赏作者'}">打赏作者</h2>
+          <span th:text="${postConfig?.reward_description ?: '如果这篇文章帮到了你，可以请作者喝杯咖啡。'}"
+            >如果这篇文章帮到了你，可以请作者喝杯咖啡。</span
+          >
+        </div>
+        <figure class="hydro-post-reward-dialog__qr">
+          <img th:src="${postConfig.reward_qr}" th:alt="${postConfig?.reward_title ?: '打赏二维码'}" loading="lazy" />
+          <figcaption th:text="${postConfig?.reward_qr_hint ?: '扫码打赏'}">扫码打赏</figcaption>
+        </figure>
       </div>
     </section>
   </article>
