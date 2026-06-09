@@ -138,9 +138,12 @@ spec:
           children:
             - $formkit: switch
               name: show_marquee
+              id: identity_footer_show_marquee
+              key: identity_footer_show_marquee
               label: 显示页脚滚动字
               value: true
             - $formkit: text
+              if: $get(identity_footer_show_marquee).value === true
               name: marquee_text
               label: 滚动字
               value: 氢
@@ -230,29 +233,37 @@ spec:
               value: true
             - $formkit: switch
               name: enable_motion
+              id: presentation_motion_enable_motion
+              key: presentation_motion_enable_motion
               label: 启用全局动效
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: smooth_scroll
               label: 启用平滑滚动
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: enable_theme_transition
               label: 启用深浅色光幕过渡
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: enable_hero_motion
               label: 启用 Hero 图片动效
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: enable_card_hover
               label: 启用卡片 3D Hover
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: enable_scroll_tilt
               label: 启用主内容滚动倾斜
               value: true
             - $formkit: switch
+              if: $get(presentation_motion_enable_motion).value === true
               name: enable_text_scramble
               label: 启用文字扰动
               value: true
@@ -282,9 +293,12 @@ spec:
           children:
             - $formkit: switch
               name: show_search
+              id: navigation_header_show_search
+              key: navigation_header_show_search
               label: 显示搜索入口
               value: true
             - $formkit: radio
+              if: $get(navigation_header_show_search).value === true
               name: search_entry_mode
               label: 搜索入口方式
               value: modal
@@ -716,13 +730,19 @@ spec:
               value: true
             - $formkit: switch
               name: show_author
+              id: content_post_show_author
+              key: content_post_show_author
               label: 显示作者信息
               value: true
             - $formkit: switch
+              if: $get(content_post_show_author).value === true
               name: enable_reward
+              id: content_post_enable_reward
+              key: content_post_enable_reward
               label: 启用赞赏区
               value: false
             - $formkit: attachment
+              if: $get(content_post_enable_reward).value === true
               name: reward_qr
               label: 赞赏二维码
               accepts:
@@ -760,9 +780,12 @@ spec:
               value: true
             - $formkit: switch
               name: enable_related_posts
+              id: content_post_enable_related_posts
+              key: content_post_enable_related_posts
               label: 启用相关文章
               value: true
             - $formkit: number
+              if: $get(content_post_enable_related_posts).value === true
               name: related_posts_size
               label: 相关文章数量
               value: 3
@@ -866,9 +889,12 @@ spec:
               step: 1
             - $formkit: switch
               name: show_recommendations
+              id: content_search_show_recommendations
+              key: content_search_show_recommendations
               label: 显示推荐文章
               value: true
             - $formkit: number
+              if: $get(content_search_show_recommendations).value === true
               name: recommendation_size
               label: 推荐文章数量
               value: 3
@@ -881,13 +907,18 @@ spec:
           children:
             - $formkit: switch
               name: enable_post_poster
+              id: content_share_enable_post_poster
+              key: content_share_enable_post_poster
               label: 启用文章分享海报
               value: true
             - $formkit: switch
               name: enable_moment_poster
+              id: content_share_enable_moment_poster
+              key: content_share_enable_moment_poster
               label: 启用瞬间分享海报
               value: true
             - $formkit: text
+              if: $get(content_share_enable_post_poster).value === true || $get(content_share_enable_moment_poster).value === true
               name: title
               label: 弹窗标题
               value: 分享海报
@@ -901,13 +932,19 @@ spec:
           children:
             - $formkit: switch
               name: enable_submit
+              id: plugins_links_enable_submit
+              key: plugins_links_enable_submit
               label: 启用在线提交
               value: true
             - $formkit: switch
+              if: $get(plugins_links_enable_submit).value === true
               name: enable_update
+              id: plugins_links_enable_update
+              key: plugins_links_enable_update
               label: 启用友链修改
               value: true
             - $formkit: select
+              if: $get(plugins_links_enable_submit).value === true
               name: verify_type
               label: 验证方式
               value: email
@@ -1028,6 +1065,8 @@ spec:
           children:
             - $formkit: switch
               name: enable_toc
+              id: plugins_docs_enable_toc
+              key: plugins_docs_enable_toc
               label: 启用文档目录
               value: true
             - $formkit: switch
