@@ -3,18 +3,18 @@
   data-hydro-nav
   th:with="
     menu = ${menuFinder.getPrimary()},
-    logoMode = ${theme.config.site == null || #strings.isEmpty(theme.config.site.logo_display) ? 'logo' : theme.config.site.logo_display},
-    markLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.site.logo},
-    darkMarkLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.dark_logo) ? markLogoSrc : theme.config.site.dark_logo},
-    navLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.nav_logo) ? #theme.assets('/brand/hydro-minim-lockup.svg') : theme.config.site.nav_logo},
-    darkNavLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.dark_nav_logo) ? #theme.assets('/brand/hydro-minim-lockup-dark.svg') : theme.config.site.dark_nav_logo},
-    logoAlt = ${theme.config.site == null || #strings.isEmpty(theme.config.site.logo_alt) ? site.title : theme.config.site.logo_alt},
-    showSearch = ${theme.config.navigation == null or theme.config.navigation.show_search != false},
-    searchEntryMode = ${theme.config.navigation == null or #strings.isEmpty(theme.config.navigation.search_entry_mode) ? 'modal' : theme.config.navigation.search_entry_mode},
-    allowColorSwitch = ${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false},
+    logoMode = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo_display) ? 'logo' : theme.config.identity.brand.logo_display},
+    markLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo},
+    darkMarkLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.dark_logo) ? markLogoSrc : theme.config.identity.brand.dark_logo},
+    navLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.nav_logo) ? #theme.assets('/brand/hydro-minim-lockup.svg') : theme.config.identity.brand.nav_logo},
+    darkNavLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.dark_nav_logo) ? #theme.assets('/brand/hydro-minim-lockup-dark.svg') : theme.config.identity.brand.dark_nav_logo},
+    logoAlt = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo_alt) ? site.title : theme.config.identity.brand.logo_alt},
+    showSearch = ${theme.config.navigation?.header == null or theme.config.navigation.header.show_search != false},
+    searchEntryMode = ${theme.config.navigation?.header == null or #strings.isEmpty(theme.config.navigation.header.search_entry_mode) ? 'modal' : theme.config.navigation.header.search_entry_mode},
+    allowColorSwitch = ${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
     hasSearchWidget = ${pluginFinder.available('PluginSearchWidget')},
-    searchLabel = ${theme.config.search?.title ?: '搜索'},
-    mobileMenuLabel = ${theme.config.navigation?.mobile_menu_label ?: '菜单'}
+    searchLabel = ${theme.config.content?.search?.title ?: '搜索'},
+    mobileMenuLabel = ${theme.config.navigation?.header?.mobile_menu_label ?: '菜单'}
   "
 >
   <div class="hydro-nav__inner">
@@ -88,17 +88,17 @@
       </th:block>
       <th:block th:unless="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">
         <th:block
-          th:if="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+          th:if="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
         >
           <a
-            th:each="item : ${theme.config.navigation.fallback_links}"
+            th:each="item : ${theme.config.navigation.fallback_menu.links}"
             th:href="${item.url}"
             th:text="${item.label}"
             data-scramble
           ></a>
         </th:block>
         <th:block
-          th:unless="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+          th:unless="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
         >
           <a href="#articles" data-scramble>文章</a>
           <a href="#categories" data-scramble>分类</a>
@@ -259,11 +259,11 @@
   data-hydro-mobile-menu
   th:with="
     menu = ${menuFinder.getPrimary()},
-    mobileMenuLabel = ${theme.config.navigation?.mobile_menu_label ?: '菜单'},
+    mobileMenuLabel = ${theme.config.navigation?.header?.mobile_menu_label ?: '菜单'},
     mobileMenuBrand = ${#strings.isEmpty(site.title) ? 'Hydro-Minim' : site.title},
-    markLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.site.logo},
-    darkMarkLogoSrc = ${theme.config.site == null || #strings.isEmpty(theme.config.site.dark_logo) ? markLogoSrc : theme.config.site.dark_logo},
-    allowColorSwitch = ${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false}
+    markLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo},
+    darkMarkLogoSrc = ${theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.dark_logo) ? markLogoSrc : theme.config.identity.brand.dark_logo},
+    allowColorSwitch = ${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false}
   "
 >
   <nav aria-label="Mobile" data-lenis-prevent>
@@ -373,9 +373,9 @@
       <th:block th:unless="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">
         <ol class="hydro-mobile-menu__tree">
           <th:block
-            th:if="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+            th:if="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
           >
-            <li class="hydro-mobile-menu__item" th:each="item : ${theme.config.navigation.fallback_links}">
+            <li class="hydro-mobile-menu__item" th:each="item : ${theme.config.navigation.fallback_menu.links}">
               <div class="hydro-mobile-menu__row">
                 <a class="hydro-mobile-menu__link hydro-mobile-menu__link--level-1" th:href="${item.url}">
                   <span class="hydro-mobile-menu__label" th:text="${item.label}">导航</span>
@@ -385,7 +385,7 @@
           </th:block>
           <li
             class="hydro-mobile-menu__item"
-            th:unless="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+            th:unless="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
           >
             <div class="hydro-mobile-menu__row">
               <a class="hydro-mobile-menu__link hydro-mobile-menu__link--level-1" href="#articles">
@@ -395,7 +395,7 @@
           </li>
           <li
             class="hydro-mobile-menu__item"
-            th:unless="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+            th:unless="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
           >
             <div class="hydro-mobile-menu__row">
               <a class="hydro-mobile-menu__link hydro-mobile-menu__link--level-1" href="#categories">
@@ -405,7 +405,7 @@
           </li>
           <li
             class="hydro-mobile-menu__item"
-            th:unless="${theme.config.navigation?.fallback_links != null and not #lists.isEmpty(theme.config.navigation.fallback_links)}"
+            th:unless="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
           >
             <div class="hydro-mobile-menu__row">
               <a class="hydro-mobile-menu__link hydro-mobile-menu__link--level-1" href="#about">

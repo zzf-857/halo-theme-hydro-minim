@@ -1,6 +1,6 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${theme.config.moments?.detail_title ?: '瞬间详情'} - ${site.title}|">瞬间详情</title>
+    <title th:text="|${theme.config.plugins?.moments?.detail_title ?: '瞬间详情'} - ${site.title}|">瞬间详情</title>
   </template>
 
   <section class="hydro-moment-detail-page" th:with="content=${moment.spec.content}">
@@ -8,20 +8,20 @@
       <nav class="hydro-moment-detail-back" aria-label="瞬间导航">
         <a th:href="@{/moments}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
-          <span th:text="${theme.config.moments?.detail_back_label ?: '返回瞬间'}">返回瞬间</span>
+          <span th:text="${theme.config.plugins?.moments?.detail_back_label ?: '返回瞬间'}">返回瞬间</span>
         </a>
       </nav>
 
       <header class="hydro-moment-detail-hero">
-        <p th:text="${theme.config.moments?.detail_eyebrow ?: 'Hydro-Minim / Moment'}">Hydro-Minim / Moment</p>
-        <h1 th:text="${theme.config.moments?.detail_title ?: '瞬间详情'}">瞬间详情</h1>
+        <p th:text="${theme.config.plugins?.moments?.detail_eyebrow ?: 'Hydro-Minim / Moment'}">Hydro-Minim / Moment</p>
+        <h1 th:text="${theme.config.plugins?.moments?.detail_title ?: '瞬间详情'}">瞬间详情</h1>
         <dl>
           <div>
-            <dt th:text="${theme.config.moments?.detail_release_label ?: 'Release'}">Release</dt>
+            <dt th:text="${theme.config.plugins?.moments?.detail_release_label ?: 'Release'}">Release</dt>
             <dd th:text="${#dates.format(moment.spec.releaseTime, 'yyyy.MM.dd HH:mm')}">2026.05.12 12:00</dd>
           </div>
           <div th:if="${moment.owner != null}">
-            <dt th:text="${theme.config.moments?.detail_author_label ?: 'Author'}">Author</dt>
+            <dt th:text="${theme.config.plugins?.moments?.detail_author_label ?: 'Author'}">Author</dt>
             <dd th:text="${moment.owner.displayName}">Hydro</dd>
           </div>
         </dl>
@@ -136,14 +136,16 @@
               <p>Moment Info</p>
               <dl class="hydro-moment-detail-info">
                 <div>
-                  <dt th:text="${theme.config.moments?.detail_release_label ?: 'Release'}">Release</dt>
+                  <dt th:text="${theme.config.plugins?.moments?.detail_release_label ?: 'Release'}">Release</dt>
                   <dd th:text="${#dates.format(moment.spec.releaseTime, 'yyyy.MM.dd HH:mm')}">2026.05.12 12:00</dd>
                 </div>
                 <div>
                   <dt>Likes</dt>
                   <dd th:text="${moment.stats.upvote ?: 0}">0</dd>
                 </div>
-                <div th:if="${theme.config.moments == null or theme.config.moments.enable_comment != false}">
+                <div
+                  th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_comment != false}"
+                >
                   <dt>Comments</dt>
                   <dd th:text="${moment.stats.approvedComment ?: 0}">0</dd>
                 </div>
@@ -152,12 +154,12 @@
 
             <section
               class="hydro-moment-detail-panel hydro-moment-detail-panel--actions"
-              th:if="${theme.config.moments == null or theme.config.moments.enable_upvote != false or theme.config.moments.enable_comment != false or theme.config.moments.enable_share_poster != false}"
+              th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_upvote != false or theme.config.plugins.moments.enable_comment != false or theme.config.plugins.moments.enable_share_poster != false}"
             >
               <p>Actions</p>
               <div class="hydro-moment__actions hydro-moment-detail-actions">
                 <button
-                  th:if="${theme.config.moments == null or theme.config.moments.enable_upvote != false}"
+                  th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_upvote != false}"
                   class="hydro-moment__action hydro-moment__upvote"
                   type="button"
                   th:attr="data-moment-upvote=${moment.metadata.name},aria-label=|点赞 ${moment.metadata.name}|"
@@ -175,7 +177,7 @@
                   >
                 </button>
                 <a
-                  th:if="${theme.config.moments == null or theme.config.moments.enable_comment != false}"
+                  th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_comment != false}"
                   class="hydro-moment__action"
                   href="#comment"
                 >
@@ -188,7 +190,7 @@
                   <span th:text="${moment.stats.approvedComment ?: 0}">0</span>
                 </a>
                 <button
-                  th:if="${theme.config.moments == null or theme.config.moments.enable_share_poster != false}"
+                  th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_share_poster != false}"
                   class="hydro-moment__action"
                   type="button"
                   data-hydro-moment-poster-open
@@ -200,7 +202,7 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M7 17 17 7M9 7h8v8"></path>
                     </svg>
-                    <b th:text="${theme.config.moments?.share_poster_label ?: '分享海报'}">分享海报</b>
+                    <b th:text="${theme.config.plugins?.moments?.share_poster_label ?: '分享海报'}">分享海报</b>
                   </span>
                   <span>生成</span>
                 </button>
@@ -266,11 +268,11 @@
           <section
             id="comment"
             class="hydro-moment__comment hydro-moment__comment--detail hydro-moment-detail-comments"
-            th:if="${theme.config.moments == null or theme.config.moments.enable_comment != false}"
+            th:if="${theme.config.plugins?.moments == null or theme.config.plugins.moments.enable_comment != false}"
           >
             <div class="hydro-moment-detail-comments__head">
               <p>Comment</p>
-              <h2 th:text="${theme.config.moments?.comments_title ?: '评论'}">评论</h2>
+              <h2 th:text="${theme.config.plugins?.moments?.comments_title ?: '评论'}">评论</h2>
             </div>
             <halo:comment group="moment.halo.run" kind="Moment" th:attr="name=${moment.metadata.name}" />
           </section>
@@ -301,14 +303,14 @@
             <h2
               id="hydro-moment-poster-title"
               class="hydro-visually-hidden"
-              th:text="${theme.config.share?.title ?: '分享海报'}"
+              th:text="${theme.config.content?.share?.title ?: '分享海报'}"
             >
               分享海报
             </h2>
             <p
               id="hydro-moment-poster-description"
               class="hydro-visually-hidden"
-              th:text="${theme.config.share?.moment_description ?: '把瞬间整理成一张适合保存与转发的轻量海报。'}"
+              th:text="${theme.config.content?.share?.moment_description ?: '把瞬间整理成一张适合保存与转发的轻量海报。'}"
             >
               把瞬间整理成一张适合保存与转发的轻量海报。
             </p>
@@ -325,7 +327,10 @@
               </div>
 
               <header class="hydro-poster-card__header">
-                <p class="hydro-poster-card__eyebrow" th:text="${theme.config.share?.moment_card_eyebrow ?: 'Moment'}">
+                <p
+                  class="hydro-poster-card__eyebrow"
+                  th:text="${theme.config.content?.share?.moment_card_eyebrow ?: 'Moment'}"
+                >
                   Moment
                 </p>
                 <time th:text="${#dates.format(moment.spec.releaseTime, 'yyyy.MM.dd / HH:mm')}"
@@ -357,8 +362,8 @@
                   <div class="hydro-poster-card__hero-caption">
                     <span
                       data-hydro-poster-caption
-                      th:attr="data-hydro-poster-caption-fallback=${theme.config.share?.moment_card_eyebrow ?: 'Moment'}"
-                      th:text="${not #lists.isEmpty(moment.spec.tags) ? '#' + moment.spec.tags[0] : (theme.config.share?.moment_card_eyebrow ?: 'Moment')}"
+                      th:attr="data-hydro-poster-caption-fallback=${theme.config.content?.share?.moment_card_eyebrow ?: 'Moment'}"
+                      th:text="${not #lists.isEmpty(moment.spec.tags) ? '#' + moment.spec.tags[0] : (theme.config.content?.share?.moment_card_eyebrow ?: 'Moment')}"
                       >#tag</span
                     >
                   </div>
@@ -372,7 +377,10 @@
                     th:utext="${content.html}"
                     hidden
                   ></div>
-                  <p class="hydro-poster-card__kicker" th:text="${theme.config.share?.moment_card_eyebrow ?: 'Moment'}">
+                  <p
+                    class="hydro-poster-card__kicker"
+                    th:text="${theme.config.content?.share?.moment_card_eyebrow ?: 'Moment'}"
+                  >
                     Moment
                   </p>
                   <div
@@ -415,7 +423,7 @@
                     >Hydro</strong
                   >
                   <span th:text="${site.title}">Hydro-Minim</span>
-                  <em th:text="${theme.config.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
+                  <em th:text="${theme.config.content?.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
                 </div>
                 <div
                   class="hydro-poster-qr"
@@ -433,7 +441,7 @@
                 class="hydro-moment-poster__tool"
                 type="button"
                 data-hydro-poster-download
-                th:attr="data-filename=|hydro-moment-${moment.metadata.name}.png|,aria-label=${theme.config.share?.download_label ?: '下载海报'},title=${theme.config.share?.download_label ?: '下载海报'}"
+                th:attr="data-filename=|hydro-moment-${moment.metadata.name}.png|,aria-label=${theme.config.content?.share?.download_label ?: '下载海报'},title=${theme.config.content?.share?.download_label ?: '下载海报'}"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"></path>

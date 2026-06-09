@@ -4,31 +4,32 @@
 <meta
   name="theme-color"
   media="(prefers-color-scheme: light)"
-  th:content="${theme.config.appearance?.background_color ?: '#F3F3F3'}"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
 />
 <meta
   name="theme-color"
   media="(prefers-color-scheme: dark)"
-  th:content="${theme.config.appearance?.dark_background_color ?: '#101112'}"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
 />
 <link
   rel="icon"
   type="image/svg+xml"
-  th:with="faviconHref = ${site.favicon ?: (theme.config.site == null || #strings.isEmpty(theme.config.site.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.site.logo)}"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
   th:href="${faviconHref}"
 />
 <th:block
-  th:if="${not #strings.isEmpty(theme.config.advanced?.head_html)}"
-  th:utext="${theme.config.advanced.head_html}"
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
 />
 <style
-  th:if="${not #strings.isEmpty(theme.config.advanced?.code_css)}"
-  th:utext="${theme.config.advanced.code_css}"
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
 ></style>
 <script th:inline="javascript">
   (() => {
     const root = document.documentElement;
-    const defaultMode = root.dataset.themeDefault || /*[[${theme.config.appearance?.color_scheme ?: 'auto'}]]*/ "auto";
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
     let storedMode = null;
     try {
       storedMode = window.localStorage.getItem("hydro-color-scheme");

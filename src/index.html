@@ -3,14 +3,15 @@
     name="head"
     th:with="
       homeConfig=${theme.config.home},
-      showHero=${homeConfig == null or (homeConfig.show_hero != false and homeConfig.show_hero != 'false')}
+      heroConfig=${homeConfig?.hero},
+      showHero=${heroConfig == null or (heroConfig.enabled != false and heroConfig.enabled != 'false')}
     "
   >
     <title th:text="|${site.title} - Hydro-Minim|">Hydro-Minim</title>
     <link
       th:if="${showHero}"
       rel="preload"
-      th:href="${theme.config.home?.hero_cover ?: #theme.assets('/images/hero-featured.jpg')}"
+      th:href="${theme.config.home?.hero?.cover ?: #theme.assets('/images/hero-featured.jpg')}"
       as="image"
     />
   </template>
@@ -19,10 +20,10 @@
     class="hydro-home"
     th:with="
       homeConfig=${theme.config.home},
-      showHero=${homeConfig == null or (homeConfig.show_hero != false and homeConfig.show_hero != 'false')},
-      showLatest=${homeConfig == null or (homeConfig.show_latest != false and homeConfig.show_latest != 'false')},
-      showCategories=${homeConfig == null or (homeConfig.show_categories != false and homeConfig.show_categories != 'false')},
-      showAbout=${homeConfig == null or (homeConfig.show_about != false and homeConfig.show_about != 'false')}
+      showHero=${homeConfig?.hero == null or (homeConfig.hero.enabled != false and homeConfig.hero.enabled != 'false')},
+      showLatest=${homeConfig?.latest == null or (homeConfig.latest.enabled != false and homeConfig.latest.enabled != 'false')},
+      showCategories=${homeConfig?.categories == null or (homeConfig.categories.enabled != false and homeConfig.categories.enabled != 'false')},
+      showAbout=${homeConfig?.about == null or (homeConfig.about.enabled != false and homeConfig.about.enabled != 'false')}
     "
     th:classappend="${showHero} ? '' : ' hydro-home--without-hero'"
   >

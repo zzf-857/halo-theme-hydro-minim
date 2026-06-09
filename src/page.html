@@ -6,7 +6,7 @@
   <article
     class="hydro-content-page"
     th:with="
-      pageConfig=${theme.config.page},
+      pageConfig=${theme.config.content?.page},
       showPageCover=${pageConfig == null or pageConfig.show_cover != false},
       showPagePublishTime=${pageConfig == null or pageConfig.show_publish_time != false},
       enablePageComment=${pageConfig == null or pageConfig.enable_comment != false}

@@ -4,7 +4,7 @@
   </template>
 
   <th:block
-    th:with="eyebrow=${theme.config.taxonomy?.category_detail_eyebrow ?: 'Category'}, title=${category.spec.displayName}, description=${category.spec.description ?: (theme.config.taxonomy?.category_detail_fallback_description ?: '这个分类下的文章都会在这里汇集。')}"
+    th:with="eyebrow=${theme.config.content?.taxonomy?.category_detail_eyebrow ?: 'Category'}, title=${category.spec.displayName}, description=${category.spec.description ?: (theme.config.content?.taxonomy?.category_detail_fallback_description ?: '这个分类下的文章都会在这里汇集。')}"
     th:replace="~{modules/list-hero}"
   />
 
@@ -18,7 +18,7 @@
       <div
         th:if="${posts.total == 0}"
         class="hydro-empty"
-        th:text="${theme.config.taxonomy?.category_detail_empty_text ?: '这个分类下还没有文章。'}"
+        th:text="${theme.config.content?.taxonomy?.category_detail_empty_text ?: '这个分类下还没有文章。'}"
       >
         这个分类下还没有文章。
       </div>

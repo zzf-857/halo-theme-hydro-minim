@@ -20,6 +20,12 @@
 - Reader action rail means the desktop/tablet side panel containing reading progress, TOC, post actions, and top action. It remains sticky on PC and becomes the drawer source on phones.
 - Mobile menu current branch means phone navigation groups stay collapsed by default, and only the branch containing the current route expands automatically.
 - Mobile theme action means the phone menu theme switch shows the next available mode, including matching text and icon, instead of a static "dark/light" label.
+- Theme setting domain means a top-level area of the Halo theme settings page that matches how a site owner thinks about operating the theme, such as identity, presentation, navigation, home, content, plugins, and advanced settings.
+- Operator-minded setting model means settings are grouped by site-owner intent and maintenance workflow, not by implementation files or every individual template route.
+- Core content page settings means settings for built-in reading and discovery surfaces: posts, single pages, archives, taxonomy pages, search, and share posters.
+- Plugin page settings means settings for optional plugin-backed surfaces such as links, moments, photos, equipment, friends, bangumi, Steam, and Docsme.
+- Effective setting means a theme setting that changes site identity, visual presentation, layout behavior, feature availability, content quantity, or plugin integration behavior.
+- Microcopy default means routine labels, empty states, install hints, and button text that belong in template defaults rather than in the theme settings page.
 
 ## Current Decisions
 
@@ -37,3 +43,5 @@
 - Mobile article controls must reuse existing post action contracts: `data-post-action`, `data-post-reading-progress`, `data-post-upvote-count`, and `data-hydro-poster-open`. Shared state such as reading percent and upvote count should broadcast to all matching elements.
 - Future phone article affordances should attach to the mobile reading bar or TOC drawer semantics before adding another floating utility surface.
 - Mobile menu branches must not open the first group by default. Current-route scoring should choose the deepest matching link and expand only its parent branch chain.
+- Theme settings should stay operator-minded. New settings should enter the existing identity, presentation, navigation, home, content, plugins, or advanced domains before adding another top-level domain.
+- Microcopy defaults should not become settings unless site owners have a clear reason to edit that wording as part of normal theme operation.

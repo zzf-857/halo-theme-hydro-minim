@@ -26,7 +26,7 @@
 
           <div class="hydro-author-spotlight__actions">
             <a class="hydro-author-primary-link" href="#author-articles">
-              <span th:text="${theme.config.page?.author_articles_label ?: '文章'}">文章</span>
+              <span th:text="${theme.config.content?.page?.author_articles_label ?: '文章'}">文章</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 5v14M6 13l6 6 6-6"></path>
               </svg>
@@ -117,12 +117,15 @@
         <div class="hydro-author-articles__head">
           <div>
             <p>Recently Published</p>
-            <h2 id="hydro-author-articles-title" th:text="${theme.config.page?.author_articles_label ?: '文章'}">
+            <h2
+              id="hydro-author-articles-title"
+              th:text="${theme.config.content?.page?.author_articles_label ?: '文章'}"
+            >
               文章
             </h2>
           </div>
           <span
-            th:text="|${theme.config.page?.author_count_prefix ?: '共'} ${posts.total} ${theme.config.page?.author_count_suffix ?: '篇'}|"
+            th:text="|${theme.config.content?.page?.author_count_prefix ?: '共'} ${posts.total} ${theme.config.content?.page?.author_count_suffix ?: '篇'}|"
             >共 0 篇</span
           >
         </div>
@@ -134,7 +137,7 @@
             class="hydro-author-featured-card"
             th:classappend="${stat.index == 0} ? ' hydro-author-featured-card--lead' : ''"
             th:with="
-              fallbackCover=${stat.index % 3 == 0 ? theme.config.site?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.site?.article_cover_2 : theme.config.site?.article_cover_3)},
+              fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
               cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover}
             "
           >
@@ -184,7 +187,7 @@
         <div
           th:if="${posts.total == 0}"
           class="hydro-empty"
-          th:text="${theme.config.page?.author_empty_text ?: '这位作者还没有文章。'}"
+          th:text="${theme.config.content?.page?.author_empty_text ?: '这位作者还没有文章。'}"
         >
           这位作者还没有文章。
         </div>

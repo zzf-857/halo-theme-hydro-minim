@@ -1,6 +1,6 @@
 <th:block
   th:with="
-    navigationConfig=${theme.config.navigation},
+    navigationConfig=${theme.config.navigation?.floating},
     serverRequest=${#ctx.getVariable('org.springframework.web.reactive.function.server.RouterFunctions.request')},
     currentTemplateId=${_templateId},
     currentPermalink=${post != null ? post.status.permalink : (singlePage != null ? singlePage.status.permalink : (category != null ? category.status.permalink : (tag != null ? tag.status.permalink : (author != null ? author.status.permalink : (docTree != null ? docTree.status.permalink : (project != null ? project.status.permalink : null))))))},

@@ -1,17 +1,17 @@
 <!doctype html>
 <html
   th:lang="${#locale.toLanguageTag}"
-  th:style="|--hydro-light-bg:${theme.config.appearance?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.appearance?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.appearance?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.appearance?.dark_accent_color ?: theme.config.appearance?.accent_color ?: '#FF8A8A'};|"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
   th:attr="
-    data-theme-default=${theme.config.appearance?.color_scheme ?: 'auto'},
-    data-hydro-smooth-scroll=${theme.config.appearance == null or theme.config.appearance.smooth_scroll != false},
-    data-hydro-motion=${(theme.config.appearance == null or theme.config.appearance.enable_motion != false) ? 'on' : 'off'},
-    data-hydro-theme-transition=${theme.config.appearance == null or theme.config.appearance.enable_theme_transition != false},
-    data-hydro-hero-motion=${theme.config.appearance == null or theme.config.appearance.enable_hero_motion != false},
-    data-hydro-card-hover=${theme.config.appearance == null or theme.config.appearance.enable_card_hover != false},
-    data-hydro-scroll-tilt=${theme.config.appearance == null or theme.config.appearance.enable_scroll_tilt != false},
-    data-hydro-text-scramble=${theme.config.appearance == null or theme.config.appearance.enable_text_scramble != false},
-    data-hydro-lightbox=${theme.config.appearance == null or theme.config.appearance.enable_lightbox != false}
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-scroll-tilt=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_scroll_tilt != false},
+    data-hydro-text-scramble=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_text_scramble != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
   "
   xmlns:th="http://www.thymeleaf.org"
 >
@@ -24,27 +24,27 @@
   <body
     class="hydro-page"
     th:attr="
-      data-smooth-scroll=${theme.config.appearance == null or theme.config.appearance.smooth_scroll != false},
-      data-enable-motion=${theme.config.appearance == null or theme.config.appearance.enable_motion != false},
-      data-theme-transition=${theme.config.appearance == null or theme.config.appearance.enable_theme_transition != false},
-      data-enable-hero-motion=${theme.config.appearance == null or theme.config.appearance.enable_hero_motion != false},
-      data-enable-card-hover=${theme.config.appearance == null or theme.config.appearance.enable_card_hover != false},
-      data-enable-scroll-tilt=${theme.config.appearance == null or theme.config.appearance.enable_scroll_tilt != false},
-      data-enable-text-scramble=${theme.config.appearance == null or theme.config.appearance.enable_text_scramble != false},
-      data-enable-lightbox=${theme.config.appearance == null or theme.config.appearance.enable_lightbox != false},
-      data-theme-to-light-label=${theme.config.appearance?.theme_to_light_label ?: '切换为浅色模式'},
-      data-theme-to-dark-label=${theme.config.appearance?.theme_to_dark_label ?: '切换为深色模式'},
-      data-allow-color-switch=${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false},
-      data-back-to-top-threshold=${theme.config.navigation?.back_to_top_threshold ?: 100},
-      data-post-share-copied-text=${theme.config.post?.share_copied_text ?: '已复制'},
-      data-post-share-copy-prompt-title=${theme.config.post?.copy_prompt_title ?: '复制链接'},
-      data-post-upvote-error-text=${theme.config.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
-      data-moment-upvote-error-text=${theme.config.moments?.upvote_error_text ?: (theme.config.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
-      data-doc-toc-empty-text=${theme.config.docs?.toc_empty_text ?: '无目录'}
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-scroll-tilt=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_scroll_tilt != false},
+      data-enable-text-scramble=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_text_scramble != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
     "
   >
     <div
-      th:if="${theme.config.appearance == null or theme.config.appearance.show_grain != false}"
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
       class="grain-overlay"
       aria-hidden="true"
     ></div>
@@ -62,12 +62,12 @@
 
     <halo:footer />
     <th:block
-      th:if="${not #strings.isEmpty(theme.config.advanced?.footer_html)}"
-      th:utext="${theme.config.advanced.footer_html}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
     />
     <script
-      th:if="${not #strings.isEmpty(theme.config.advanced?.code_js)}"
-      th:utext="${theme.config.advanced.code_js}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
     ></script>
   </body>
 </html>

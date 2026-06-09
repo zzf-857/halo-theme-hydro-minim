@@ -2,12 +2,12 @@
 <html
   th:lang="${#locale.toLanguageTag}"
   th:fragment="layout (title,head,body)"
-  th:style="|--hydro-light-bg:${theme.config.appearance?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.appearance?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.appearance?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.appearance?.dark_accent_color ?: theme.config.appearance?.accent_color ?: '#FF8A8A'};|"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
   th:attr="
-    data-theme-default=${theme.config.appearance?.color_scheme ?: 'auto'},
-    data-hydro-smooth-scroll=${theme.config.appearance == null or theme.config.appearance.smooth_scroll != false},
-    data-hydro-motion=${(theme.config.appearance == null or theme.config.appearance.enable_motion != false) ? 'on' : 'off'},
-    data-hydro-theme-transition=${theme.config.appearance == null or theme.config.appearance.enable_theme_transition != false}
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false}
   "
   xmlns:th="https://www.thymeleaf.org"
 >
@@ -18,33 +18,33 @@
     <meta
       name="theme-color"
       media="(prefers-color-scheme: light)"
-      th:content="${theme.config.appearance?.background_color ?: '#F3F3F3'}"
+      th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
     />
     <meta
       name="theme-color"
       media="(prefers-color-scheme: dark)"
-      th:content="${theme.config.appearance?.dark_background_color ?: '#101112'}"
+      th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
     />
     <title th:text="${title}">Hydro-Minim</title>
     <link
       rel="icon"
       type="image/svg+xml"
-      th:with="faviconHref = ${site.favicon ?: (theme.config.site == null || #strings.isEmpty(theme.config.site.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.site.logo)}"
+      th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
       th:href="${faviconHref}"
     />
     <th:block
-      th:if="${not #strings.isEmpty(theme.config.advanced?.head_html)}"
-      th:utext="${theme.config.advanced.head_html}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+      th:utext="${theme.config.advanced.inject.head_html}"
     />
     <style
-      th:if="${not #strings.isEmpty(theme.config.advanced?.code_css)}"
-      th:utext="${theme.config.advanced.code_css}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+      th:utext="${theme.config.advanced.inject.code_css}"
     ></style>
     <script th:inline="javascript">
       (() => {
         const root = document.documentElement;
         const defaultMode =
-          root.dataset.themeDefault || /*[[${theme.config.appearance?.color_scheme ?: 'auto'}]]*/ "auto";
+          root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
         let storedMode = null;
         try {
           storedMode = window.localStorage.getItem("hydro-color-scheme");
@@ -73,16 +73,16 @@
   <body
     class="hydro-page hydro-auth-page"
     th:attr="
-      data-smooth-scroll=${theme.config.appearance == null or theme.config.appearance.smooth_scroll != false},
-      data-enable-motion=${theme.config.appearance == null or theme.config.appearance.enable_motion != false},
-      data-theme-transition=${theme.config.appearance == null or theme.config.appearance.enable_theme_transition != false},
-      data-theme-to-light-label=${theme.config.appearance?.theme_to_light_label ?: '切换为浅色模式'},
-      data-theme-to-dark-label=${theme.config.appearance?.theme_to_dark_label ?: '切换为深色模式'},
-      data-allow-color-switch=${theme.config.navigation == null or theme.config.navigation.allow_color_switch != false}
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false}
     "
   >
     <div
-      th:if="${theme.config.appearance == null or theme.config.appearance.show_grain != false}"
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
       class="grain-overlay"
       aria-hidden="true"
     ></div>
@@ -92,12 +92,12 @@
     </main>
     <halo:footer />
     <th:block
-      th:if="${not #strings.isEmpty(theme.config.advanced?.footer_html)}"
-      th:utext="${theme.config.advanced.footer_html}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
     />
     <script
-      th:if="${not #strings.isEmpty(theme.config.advanced?.code_js)}"
-      th:utext="${theme.config.advanced.code_js}"
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
     ></script>
   </body>
 </html>

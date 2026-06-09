@@ -2,45 +2,45 @@
   <div class="hydro-container">
     <div class="hydro-about__grid" th:with="categories = ${categoryFinder.listAsTree()}">
       <div class="hydro-about__intro">
-        <span class="hydro-about__eyebrow about-text-line" th:text="${theme.config.home?.about_eyebrow ?: 'About'}">
+        <span class="hydro-about__eyebrow about-text-line" th:text="${theme.config.home?.about?.eyebrow ?: 'About'}">
           About
         </span>
         <h2 class="hydro-about__title">
-          <span class="about-text-line" th:text="${theme.config.home?.about_title ?: '关于'}">关于</span>
-          <span class="about-text-line" th:text="${theme.config.home?.about_subtitle ?: '艺术的生活家'}">
+          <span class="about-text-line" th:text="${theme.config.home?.about?.title ?: '关于'}">关于</span>
+          <span class="about-text-line" th:text="${theme.config.home?.about?.subtitle ?: '艺术的生活家'}">
             艺术的生活家
           </span>
         </h2>
-        <p class="hydro-about__lead about-text-line" th:text="${theme.config.home?.about_paragraph_1}"></p>
+        <p class="hydro-about__lead about-text-line" th:text="${theme.config.home?.about?.paragraph_1}"></p>
       </div>
 
       <div class="hydro-about__content">
         <div class="hydro-about__statement about-text-line">
-          <p th:text="${theme.config.home?.about_paragraph_2}"></p>
-          <p th:text="${theme.config.home?.about_paragraph_3}"></p>
+          <p th:text="${theme.config.home?.about?.paragraph_2}"></p>
+          <p th:text="${theme.config.home?.about?.paragraph_3}"></p>
         </div>
 
         <div class="hydro-about__stats about-text-line">
           <div>
             <strong th:text="${posts.total ?: 0}">63</strong>
-            <span th:text="${theme.config.home?.about_articles_label ?: '篇文章'}">篇文章</span>
+            <span>篇文章</span>
           </div>
           <div>
             <strong th:text="${#lists.size(categories)}">12</strong>
-            <span th:text="${theme.config.home?.about_categories_label ?: '个分类'}">个分类</span>
+            <span>个分类</span>
           </div>
           <div>
-            <strong th:text="${theme.config.home?.about_readers ?: '2.4k'}">2.4k</strong>
-            <span th:text="${theme.config.home?.about_readers_label ?: '位读者'}">位读者</span>
+            <strong th:text="${theme.config.home?.about?.readers ?: '2.4k'}">2.4k</strong>
+            <span>位读者</span>
           </div>
         </div>
 
         <div
           class="hydro-socials about-text-line"
-          th:if="${theme.config.home == null or (theme.config.home.about_show_socials != false and theme.config.home.about_show_socials != 'false')}"
+          th:if="${theme.config.home?.about == null or (theme.config.home.about.show_socials != false and theme.config.home.about.show_socials != 'false')}"
         >
           <a
-            th:each="item : ${theme.config.site?.social_links}"
+            th:each="item : ${theme.config.identity?.social?.links}"
             th:if="${not #strings.isEmpty(item.url) and item.url != '#'}"
             th:href="${item.url}"
             th:attr="aria-label=${item.label}"

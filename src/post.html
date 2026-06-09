@@ -6,13 +6,13 @@
   <article
     class="hydro-post-page"
     th:with="
-      postConfig=${theme.config.post},
+      postConfig=${theme.config.content?.post},
       enableToc=${postConfig == null or postConfig.enable_toc != false},
       enableActionRail=${postConfig == null or postConfig.enable_action_rail != false},
       enableUpvote=${postConfig == null or postConfig.enable_upvote != false},
       enableShare=${postConfig == null or postConfig.enable_share != false},
       enableReadingProgress=${postConfig == null or postConfig.enable_reading_progress != false},
-      enablePostLightbox=${theme.config.appearance == null or theme.config.appearance.enable_lightbox != false},
+      enablePostLightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
       enableRelatedPosts=${postConfig == null or postConfig.enable_related_posts != false},
       showCover=${postConfig == null or postConfig.show_cover != false},
       showVisit=${postConfig == null or postConfig.show_visit != false},
@@ -254,7 +254,7 @@
                 th:each="item,stat : ${relatedByCategory}"
                 th:if="${stat.index < relatedPrimaryTake}"
                 th:with="
-                  fallbackCover=${stat.index % 3 == 0 ? theme.config.site?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.site?.article_cover_2 : theme.config.site?.article_cover_3)},
+                  fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
                   cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
                 "
               >
@@ -276,7 +276,7 @@
                 th:each="item,stat : ${fallbackRelated}"
                 th:if="${relatedNeedCount > 0 and stat.index < relatedNeedCount}"
                 th:with="
-                  fallbackCover=${stat.index % 3 == 0 ? theme.config.site?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.site?.article_cover_2 : theme.config.site?.article_cover_3)},
+                  fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
                   cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
                 "
               >
@@ -536,14 +536,14 @@
         <h2
           id="hydro-post-poster-title"
           class="hydro-visually-hidden"
-          th:text="${theme.config.share?.title ?: '分享海报'}"
+          th:text="${theme.config.content?.share?.title ?: '分享海报'}"
         >
           分享海报
         </h2>
         <p
           id="hydro-post-poster-description"
           class="hydro-visually-hidden"
-          th:text="${theme.config.share?.post_description ?: '把文章整理成一张适合保存与转发的轻量海报。'}"
+          th:text="${theme.config.content?.share?.post_description ?: '把文章整理成一张适合保存与转发的轻量海报。'}"
         >
           把文章整理成一张适合保存与转发的轻量海报。
         </p>
@@ -560,7 +560,9 @@
           </div>
 
           <header class="hydro-poster-card__header">
-            <p class="hydro-poster-card__eyebrow" th:text="${theme.config.share?.post_card_eyebrow ?: 'Post'}">Post</p>
+            <p class="hydro-poster-card__eyebrow" th:text="${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}">
+              Post
+            </p>
             <time th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd / HH:mm')}">2024.01.15 / 12:00</time>
           </header>
 
@@ -583,8 +585,8 @@
               <div class="hydro-poster-card__hero-caption">
                 <span
                   data-hydro-poster-caption
-                  th:attr="data-hydro-poster-caption-fallback=${theme.config.share?.post_card_eyebrow ?: 'Post'}"
-                  th:text="${hasCategory ? primaryCategory.spec.displayName : (not #lists.isEmpty(post.tags) ? '#' + post.tags[0].spec.displayName : (theme.config.share?.post_card_eyebrow ?: 'Post'))}"
+                  th:attr="data-hydro-poster-caption-fallback=${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}"
+                  th:text="${hasCategory ? primaryCategory.spec.displayName : (not #lists.isEmpty(post.tags) ? '#' + post.tags[0].spec.displayName : (theme.config.content?.share?.post_card_eyebrow ?: 'Post'))}"
                   >Post</span
                 >
               </div>
@@ -595,7 +597,12 @@
                 <p th:text="${post.spec.title}">文章标题</p>
                 <p th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">文章摘要</p>
               </div>
-              <p class="hydro-poster-card__kicker" th:text="${theme.config.share?.post_card_eyebrow ?: 'Post'}">Post</p>
+              <p
+                class="hydro-poster-card__kicker"
+                th:text="${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}"
+              >
+                Post
+              </p>
               <div
                 class="hydro-poster-card__content"
                 data-hydro-poster-copy-content
@@ -636,7 +643,7 @@
                 >Hydro</strong
               >
               <span th:text="${site.title}">Hydro-Minim</span>
-              <em th:text="${theme.config.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
+              <em th:text="${theme.config.content?.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
             </div>
             <div
               class="hydro-poster-qr"
@@ -654,7 +661,7 @@
             class="hydro-moment-poster__tool"
             type="button"
             data-hydro-poster-download
-            th:attr="data-filename=|hydro-post-${post.metadata.name}.png|,aria-label=${theme.config.share?.download_label ?: '下载海报'},title=${theme.config.share?.download_label ?: '下载海报'}"
+            th:attr="data-filename=|hydro-post-${post.metadata.name}.png|,aria-label=${theme.config.content?.share?.download_label ?: '下载海报'},title=${theme.config.content?.share?.download_label ?: '下载海报'}"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"></path>

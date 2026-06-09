@@ -15,7 +15,7 @@
     <th:block th:if="${hasDocsCompatible and hasCatalogPayload}">
       <aside class="hydro-doc-sidebar" th:if="${docTrees != null}">
         <a class="hydro-doc-project" th:href="${project.status.permalink}">
-          <span th:text="${theme.config.docs?.eyebrow ?: 'Docs'}">Docs</span>
+          <span th:text="${theme.config.plugins?.docs?.eyebrow ?: 'Docs'}">Docs</span>
           <strong th:text="${project.spec.displayName}">文档项目</strong>
         </a>
         <nav class="hydro-doc-tree" aria-label="文档导航">
@@ -33,7 +33,7 @@
         </nav>
 
         <header class="hydro-doc-header">
-          <p th:text="${theme.config.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</p>
+          <p th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</p>
           <h1 th:text="${docTree.spec.title}">目录名称</h1>
         </header>
 
@@ -47,10 +47,10 @@
         </div>
 
         <div th:if="${not hasCatalogNodes}" class="hydro-plugin-empty">
-          <span th:text="${theme.config.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
-          <strong th:text="${theme.config.docs?.catalog_empty_title ?: '目录暂时为空'}">目录暂时为空</strong>
+          <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+          <strong th:text="${theme.config.plugins?.docs?.catalog_empty_title ?: '目录暂时为空'}">目录暂时为空</strong>
           <p
-            th:text="${theme.config.docs?.catalog_empty_text ?: 'plugin-docsme 已可用。在 Docsme 中添加子文档后，这里会显示目录入口。'}"
+            th:text="${theme.config.plugins?.docs?.catalog_empty_text ?: 'plugin-docsme 已可用。在 Docsme 中添加子文档后，这里会显示目录入口。'}"
           >
             plugin-docsme 已可用。在 Docsme 中添加子文档后，这里会显示目录入口。
           </p>
@@ -58,11 +58,11 @@
 
         <nav class="hydro-doc-nav" th:if="${linkNavigation}">
           <a th:if="${linkNavigation.hasPrevious}" th:href="${linkNavigation.previous.link}">
-            <span th:text="${theme.config.docs?.previous_label ?: '上一篇'}">上一篇</span>
+            <span th:text="${theme.config.plugins?.docs?.previous_label ?: '上一篇'}">上一篇</span>
             <strong th:text="${linkNavigation.previous.title}">上一篇</strong>
           </a>
           <a th:if="${linkNavigation.hasNext}" th:href="${linkNavigation.next.link}">
-            <span th:text="${theme.config.docs?.next_label ?: '下一篇'}">下一篇</span>
+            <span th:text="${theme.config.plugins?.docs?.next_label ?: '下一篇'}">下一篇</span>
             <strong th:text="${linkNavigation.next.title}">下一篇</strong>
           </a>
         </nav>
@@ -71,26 +71,30 @@
 
     <article class="hydro-doc-main hydro-doc-main--empty" th:if="${not hasDocsPlugin}">
       <div class="hydro-plugin-notice">
-        <strong th:text="${theme.config.docs?.install_title ?: '需要安装 Docsme 插件'}">需要安装 Docsme 插件</strong>
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
         <span
           class="hydro-plugin-notice__body"
-          th:text="${theme.config.docs?.install_text ?: '需要安装并启用 plugin-docsme 1.4.0 或更高版本，目录页才能读取文档树。'}"
+          th:text="${theme.config.plugins?.docs?.install_text ?: '需要安装并启用 plugin-docsme 1.4.0 或更高版本，目录页才能读取文档树。'}"
           >需要安装并启用 plugin-docsme 1.4.0 或更高版本，目录页才能读取文档树。</span
         >
         <a
           class="hydro-plugin-install-link"
-          th:href="${theme.config.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
           target="_blank"
           rel="noreferrer noopener"
-          th:text="${theme.config.docs?.install_link_label ?: '应用市场'}"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
           >应用市场</a
         >
       </div>
       <div class="hydro-plugin-empty hydro-plugin-empty--install">
-        <span th:text="${theme.config.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
-        <strong th:text="${theme.config.docs?.install_title ?: '需要安装 Docsme 插件'}">需要安装 Docsme 插件</strong>
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
         <p
-          th:text="${theme.config.docs?.install_text ?: '请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。'}"
+          th:text="${theme.config.plugins?.docs?.install_text ?: '请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。'}"
         >
           请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。
         </p>
@@ -99,26 +103,30 @@
 
     <article class="hydro-doc-main hydro-doc-main--empty" th:if="${hasDocsPlugin and not hasDocsCompatible}">
       <div class="hydro-plugin-notice">
-        <strong th:text="${theme.config.docs?.upgrade_title ?: '需要升级 Docsme 插件'}">需要升级 Docsme 插件</strong>
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
         <span
           class="hydro-plugin-notice__body"
-          th:text="${theme.config.docs?.upgrade_text ?: '已检测到 plugin-docsme，但当前目录模板需要 1.4.0 或更高版本。'}"
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '已检测到 plugin-docsme，但当前目录模板需要 1.4.0 或更高版本。'}"
           >已检测到 plugin-docsme，但当前目录模板需要 1.4.0 或更高版本。</span
         >
         <a
           class="hydro-plugin-install-link"
-          th:href="${theme.config.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
           target="_blank"
           rel="noreferrer noopener"
-          th:text="${theme.config.docs?.install_link_label ?: '应用市场'}"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
           >应用市场</a
         >
       </div>
       <div class="hydro-plugin-empty hydro-plugin-empty--install">
-        <span th:text="${theme.config.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
-        <strong th:text="${theme.config.docs?.upgrade_title ?: '需要升级 Docsme 插件'}">需要升级 Docsme 插件</strong>
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
         <p
-          th:text="${theme.config.docs?.upgrade_text ?: '请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档目录页。'}"
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档目录页。'}"
         >
           请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档目录页。
         </p>
@@ -127,10 +135,12 @@
 
     <article class="hydro-doc-main hydro-doc-main--empty" th:if="${hasDocsCompatible and not hasCatalogPayload}">
       <div class="hydro-plugin-empty">
-        <span th:text="${theme.config.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
-        <strong th:text="${theme.config.docs?.catalog_unavailable_title ?: '目录暂时不可用'}">目录暂时不可用</strong>
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.catalog_unavailable_title ?: '目录暂时不可用'}"
+          >目录暂时不可用</strong
+        >
         <p
-          th:text="${theme.config.docs?.catalog_unavailable_description ?: 'plugin-docsme 已可用。请确认该目录存在、已发布，并且当前路由由 Docsme 正确提供。'}"
+          th:text="${theme.config.plugins?.docs?.catalog_unavailable_description ?: 'plugin-docsme 已可用。请确认该目录存在、已发布，并且当前路由由 Docsme 正确提供。'}"
         >
           plugin-docsme 已可用。请确认该目录存在、已发布，并且当前路由由 Docsme 正确提供。
         </p>

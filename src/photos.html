@@ -1,13 +1,13 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${theme.config.photos?.title ?: '图库'} - ${site.title}|">图库</title>
+    <title th:text="|${theme.config.plugins?.photos?.title ?: '图库'} - ${site.title}|">图库</title>
   </template>
 
   <section class="hydro-list-hero">
     <div class="hydro-container">
-      <p th:text="${theme.config.photos?.eyebrow ?: 'Gallery'}">Gallery</p>
-      <h1 th:text="${theme.config.photos?.title ?: '图库'}">图库</h1>
-      <span th:text="${theme.config.photos?.description ?: '用镜头定格光影，每一帧都是时间的切片。'}">
+      <p th:text="${theme.config.plugins?.photos?.eyebrow ?: 'Gallery'}">Gallery</p>
+      <h1 th:text="${theme.config.plugins?.photos?.title ?: '图库'}">图库</h1>
+      <span th:text="${theme.config.plugins?.photos?.description ?: '用镜头定格光影，每一帧都是时间的切片。'}">
         用镜头定格光影，每一帧都是时间的切片。
       </span>
     </div>
@@ -21,7 +21,7 @@
         isSinglePageRoute=${singlePage != null},
         pageBaseUrl=${isSinglePageRoute ? singlePage.status.permalink : '/photos'},
         currentGroup=${param.group != null and not #lists.isEmpty(param.group) ? param.group[0] : null},
-        photosPageSizeText=${theme.config.photos?.page_size == null ? '' : #strings.trim('' + theme.config.photos.page_size)},
+        photosPageSizeText=${theme.config.plugins?.photos?.page_size == null ? '' : #strings.trim('' + theme.config.plugins.photos.page_size)},
         photosPageSizeRaw=${photosPageSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(photosPageSizeText) : 30},
         photosPageSize=${photosPageSizeRaw < 1 ? 30 : photosPageSizeRaw},
         photoGroups=${hasPhotosPlugin and photoFinder != null ? photoFinder.groupBy() : null},
@@ -29,19 +29,19 @@
         hasPhotosData=${photosData != null and photosData.items != null and not #lists.isEmpty(photosData.items)}"
     >
       <div class="hydro-plugin-notice" th:if="${not hasPhotosPlugin}">
-        <strong th:text="${theme.config.photos?.install_title ?: '需要安装图库插件'}">需要安装图库插件</strong>
+        <strong th:text="${theme.config.plugins?.photos?.install_title ?: '需要安装图库插件'}">需要安装图库插件</strong>
         <span
           class="hydro-plugin-notice__body"
-          th:text="${theme.config.photos?.install_text ?: '需要安装并启用 PluginPhotos。在 Halo Console -> 应用市场搜索“图库管理”，创建分组和图片后这里会展示瀑布流。'}"
+          th:text="${theme.config.plugins?.photos?.install_text ?: '需要安装并启用 PluginPhotos。在 Halo Console -> 应用市场搜索“图库管理”，创建分组和图片后这里会展示瀑布流。'}"
           >需要安装并启用 PluginPhotos。在 Halo Console ->
           应用市场搜索“图库管理”，创建分组和图片后这里会展示瀑布流。</span
         >
         <a
           class="hydro-plugin-install-link"
-          th:href="${theme.config.photos?.install_link ?: 'https://www.halo.run/store/apps/app-BmQJW'}"
+          th:href="${theme.config.plugins?.photos?.install_link ?: 'https://www.halo.run/store/apps/app-BmQJW'}"
           target="_blank"
           rel="noreferrer noopener"
-          th:text="${theme.config.photos?.install_link_label ?: '应用市场'}"
+          th:text="${theme.config.plugins?.photos?.install_link_label ?: '应用市场'}"
           >应用市场</a
         >
       </div>
@@ -52,7 +52,7 @@
           th:href="@{${pageBaseUrl}}"
           class="hydro-photos-tab"
           th:classappend="${#lists.isEmpty(param.group)} ? ' is-active' : ''"
-          th:text="${theme.config.photos?.all_group_label ?: '全部'}"
+          th:text="${theme.config.plugins?.photos?.all_group_label ?: '全部'}"
           >全部</a
         >
         <a
@@ -94,19 +94,19 @@
       </div>
 
       <div th:if="${not hasPhotosPlugin}" class="hydro-plugin-empty hydro-plugin-empty--install">
-        <span th:text="${theme.config.photos?.eyebrow ?: 'Gallery'}">Gallery</span>
-        <strong th:text="${theme.config.photos?.install_title ?: '需要安装图库插件'}">需要安装图库插件</strong>
+        <span th:text="${theme.config.plugins?.photos?.eyebrow ?: 'Gallery'}">Gallery</span>
+        <strong th:text="${theme.config.plugins?.photos?.install_title ?: '需要安装图库插件'}">需要安装图库插件</strong>
         <p
-          th:text="${theme.config.photos?.install_text ?: '请安装 PluginPhotos，路径：Halo Console -> 应用市场 -> 搜索“图库管理”。'}"
+          th:text="${theme.config.plugins?.photos?.install_text ?: '请安装 PluginPhotos，路径：Halo Console -> 应用市场 -> 搜索“图库管理”。'}"
         >
           请安装 PluginPhotos，路径：Halo Console -> 应用市场 -> 搜索“图库管理”。
         </p>
         <a
           class="hydro-plugin-install-link"
-          th:href="${theme.config.photos?.install_link ?: 'https://www.halo.run/store/apps/app-BmQJW'}"
+          th:href="${theme.config.plugins?.photos?.install_link ?: 'https://www.halo.run/store/apps/app-BmQJW'}"
           target="_blank"
           rel="noreferrer noopener"
-          th:text="${theme.config.photos?.install_link_label ?: '查看插件'}"
+          th:text="${theme.config.plugins?.photos?.install_link_label ?: '查看插件'}"
           >查看插件</a
         >
       </div>
@@ -114,7 +114,7 @@
       <div
         th:if="${hasPhotosPlugin and not hasPhotosData}"
         class="hydro-empty"
-        th:text="${theme.config.photos?.empty_available_text ?: (theme.config.photos?.empty_text ?: '暂无图片。')}"
+        th:text="${theme.config.plugins?.photos?.empty_available_text ?: (theme.config.plugins?.photos?.empty_text ?: '暂无图片。')}"
       >
         暂无图片。
       </div>
@@ -126,14 +126,14 @@
         <a
           th:if="${photosData.hasPrevious()}"
           th:href="@{${photosData.prevUrl}}"
-          th:text="${theme.config.navigation?.pagination_previous_label ?: '上一页'}"
+          th:text="${theme.config.navigation?.pagination?.previous_label ?: '上一页'}"
           >上一页</a
         >
         <span th:text="|${photosData.page} / ${photosData.totalPages}|">1 / 1</span>
         <a
           th:if="${photosData.hasNext()}"
           th:href="@{${photosData.nextUrl}}"
-          th:text="${theme.config.navigation?.pagination_next_label ?: '下一页'}"
+          th:text="${theme.config.navigation?.pagination?.next_label ?: '下一页'}"
           >下一页</a
         >
       </nav>
@@ -141,9 +141,9 @@
       <section
         id="comment"
         class="hydro-plugin-comments"
-        th:if="${(theme.config.photos == null or theme.config.photos.enable_comment != false) and haloCommentEnabled and singlePage != null}"
+        th:if="${(theme.config.plugins?.photos == null or theme.config.plugins.photos.enable_comment != false) and haloCommentEnabled and singlePage != null}"
       >
-        <h2 th:text="${theme.config.photos?.comments_title ?: '评论'}">评论</h2>
+        <h2 th:text="${theme.config.plugins?.photos?.comments_title ?: '评论'}">评论</h2>
         <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
       </section>
     </div>

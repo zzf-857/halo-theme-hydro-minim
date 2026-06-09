@@ -1,7 +1,7 @@
 <include src="layout.html">
   <template name="head">
     <title
-      th:text="${searchResult != null and not #strings.isEmpty(searchResult.keyword) ? '搜索结果：' + searchResult.keyword + ' - ' + site.title : (theme.config.search?.title ?: '搜索') + ' - ' + site.title}"
+      th:text="${searchResult != null and not #strings.isEmpty(searchResult.keyword) ? '搜索结果：' + searchResult.keyword + ' - ' + site.title : (theme.config.content?.search?.title ?: '搜索') + ' - ' + site.title}"
     >
       搜索
     </title>
@@ -10,7 +10,7 @@
   <section
     class="hydro-search-page"
     th:with="
-      searchConfig=${theme.config.search},
+      searchConfig=${theme.config.content?.search},
       searchKeyword=${searchResult != null ? searchResult.keyword : ''},
       hasKeyword=${not #strings.isEmpty(searchKeyword)},
       searchHits=${searchResult != null ? searchResult.hits : null},

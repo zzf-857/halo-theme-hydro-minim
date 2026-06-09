@@ -1,13 +1,13 @@
 <include src="layout.html">
   <template name="head">
-    <title th:text="|${theme.config.links?.title ?: '友链'} - ${site.title}|">友链</title>
+    <title th:text="|${theme.config.plugins?.links?.title ?: '友链'} - ${site.title}|">友链</title>
   </template>
 
   <section class="hydro-list-hero">
     <div class="hydro-container">
-      <p th:text="${theme.config.links?.eyebrow ?: 'Links'}">Links</p>
-      <h1 th:text="${theme.config.links?.title ?: '友链'}">友链</h1>
-      <span th:text="${theme.config.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'}">
+      <p th:text="${theme.config.plugins?.links?.eyebrow ?: 'Links'}">Links</p>
+      <h1 th:text="${theme.config.plugins?.links?.title ?: '友链'}">友链</h1>
+      <span th:text="${theme.config.plugins?.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'}">
         与志同道合的创作者相互连接，共同构建开放的网络。
       </span>
     </div>
@@ -17,10 +17,10 @@
   <section
     class="hydro-site-info"
     th:with="
-      siteLogoRaw=${#strings.isEmpty(site.logo) ? (theme.config.site == null || #strings.isEmpty(theme.config.site.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.site.logo) : site.logo},
+      siteLogoRaw=${#strings.isEmpty(site.logo) ? (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo) : site.logo},
       siteBaseUrl=${#strings.isEmpty(site.url) ? '' : (#strings.endsWith(site.url, '/') ? #strings.substring(site.url, 0, #strings.length(site.url) - 1) : site.url)},
       siteLogo=${#strings.startsWith(siteLogoRaw, 'http://') or #strings.startsWith(siteLogoRaw, 'https://') or #strings.startsWith(siteLogoRaw, '//') ? siteLogoRaw : siteBaseUrl + (#strings.startsWith(siteLogoRaw, '/') ? siteLogoRaw : '/' + siteLogoRaw)},
-      siteDescription=${site.seo != null and not #strings.isEmpty(site.seo.description) ? site.seo.description : (not #strings.isEmpty(site.subtitle) ? site.subtitle : (theme.config.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'))}"
+      siteDescription=${site.seo != null and not #strings.isEmpty(site.seo.description) ? site.seo.description : (not #strings.isEmpty(site.subtitle) ? site.subtitle : (theme.config.plugins?.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'))}"
   >
     <div class="hydro-container">
       <div class="hydro-links-top">
@@ -29,14 +29,14 @@
             <div class="hydro-site-info__identity">
               <img class="hydro-site-info__logo" th:src="${siteLogo}" th:alt="|${site.title} logo|" loading="lazy" />
               <div class="hydro-site-info__title">
-                <h2 th:text="${theme.config.links?.site_info_title ?: '我的站点信息'}">我的站点信息</h2>
-                <span th:text="${theme.config.links?.site_info_description ?: '方便你回链'}">方便你回链</span>
+                <h2 th:text="${theme.config.plugins?.links?.site_info_title ?: '我的站点信息'}">我的站点信息</h2>
+                <span th:text="${theme.config.plugins?.links?.site_info_description ?: '方便你回链'}">方便你回链</span>
               </div>
             </div>
           </div>
           <div class="hydro-site-info__grid">
             <div class="hydro-site-info__row">
-              <span class="hydro-site-info__label" th:text="${theme.config.links?.site_name_label ?: '站名'}"
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_name_label ?: '站名'}"
                 >站名</span
               >
               <span class="hydro-site-info__value" th:text="${site.title}">站点名称</span>
@@ -44,7 +44,7 @@
                 class="hydro-copy-btn"
                 data-copy
                 th:data-copy-text="${site.title}"
-                th:attr="aria-label=${theme.config.links?.copy_site_name_label ?: '复制站名'},title=${theme.config.links?.copy_site_name_label ?: '复制站名'}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_name_label ?: '复制站名'},title=${theme.config.plugins?.links?.copy_site_name_label ?: '复制站名'}"
               >
                 <svg viewBox="0 0 24 24">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -53,7 +53,9 @@
               </button>
             </div>
             <div class="hydro-site-info__row">
-              <span class="hydro-site-info__label" th:text="${theme.config.links?.site_url_label ?: '链接'}">链接</span>
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_url_label ?: '链接'}"
+                >链接</span
+              >
               <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${site.url}"
                 >https://example.com</span
               >
@@ -61,7 +63,7 @@
                 class="hydro-copy-btn"
                 data-copy
                 th:data-copy-text="${site.url}"
-                th:attr="aria-label=${theme.config.links?.copy_site_url_label ?: '复制链接'},title=${theme.config.links?.copy_site_url_label ?: '复制链接'}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_url_label ?: '复制链接'},title=${theme.config.plugins?.links?.copy_site_url_label ?: '复制链接'}"
               >
                 <svg viewBox="0 0 24 24">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -70,7 +72,7 @@
               </button>
             </div>
             <div class="hydro-site-info__row">
-              <span class="hydro-site-info__label" th:text="${theme.config.links?.site_logo_label ?: 'Logo'}"
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_logo_label ?: 'Logo'}"
                 >Logo</span
               >
               <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${siteLogo}">Logo URL</span>
@@ -78,7 +80,7 @@
                 class="hydro-copy-btn"
                 data-copy
                 th:data-copy-text="${siteLogo}"
-                th:attr="aria-label=${theme.config.links?.copy_site_logo_label ?: '复制 Logo'},title=${theme.config.links?.copy_site_logo_label ?: '复制 Logo'}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_logo_label ?: '复制 Logo'},title=${theme.config.plugins?.links?.copy_site_logo_label ?: '复制 Logo'}"
               >
                 <svg viewBox="0 0 24 24">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -87,7 +89,9 @@
               </button>
             </div>
             <div class="hydro-site-info__row hydro-site-info__row--description">
-              <span class="hydro-site-info__label" th:text="${theme.config.links?.site_description_label ?: '描述'}"
+              <span
+                class="hydro-site-info__label"
+                th:text="${theme.config.plugins?.links?.site_description_label ?: '描述'}"
                 >描述</span
               >
               <span class="hydro-site-info__value" th:text="${siteDescription}">站点描述</span>
@@ -95,7 +99,7 @@
                 class="hydro-copy-btn"
                 data-copy
                 th:data-copy-text="${siteDescription}"
-                th:attr="aria-label=${theme.config.links?.copy_site_description_label ?: '复制描述'},title=${theme.config.links?.copy_site_description_label ?: '复制描述'}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_description_label ?: '复制描述'},title=${theme.config.plugins?.links?.copy_site_description_label ?: '复制描述'}"
               >
                 <svg viewBox="0 0 24 24">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -108,13 +112,13 @@
 
         <div
           class="hydro-links-apply__inner"
-          th:if="${not #strings.isEmpty(singlePage.content.content) or theme.config.links?.enable_submit}"
+          th:if="${not #strings.isEmpty(singlePage.content.content) or theme.config.plugins?.links?.enable_submit}"
         >
           <div class="hydro-links-apply__header">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2v20M2 12h20"></path>
             </svg>
-            <h2 th:text="${theme.config.links?.apply_title ?: '申请友链'}">申请友链</h2>
+            <h2 th:text="${theme.config.plugins?.links?.apply_title ?: '申请友链'}">申请友链</h2>
           </div>
 
           <div
@@ -123,11 +127,11 @@
             th:utext="${singlePage.content.content}"
           ></div>
 
-          <th:block th:if="${theme.config.links?.enable_submit}">
+          <th:block th:if="${theme.config.plugins?.links?.enable_submit}">
             <p
               class="hydro-links-submit-note"
               th:if="${#strings.isEmpty(singlePage.content.content)}"
-              th:text="${theme.config.links?.submit_note ?: '支持在线提交友链申请，填写后将进入站点审核流程。'}"
+              th:text="${theme.config.plugins?.links?.submit_note ?: '支持在线提交友链申请，填写后将进入站点审核流程。'}"
             >
               支持在线提交友链申请，填写后将进入站点审核流程。
             </p>
@@ -142,12 +146,12 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M12 4v16M4 12h16"></path>
                   </svg>
-                  <span th:text="${theme.config.links?.submit_button_label ?: '在线提交'}">在线提交</span>
+                  <span th:text="${theme.config.plugins?.links?.submit_button_label ?: '在线提交'}">在线提交</span>
                 </button>
               </div>
 
               <div
-                th:if="${theme.config.links?.enable_update}"
+                th:if="${theme.config.plugins?.links?.enable_update}"
                 id="hydro-link-update-entry"
                 class="hydro-links-submit-entry"
                 style="display: none"
@@ -157,7 +161,7 @@
                     <path d="m15 5 4 4"></path>
                     <path d="M4 20h4l10-10-4-4L4 16z"></path>
                   </svg>
-                  <span th:text="${theme.config.links?.update_button_label ?: '修改友链'}">修改友链</span>
+                  <span th:text="${theme.config.plugins?.links?.update_button_label ?: '修改友链'}">修改友链</span>
                 </button>
               </div>
 
@@ -167,7 +171,9 @@
                   <path d="M12 16.5h.01"></path>
                   <path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.8 3h16.8a2 2 0 0 0 1.8-3L13.7 3.8a2 2 0 0 0-3.4 0z"></path>
                 </svg>
-                <span th:text="${theme.config.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，暂不可在线提交'}">
+                <span
+                  th:text="${theme.config.plugins?.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，暂不可在线提交'}"
+                >
                   未检测到 LinksSubmit 插件，暂不可在线提交
                 </span>
               </div>
@@ -188,14 +194,14 @@
             <h2 th:text="${group.spec.displayName}">分组名称</h2>
             <span
               class="hydro-links-group__count"
-              th:text="|${#lists.size(group.links)} ${theme.config.links?.group_count_suffix ?: '个链接'}|"
+              th:text="|${#lists.size(group.links)} ${theme.config.plugins?.links?.group_count_suffix ?: '个链接'}|"
               >0 个链接</span
             >
             <button
               class="hydro-links-random"
               th:if="${#lists.size(group.links) > 1}"
               data-random-link
-              th:attr="data-links=${#strings.arrayJoin(group.links.![spec.url], ',')},aria-label=${theme.config.links?.random_label ?: '随机访问'},title=${theme.config.links?.random_label ?: '随机访问'}"
+              th:attr="data-links=${#strings.arrayJoin(group.links.![spec.url], ',')},aria-label=${theme.config.plugins?.links?.random_label ?: '随机访问'},title=${theme.config.plugins?.links?.random_label ?: '随机访问'}"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
@@ -249,7 +255,7 @@
       <div
         th:if="${#lists.isEmpty(groups)}"
         class="hydro-empty"
-        th:text="${theme.config.links?.empty_text ?: '暂无友链。'}"
+        th:text="${theme.config.plugins?.links?.empty_text ?: '暂无友链。'}"
       >
         暂无友链。
       </div>
@@ -258,7 +264,7 @@
 
   <!-- 在线提交弹窗 -->
   <div
-    th:if="${theme.config.links?.enable_submit}"
+    th:if="${theme.config.plugins?.links?.enable_submit}"
     id="hydro-link-submit-modal"
     class="hydro-link-submit-modal"
     aria-hidden="true"
@@ -278,11 +284,14 @@
             <path d="M14 11a5 5 0 0 1 0 7l-1.8 1.8a5 5 0 0 1-7-7L7 11"></path>
           </svg>
           <div>
-            <h3 id="hydro-link-submit-title" th:text="${theme.config.links?.submit_modal_title ?: '提交友链申请'}">
+            <h3
+              id="hydro-link-submit-title"
+              th:text="${theme.config.plugins?.links?.submit_modal_title ?: '提交友链申请'}"
+            >
               提交友链申请
             </h3>
             <p
-              th:text="${theme.config.links?.submit_modal_description ?: '填写你的网站信息，审核通过后将展示在友链页'}"
+              th:text="${theme.config.plugins?.links?.submit_modal_description ?: '填写你的网站信息，审核通过后将展示在友链页'}"
             >
               填写你的网站信息，审核通过后将展示在友链页
             </p>
@@ -311,7 +320,7 @@
                   id="hydro-link-url"
                   name="url"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_url_placeholder ?: 'https://example.com'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}"
                   required
                 />
                 <button
@@ -332,7 +341,7 @@
                   id="hydro-link-name"
                   name="displayName"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_name_placeholder ?: '我的博客'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_name_placeholder ?: '我的博客'}"
                   required
                 />
               </div>
@@ -343,7 +352,7 @@
                   id="hydro-link-logo"
                   name="logo"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
                 />
               </div>
             </div>
@@ -354,7 +363,7 @@
                 id="hydro-link-description"
                 name="description"
                 rows="2"
-                th:placeholder="${theme.config.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
+                th:placeholder="${theme.config.plugins?.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
               ></textarea>
             </div>
           </div>
@@ -369,7 +378,7 @@
                   id="hydro-link-page-url"
                   name="linkPageUrl"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_page_url_placeholder ?: '友链页面 URL'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_page_url_placeholder ?: '友链页面 URL'}"
                 />
               </div>
 
@@ -379,7 +388,7 @@
                   id="hydro-link-rss-url"
                   name="rssUrl"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
                 />
               </div>
             </div>
@@ -401,13 +410,13 @@
                 id="hydro-link-email"
                 name="email"
                 type="email"
-                th:placeholder="${theme.config.links?.form_email_placeholder ?: 'your@email.com'}"
+                th:placeholder="${theme.config.plugins?.links?.form_email_placeholder ?: 'your@email.com'}"
                 required
               />
             </div>
 
             <div
-              th:if="${theme.config.links?.verify_type == 'email' or theme.config.links?.verify_type == null}"
+              th:if="${theme.config.plugins?.links?.verify_type == 'email' or theme.config.plugins?.links?.verify_type == null}"
               class="hydro-link-submit-form__group"
             >
               <label for="hydro-link-verify-code">邮箱验证码 <span>*</span></label>
@@ -416,7 +425,7 @@
                   id="hydro-link-verify-code"
                   name="verifyCode"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
                 />
                 <button type="button" id="hydro-link-send-code-btn" class="hydro-links-submit-btn" data-link-send-code>
                   发送验证码
@@ -424,14 +433,14 @@
               </div>
             </div>
 
-            <div th:if="${theme.config.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+            <div th:if="${theme.config.plugins?.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
               <label for="hydro-link-captcha">图形验证码 <span>*</span></label>
               <div class="hydro-link-submit-form__inline">
                 <input
                   id="hydro-link-captcha"
                   name="captcha"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_captcha_placeholder ?: '请输入图中字符'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_captcha_placeholder ?: '请输入图中字符'}"
                 />
                 <img id="hydro-link-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
               </div>
@@ -458,7 +467,7 @@
 
   <!-- 在线修改弹窗 -->
   <div
-    th:if="${theme.config.links?.enable_submit and theme.config.links?.enable_update}"
+    th:if="${theme.config.plugins?.links?.enable_submit and theme.config.plugins?.links?.enable_update}"
     id="hydro-link-update-modal"
     class="hydro-link-submit-modal"
     aria-hidden="true"
@@ -479,7 +488,9 @@
           </svg>
           <div>
             <h3 id="hydro-link-update-title">修改友链信息</h3>
-            <p th:text="${theme.config.links?.update_modal_description ?: '请使用原友链邮箱验证身份后提交修改'}">
+            <p
+              th:text="${theme.config.plugins?.links?.update_modal_description ?: '请使用原友链邮箱验证身份后提交修改'}"
+            >
               请使用原友链邮箱验证身份后提交修改
             </p>
           </div>
@@ -506,7 +517,7 @@
                 id="hydro-update-old-url"
                 name="oldUrl"
                 type="url"
-                th:placeholder="|原友链地址 ${theme.config.links?.form_url_placeholder ?: 'https://example.com'}|"
+                th:placeholder="|原友链地址 ${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}|"
                 required
               />
             </div>
@@ -522,7 +533,7 @@
                   id="hydro-update-url"
                   name="url"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_url_placeholder ?: 'https://example.com'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}"
                   required
                 />
                 <button type="button" id="hydro-link-update-auto-fetch-btn" class="hydro-links-submit-btn">
@@ -538,7 +549,7 @@
                   id="hydro-update-name"
                   name="displayName"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_name_placeholder ?: '我的博客'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_name_placeholder ?: '我的博客'}"
                   required
                 />
               </div>
@@ -549,7 +560,7 @@
                   id="hydro-update-logo"
                   name="logo"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
                 />
               </div>
             </div>
@@ -560,7 +571,7 @@
                 id="hydro-update-description"
                 name="description"
                 rows="2"
-                th:placeholder="${theme.config.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
+                th:placeholder="${theme.config.plugins?.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
               ></textarea>
             </div>
           </div>
@@ -575,7 +586,7 @@
                   id="hydro-update-page-url"
                   name="linkPageUrl"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_page_url_placeholder ?: '友链页面 URL'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_page_url_placeholder ?: '友链页面 URL'}"
                 />
               </div>
 
@@ -585,7 +596,7 @@
                   id="hydro-update-rss-url"
                   name="rssUrl"
                   type="url"
-                  th:placeholder="${theme.config.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
                 />
               </div>
             </div>
@@ -607,13 +618,13 @@
                 id="hydro-update-email"
                 name="email"
                 type="email"
-                th:placeholder="${theme.config.links?.form_email_placeholder ?: 'your@email.com'}"
+                th:placeholder="${theme.config.plugins?.links?.form_email_placeholder ?: 'your@email.com'}"
                 required
               />
             </div>
 
             <div
-              th:if="${theme.config.links?.verify_type == 'email' or theme.config.links?.verify_type == null}"
+              th:if="${theme.config.plugins?.links?.verify_type == 'email' or theme.config.plugins?.links?.verify_type == null}"
               class="hydro-link-submit-form__group"
             >
               <label for="hydro-update-verify-code">邮箱验证码 <span>*</span></label>
@@ -622,7 +633,7 @@
                   id="hydro-update-verify-code"
                   name="verifyCode"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
                 />
                 <button type="button" id="hydro-link-update-send-code-btn" class="hydro-links-submit-btn">
                   发送验证码
@@ -630,14 +641,14 @@
               </div>
             </div>
 
-            <div th:if="${theme.config.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+            <div th:if="${theme.config.plugins?.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
               <label for="hydro-update-captcha">图形验证码 <span>*</span></label>
               <div class="hydro-link-submit-form__inline">
                 <input
                   id="hydro-update-captcha"
                   name="captcha"
                   type="text"
-                  th:placeholder="${theme.config.links?.form_captcha_placeholder ?: '请输入图中字符'}"
+                  th:placeholder="${theme.config.plugins?.links?.form_captcha_placeholder ?: '请输入图中字符'}"
                 />
                 <img id="hydro-link-update-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
               </div>
@@ -663,17 +674,17 @@
   </div>
 
   <div
-    th:if="${theme.config.links?.enable_submit}"
+    th:if="${theme.config.plugins?.links?.enable_submit}"
     id="hydro-link-submit-config"
     th:attr="
-      data-enable-submit=${theme.config.links?.enable_submit},
-      data-enable-update=${theme.config.links?.enable_update},
-      data-verify-type=${theme.config.links?.verify_type ?: 'email'},
-      data-unavailable-text=${theme.config.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，请稍后重试。'},
-      data-submit-success-text=${theme.config.links?.submit_success_text ?: '提交成功，请等待审核。'},
-      data-submit-error-text=${theme.config.links?.submit_error_text ?: '提交失败，请稍后重试。'},
-      data-update-success-text=${theme.config.links?.update_success_text ?: '修改成功。'},
-      data-update-error-text=${theme.config.links?.update_error_text ?: '修改失败，请稍后重试。'}
+      data-enable-submit=${theme.config.plugins?.links?.enable_submit},
+      data-enable-update=${theme.config.plugins?.links?.enable_update},
+      data-verify-type=${theme.config.plugins?.links?.verify_type ?: 'email'},
+      data-unavailable-text=${theme.config.plugins?.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，请稍后重试。'},
+      data-submit-success-text=${theme.config.plugins?.links?.submit_success_text ?: '提交成功，请等待审核。'},
+      data-submit-error-text=${theme.config.plugins?.links?.submit_error_text ?: '提交失败，请稍后重试。'},
+      data-update-success-text=${theme.config.plugins?.links?.update_success_text ?: '修改成功。'},
+      data-update-error-text=${theme.config.plugins?.links?.update_error_text ?: '修改失败，请稍后重试。'}
     "
     hidden
   ></div>
@@ -682,10 +693,10 @@
   <section
     id="comment"
     class="hydro-links-comments"
-    th:if="${(theme.config.links == null or theme.config.links.enable_comment != false) and haloCommentEnabled}"
+    th:if="${(theme.config.plugins?.links == null or theme.config.plugins.links.enable_comment != false) and haloCommentEnabled}"
   >
     <div class="hydro-container">
-      <h2 th:text="${theme.config.links?.comments_title ?: '评论'}">评论</h2>
+      <h2 th:text="${theme.config.plugins?.links?.comments_title ?: '评论'}">评论</h2>
       <halo:comment group="plugin.halo.run" kind="Plugin" th:attr="name=${pluginName}" />
     </div>
   </section>

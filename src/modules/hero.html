@@ -1,11 +1,12 @@
 <section
   class="hydro-hero"
   th:with="
-    heroCover = ${#strings.isEmpty(theme.config.home?.hero_cover) ? #theme.assets('/images/hero-featured.jpg') : theme.config.home.hero_cover},
-    heroFeaturedSizeText = ${theme.config.home?.hero_featured_size == null ? '' : #strings.trim('' + theme.config.home.hero_featured_size)},
+    heroConfig = ${theme.config.home?.hero},
+    heroCover = ${#strings.isEmpty(heroConfig?.cover) ? #theme.assets('/images/hero-featured.jpg') : heroConfig.cover},
+    heroFeaturedSizeText = ${heroConfig?.featured_size == null ? '' : #strings.trim('' + heroConfig.featured_size)},
     heroFeaturedSizeRaw = ${heroFeaturedSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(heroFeaturedSizeText) : 4},
     heroFeaturedSize = ${heroFeaturedSizeRaw < 1 ? 4 : heroFeaturedSizeRaw},
-    heroFeaturedPosts = ${theme.config.home?.hero_featured_posts},
+    heroFeaturedPosts = ${heroConfig?.featured_posts},
     hasHeroFeaturedPosts = ${heroFeaturedPosts != null and not #lists.isEmpty(heroFeaturedPosts)}
   "
   data-hydro-hero
@@ -13,24 +14,24 @@
   <div class="hydro-hero__image">
     <div class="hydro-hero__image-inner" data-hydro-hero-image>
       <div class="hydro-hero__image-motion" data-hydro-hero-motion>
-        <img th:src="${heroCover}" th:alt="${theme.config.home?.hero_label ?: 'Hydro-Minim'}" />
+        <img th:src="${heroCover}" th:alt="${heroConfig?.label ?: 'Hydro-Minim'}" />
         <div class="hydro-hero__fade" aria-hidden="true"></div>
       </div>
     </div>
-    <div class="hydro-hero__label" th:text="${theme.config.home?.hero_label ?: '氢视窗'}">氢视窗</div>
+    <div class="hydro-hero__label" th:text="${heroConfig?.label ?: '氢视窗'}">氢视窗</div>
   </div>
 
   <div class="hydro-hero__content">
     <div class="hydro-container">
       <div class="hydro-hero__grid">
         <div>
-          <h1 class="hydro-hero__title" data-split-title th:text="${theme.config.home?.hero_title ?: '探索'}">探索</h1>
-          <p th:text="${theme.config.home?.hero_description}">
+          <h1 class="hydro-hero__title" data-split-title th:text="${heroConfig?.title ?: '探索'}">探索</h1>
+          <p th:text="${heroConfig?.description}">
             精选的想法、故事和创意，全部汇集于此。如氢气般轻快、简洁、流畅的体验。
           </p>
           <div class="hydro-scroll-hint">
             <span aria-hidden="true"></span>
-            <strong th:text="${theme.config.home?.hero_scroll_hint ?: '向下滚动'}">向下滚动</strong>
+            <strong>向下滚动</strong>
           </div>
         </div>
 
@@ -72,7 +73,7 @@
           <div
             th:if="${not hasHeroFeaturedPosts and posts.total == 0}"
             class="hydro-empty"
-            th:text="${theme.config.home?.hero_empty_text ?: '还没有发布文章。'}"
+            th:text="${'还没有发布文章。'}"
           >
             还没有发布文章。
           </div>
