@@ -106,15 +106,16 @@
       <div class="hydro-footer__signature" aria-label="站点署名">
         <p class="hydro-footer__copyright" th:text="${footerCopyrightText}">© 2026 Hydro-Minim. 保留所有权利.</p>
         <p class="hydro-footer__build" th:text="${footerBuildText}">用 ♥ 与氢气构建</p>
-        <div class="hydro-footer__credits" aria-label="驱动信息">
+        <div class="hydro-footer__credits" aria-label="主题与博客系统信息">
+          <span class="hydro-footer__credits-label">Built with</span>
           <a
             class="hydro-footer__credit hydro-footer__credit--theme"
             th:href="${footerThemeUrl}"
             th:target="${footerThemeUrl == '/' ? '_self' : '_blank'}"
             rel="noreferrer"
-            th:attr="aria-label=|Powered by ${footerThemeName}|"
+            th:attr="aria-label=|主题：${footerThemeName}|"
           >
-            <span class="hydro-footer__credit-prefix">Powered by</span>
+            <span class="hydro-footer__credit-prefix">Theme</span>
             <strong th:text="${footerThemeName}">Hydro-Minim</strong>
           </a>
           <a
@@ -122,9 +123,9 @@
             th:href="${footerHaloUrl}"
             target="_blank"
             rel="noreferrer"
-            aria-label="Powered by Halo"
+            aria-label="博客系统：Halo"
           >
-            <span class="hydro-footer__credit-prefix">Powered by</span>
+            <span class="hydro-footer__credit-prefix">CMS</span>
             <strong>Halo</strong>
           </a>
         </div>
@@ -132,7 +133,7 @@
       <div th:if="${footerHasLegal}" class="hydro-footer__legal" aria-label="备案信息">
         <a
           th:if="${footerHasIcp}"
-          class="hydro-footer__legal-link"
+          class="hydro-footer__legal-link hydro-footer__legal-link--icp"
           th:href="${theme.config.identity.footer.icp_link ?: 'https://beian.miit.gov.cn/'}"
           target="_blank"
           rel="noreferrer"
@@ -142,7 +143,7 @@
         </a>
         <a
           th:if="${footerHasGongan}"
-          class="hydro-footer__legal-link"
+          class="hydro-footer__legal-link hydro-footer__legal-link--gongan"
           th:href="${theme.config.identity.footer.gongan_link ?: '#'}"
           target="_blank"
           rel="noreferrer"
