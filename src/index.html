@@ -4,12 +4,14 @@
     th:with="
       homeConfig=${theme.config.home},
       heroConfig=${homeConfig?.hero},
-      showHero=${heroConfig == null or (heroConfig.enabled != false and heroConfig.enabled != 'false')}
+      showHero=${heroConfig == null or (heroConfig.enabled != false and heroConfig.enabled != 'false')},
+      heroMediaType=${#strings.isEmpty(heroConfig?.media_type) ? 'image' : heroConfig.media_type},
+      preloadHeroCover=${showHero and heroMediaType != 'video'}
     "
   >
     <title th:text="|${site.title} - Hydro-Minim|">Hydro-Minim</title>
     <link
-      th:if="${showHero}"
+      th:if="${preloadHeroCover}"
       rel="preload"
       th:href="${theme.config.home?.hero?.cover ?: #theme.assets('/images/hero-featured.jpg')}"
       as="image"

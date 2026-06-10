@@ -3,6 +3,9 @@
   th:with="
     heroConfig = ${theme.config.home?.hero},
     heroCover = ${#strings.isEmpty(heroConfig?.cover) ? #theme.assets('/images/hero-featured.jpg') : heroConfig.cover},
+    heroMediaType = ${#strings.isEmpty(heroConfig?.media_type) ? 'image' : heroConfig.media_type},
+    heroVideo = ${heroConfig?.video},
+    showHeroVideo = ${heroMediaType == 'video' and not #strings.isEmpty(heroVideo)},
     heroFeaturedSizeText = ${heroConfig?.featured_size == null ? '' : #strings.trim('' + heroConfig.featured_size)},
     heroFeaturedSizeRaw = ${heroFeaturedSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(heroFeaturedSizeText) : 4},
     heroFeaturedSize = ${heroFeaturedSizeRaw < 1 ? 4 : heroFeaturedSizeRaw},
@@ -14,7 +17,18 @@
   <div class="hydro-hero__image">
     <div class="hydro-hero__image-inner" data-hydro-hero-image>
       <div class="hydro-hero__image-motion" data-hydro-hero-motion>
-        <img th:src="${heroCover}" th:alt="${heroConfig?.label ?: 'Hydro-Minim'}" />
+        <video
+          th:if="${showHeroVideo}"
+          th:src="${heroVideo}"
+          th:poster="${heroCover}"
+          th:attr="aria-label=${heroConfig?.label ?: 'Hydro-Minim'}"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+        ></video>
+        <img th:unless="${showHeroVideo}" th:src="${heroCover}" th:alt="${heroConfig?.label ?: 'Hydro-Minim'}" />
         <div class="hydro-hero__fade" aria-hidden="true"></div>
       </div>
     </div>

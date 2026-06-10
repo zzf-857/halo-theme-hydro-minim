@@ -632,13 +632,34 @@ spec:
               name: description
               label: Hero 描述
               value: 精选的想法、故事和创意，全部汇集于此。如氢气般轻快、简洁、流畅的体验。
-            - $formkit: attachment
+            - $formkit: radio
               if: $get(home_hero_enabled).value === true
+              id: home_hero_media_type
+              key: home_hero_media_type
+              name: media_type
+              label: Hero 媒体类型
+              value: image
+              options:
+                - label: 图片
+                  value: image
+                - label: 视频
+                  value: video
+            - $formkit: attachment
+              if: $get(home_hero_enabled).value === true && $get(home_hero_media_type).value === 'image'
               name: cover
               label: Hero 封面
               accepts:
                 - image/*
               value: /themes/halo-theme-hydro-minim/assets/images/hero-featured.jpg
+              validation: required
+            - $formkit: attachment
+              if: $get(home_hero_enabled).value === true && $get(home_hero_media_type).value === 'video'
+              name: video
+              label: Hero 视频
+              accepts:
+                - video/*
+              value: ""
+              validation: required
             - $formkit: number
               if: $get(home_hero_enabled).value === true
               name: featured_size

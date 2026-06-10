@@ -2486,7 +2486,9 @@ body.hydro-auth-page .returntosite-content a:hover {
   will-change: transform;
 }
 
-.hydro-hero__image img {
+.hydro-hero__image img,
+.hydro-hero__image video {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
