@@ -15,20 +15,31 @@
   data-hydro-hero
 >
   <div class="hydro-hero__image">
-    <div class="hydro-hero__image-inner" data-hydro-hero-image>
+    <div class="hydro-hero__image-inner" data-hydro-hero-image data-progressive-media data-media-state="cover">
       <div class="hydro-hero__image-motion" data-hydro-hero-motion>
         <video
           th:if="${showHeroVideo}"
-          th:src="${heroVideo}"
           th:poster="${heroCover}"
           th:attr="aria-label=${heroConfig?.label ?: 'Hydro-Minim'}"
+          th:data-src="${heroVideo}"
+          data-hydro-hero-video
           autoplay
           muted
           loop
           playsinline
-          preload="metadata"
+          preload="none"
         ></video>
-        <img th:unless="${showHeroVideo}" th:src="${heroCover}" th:alt="${heroConfig?.label ?: 'Hydro-Minim'}" />
+        <img
+          class="hydro-hero__poster"
+          th:src="${heroCover}"
+          th:alt="${showHeroVideo ? '' : (heroConfig?.label ?: 'Hydro-Minim')}"
+          width="1200"
+          height="900"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          data-progressive-image
+        />
         <div class="hydro-hero__fade" aria-hidden="true"></div>
       </div>
     </div>

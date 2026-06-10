@@ -254,13 +254,23 @@
                 th:each="item,stat : ${relatedByCategory}"
                 th:if="${stat.index < relatedPrimaryTake}"
                 th:with="
-                  fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
                   cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
                 "
               >
                 <a th:href="@{${item.status.permalink}}">
-                  <figure class="hydro-post-related-card__media">
-                    <img th:src="${cover}" th:alt="${item.spec.title}" loading="lazy" />
+                  <figure class="hydro-post-related-card__media" data-progressive-media>
+                    <img
+                      th:src="${thumbnail.gen(cover, 'm')}"
+                      th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+                      sizes="(max-width: 720px) 76vw, (max-width: 1100px) 32vw, 24vw"
+                      th:alt="${item.spec.title}"
+                      loading="lazy"
+                      decoding="async"
+                      data-progressive-image
+                      th:attr="data-fallback-cover=${fallbackCover}"
+                    />
                   </figure>
                   <div class="hydro-post-related-card__body">
                     <time th:text="${#dates.format(item.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
@@ -276,13 +286,23 @@
                 th:each="item,stat : ${fallbackRelated}"
                 th:if="${relatedNeedCount > 0 and stat.index < relatedNeedCount}"
                 th:with="
-                  fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
                   cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
                 "
               >
                 <a th:href="@{${item.status.permalink}}">
-                  <figure class="hydro-post-related-card__media">
-                    <img th:src="${cover}" th:alt="${item.spec.title}" loading="lazy" />
+                  <figure class="hydro-post-related-card__media" data-progressive-media>
+                    <img
+                      th:src="${thumbnail.gen(cover, 'm')}"
+                      th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+                      sizes="(max-width: 720px) 76vw, (max-width: 1100px) 32vw, 24vw"
+                      th:alt="${item.spec.title}"
+                      loading="lazy"
+                      decoding="async"
+                      data-progressive-image
+                      th:attr="data-fallback-cover=${fallbackCover}"
+                    />
                   </figure>
                   <div class="hydro-post-related-card__body">
                     <time th:text="${#dates.format(item.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>

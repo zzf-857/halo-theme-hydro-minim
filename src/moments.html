@@ -135,9 +135,18 @@
                   th:each="media : ${content.medium}"
                   th:if="${media.type.name == 'PHOTO'}"
                   th:attr="data-src=${media.url},data-alt='瞬间图片'"
+                  data-progressive-media
                   data-lightbox-trigger
                 >
-                  <img th:src="${media.url}" alt="瞬间图片" loading="lazy" />
+                  <img
+                    th:src="${thumbnail.gen(media.url, 'm')}"
+                    th:srcset="|${thumbnail.gen(media.url, 's')} 360w, ${thumbnail.gen(media.url, 'm')} 720w, ${thumbnail.gen(media.url, 'l')} 1080w|"
+                    sizes="(max-width: 720px) calc((100vw - 2.5rem) / 3), 18rem"
+                    alt="瞬间图片"
+                    loading="lazy"
+                    decoding="async"
+                    data-progressive-image
+                  />
                 </button>
               </div>
 

@@ -2665,10 +2665,113 @@ body.hydro-auth-page .returntosite-content a:hover {
   object-fit: cover;
 }
 
+.hydro-hero__image-motion > img,
+.hydro-hero__image-motion > video {
+  position: absolute;
+  inset: 0;
+}
+
+.hydro-hero__poster {
+  z-index: 1;
+}
+
+.hydro-hero__image video[data-hydro-hero-video] {
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.48s ease;
+}
+
+.hydro-hero__image video[data-hydro-hero-video][data-media-state="loaded"] {
+  opacity: 1;
+}
+
+.hydro-hero__image video[data-media-state="error"],
+.hydro-hero__image video[data-media-state="skipped"] {
+  opacity: 0;
+}
+
 .hydro-hero__fade {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background: linear-gradient(to bottom, transparent 45%, var(--hydro-bg));
+}
+
+[data-progressive-media] {
+  position: relative;
+}
+
+[data-progressive-media]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(110deg, transparent 0%, rgb(var(--hydro-paper-rgb) / 44%) 46%, transparent 78%),
+    rgb(var(--hydro-ink-rgb) / 4%);
+  background-size: 220% 100%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+
+[data-progressive-media][data-media-state="loading"]::before,
+[data-progressive-media].is-media-loading::before {
+  opacity: 1;
+  animation: hydro-media-sheen 1.35s ease-in-out infinite;
+}
+
+[data-progressive-media][data-media-state="error"]::before,
+[data-progressive-media].is-media-error::before {
+  opacity: 1;
+  animation: none;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgb(var(--hydro-ink-rgb) / 4%) 0 0.4rem,
+      rgb(var(--hydro-paper-rgb) / 24%) 0.4rem 0.8rem
+    ),
+    rgb(var(--hydro-ink-rgb) / 3%);
+}
+
+[data-progressive-media] > img,
+[data-progressive-media] > picture,
+[data-progressive-media] > video {
+  position: relative;
+  z-index: 1;
+}
+
+[data-progressive-media] img.is-media-error,
+[data-progressive-media][data-media-state="error"] > img {
+  opacity: 0;
+}
+
+.hydro-media-error-label {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: rgb(var(--hydro-ink-rgb) / 48%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@keyframes hydro-media-sheen {
+  from {
+    background-position: 140% 0;
+  }
+
+  to {
+    background-position: -80% 0;
+  }
 }
 
 .hydro-hero__label {

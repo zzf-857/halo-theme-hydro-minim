@@ -91,12 +91,16 @@
               <span class="hydro-equipment-card__index" th:text="${#numbers.formatInteger(equipmentStat.index + 1, 2)}"
                 >01</span
               >
-              <div class="hydro-equipment-card__media">
+              <div class="hydro-equipment-card__media" data-progressive-media>
                 <img
                   th:if="${not #strings.isEmpty(equipment.spec.cover)}"
-                  th:src="${equipment.spec.cover}"
+                  th:src="${thumbnail.gen(equipment.spec.cover, 'm')}"
+                  th:srcset="|${thumbnail.gen(equipment.spec.cover, 's')} 420w, ${thumbnail.gen(equipment.spec.cover, 'm')} 800w, ${thumbnail.gen(equipment.spec.cover, 'l')} 1200w|"
+                  sizes="(max-width: 720px) calc(100vw - 2rem), 33vw"
                   th:alt="${equipment.spec.displayName}"
                   loading="lazy"
+                  decoding="async"
+                  data-progressive-image
                 />
                 <div th:if="${#strings.isEmpty(equipment.spec.cover)}" class="hydro-plugin-placeholder">
                   <span th:text="${theme.config.plugins?.equipment?.placeholder_label ?: 'Hydro Gear'}"

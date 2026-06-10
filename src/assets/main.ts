@@ -6,6 +6,7 @@ import { initAuthAltchaFloatingAnchor } from "./auth-altcha";
 import { initCommentWidgetSkin } from "./comment-widget-skin";
 import { runHydroFabAction, type HydroFabActionDependencies } from "./fab-actions";
 import { initHydroNotice, type HydroNoticeApi } from "./hydro-notice";
+import { createMediaLoadController } from "./media-loading";
 import { createHydroQrSvg, createHydroQrSvgDataUrl } from "./poster-qr";
 import { initSearchWidgetSkin } from "./search-widget-skin";
 import { initHydroTagCloud } from "./tag-cloud";
@@ -1205,6 +1206,15 @@ function initHero() {
   window.addEventListener("pagehide", () => ctx.revert(), { once: true });
 }
 
+function initMediaLoadingExperience() {
+  const controller = createMediaLoadController(document, {
+    fallbackErrorText: "图片暂时不可见",
+  });
+
+  controller.initProgressiveImages();
+  controller.initDeferredHeroVideo();
+}
+
 function initRevealAnimations() {
   if (!motionEnabled) {
     return;
@@ -1304,27 +1314,29 @@ function decodeWhenReady(image: HTMLImageElement) {
 }
 
 function initFallbackCoverImages() {
-  document.querySelectorAll<HTMLImageElement>("img[data-fallback-cover]").forEach((image) => {
-    const fallbackCover = image.dataset.fallbackCover;
-    if (!fallbackCover) {
-      return;
-    }
-
-    const applyFallbackCover = () => {
-      if (image.dataset.fallbackCoverApplied === "true") {
+  document
+    .querySelectorAll<HTMLImageElement>("img[data-fallback-cover]:not([data-progressive-image])")
+    .forEach((image) => {
+      const fallbackCover = image.dataset.fallbackCover;
+      if (!fallbackCover) {
         return;
       }
 
-      image.dataset.fallbackCoverApplied = "true";
-      image.src = fallbackCover;
-    };
+      const applyFallbackCover = () => {
+        if (image.dataset.fallbackCoverApplied === "true") {
+          return;
+        }
 
-    image.addEventListener("error", applyFallbackCover);
+        image.dataset.fallbackCoverApplied = "true";
+        image.src = fallbackCover;
+      };
 
-    if (image.complete && image.naturalWidth === 0) {
-      applyFallbackCover();
-    }
-  });
+      image.addEventListener("error", applyFallbackCover);
+
+      if (image.complete && image.naturalWidth === 0) {
+        applyFallbackCover();
+      }
+    });
 }
 
 function initArticleMediaPrewarm() {
@@ -1936,6 +1948,19 @@ function initPostContentEnhancements() {
 }
 
 function enhanceContentBasics(content: HTMLElement, tableWrapClass = "hydro-post-table-wrap") {
+  content.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
+    if (!image.hasAttribute("loading")) {
+      image.loading = "lazy";
+    }
+    if (!image.hasAttribute("decoding")) {
+      image.decoding = "async";
+    }
+    if (!image.classList.contains("icon") && !image.classList.contains("no-progressive-image")) {
+      image.dataset.progressiveImage = "";
+      image.closest<HTMLElement>("figure")?.setAttribute("data-progressive-media", "");
+    }
+  });
+
   content.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
     const code = pre.querySelector<HTMLElement>("code");
     const languageClass = Array.from(code?.classList ?? []).find((className) => className.startsWith("language-"));
@@ -3230,6 +3255,7 @@ initScrollTilt();
 initFooterMarquee();
 initAuthorPage();
 initPostContentEnhancements();
+initMediaLoadingExperience();
 initPostToc();
 initPostMobileReadingControls();
 initPostActions();
@@ -3468,10 +3494,20 @@ function initLightbox() {
   let currentIndex = 0;
 
   const open = (index: number) => {
+    const trigger = triggers[index];
+    if (
+      !trigger ||
+      trigger.dataset.lightboxDisabled === "true" ||
+      trigger.dataset.mediaState === "error" ||
+      trigger.closest<HTMLElement>("[data-media-state='error']")
+    ) {
+      return;
+    }
+
     currentIndex = index;
-    const src = triggers[index].dataset.src ?? "";
-    const alt = triggers[index].dataset.alt ?? "";
-    const captionText = triggers[index].dataset.caption ?? alt;
+    const src = trigger.dataset.src ?? "";
+    const alt = trigger.dataset.alt ?? "";
+    const captionText = trigger.dataset.caption ?? alt;
     if (!img) return;
     img.classList.add("is-loading");
     img.src = src;

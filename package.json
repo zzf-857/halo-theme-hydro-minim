@@ -8,7 +8,8 @@
     "check": "vp check --fix",
     "dev": "vp build --watch",
     "package": "theme-package",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "test": "vp test run --environment jsdom"
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",

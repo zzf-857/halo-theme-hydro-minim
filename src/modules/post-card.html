@@ -2,13 +2,23 @@
   th:fragment="post-card(post, index)"
   class="hydro-list-card"
   th:with="
-    fallbackCover=${index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+    rawFallbackCover=${index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+    fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
     cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover}
   "
 >
   <a th:href="@{${post.status.permalink}}">
-    <div class="hydro-list-card__media">
-      <img th:src="${cover}" th:alt="${post.spec.title}" loading="lazy" />
+    <div class="hydro-list-card__media" data-progressive-media>
+      <img
+        th:src="${thumbnail.gen(cover, 'm')}"
+        th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+        sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1100px) 50vw, 33vw"
+        th:alt="${post.spec.title}"
+        loading="lazy"
+        decoding="async"
+        data-progressive-image
+        th:attr="data-fallback-cover=${fallbackCover}"
+      />
     </div>
     <div class="hydro-list-card__body">
       <div class="hydro-list-card__meta">

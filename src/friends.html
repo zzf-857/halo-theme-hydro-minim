@@ -54,8 +54,15 @@
         >
           <a th:href="${spec.postLink}" target="_blank" rel="noreferrer noopener">
             <span class="hydro-friend-row__index" th:text="${#numbers.formatInteger(friendStat.index + 1, 2)}">01</span>
-            <span class="hydro-friend-row__avatar">
-              <img th:if="${not #strings.isEmpty(spec.logo)}" th:src="${spec.logo}" th:alt="|${spec.author} 头像|" />
+            <span class="hydro-friend-row__avatar" data-progressive-media>
+              <img
+                th:if="${not #strings.isEmpty(spec.logo)}"
+                th:src="${thumbnail.gen(spec.logo, 's')}"
+                th:alt="|${spec.author} 头像|"
+                loading="lazy"
+                decoding="async"
+                data-progressive-image
+              />
               <b
                 th:if="${#strings.isEmpty(spec.logo)}"
                 th:text="${#strings.isEmpty(spec.author) ? 'F' : #strings.substring(spec.author,0,1)}"

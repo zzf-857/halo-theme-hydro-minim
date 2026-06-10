@@ -24,14 +24,15 @@
         th:each="post,stat : ${posts.items}"
         th:if="${stat.index < latestSize}"
         th:with="
-          fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+          rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+          fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
           cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover},
           optimizedCover=${#strings.contains(cover, 'images.unsplash.com') ? cover + (#strings.contains(cover, '?') ? '&w=960&fit=crop&auto=format' : '?w=960&fit=crop&auto=format') : cover},
           optimizedFallbackCover=${#strings.contains(fallbackCover, 'images.unsplash.com') ? fallbackCover + (#strings.contains(fallbackCover, '?') ? '&w=960&fit=crop&auto=format' : '?w=960&fit=crop&auto=format') : fallbackCover}
         "
       >
         <a th:href="@{${post.status.permalink}}">
-          <div class="hydro-card__media">
+          <div class="hydro-card__media" data-progressive-media>
             <img
               th:src="${optimizedCover}"
               th:alt="${post.spec.title}"
@@ -41,6 +42,7 @@
               decoding="async"
               fetchpriority="low"
               data-prewarm-image
+              data-progressive-image
               th:attr="data-fallback-cover=${optimizedFallbackCover}"
             />
             <div class="hydro-card__shade" aria-hidden="true"></div>

@@ -65,7 +65,8 @@
                     class="hydro-archive__item"
                     th:href="@{${post.status.permalink}}"
                     th:with="
-                      fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
                       cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover},
                       optimizedCover=${#strings.contains(cover, 'images.unsplash.com') ? cover + (#strings.contains(cover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : cover},
                       optimizedFallbackCover=${#strings.contains(fallbackCover, 'images.unsplash.com') ? fallbackCover + (#strings.contains(fallbackCover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : fallbackCover}
@@ -94,12 +95,14 @@
                       th:unless="${theme.config.content?.archive != null and theme.config.content.archive.show_post_cover == false}"
                       class="hydro-archive__item-cover"
                       aria-hidden="true"
+                      data-progressive-media
                     >
                       <img
-                        th:src="${optimizedCover}"
+                        th:src="${thumbnail.gen(optimizedCover, 's')}"
                         th:alt="${post.spec.title}"
                         loading="lazy"
                         decoding="async"
+                        data-progressive-image
                         th:attr="data-fallback-cover=${optimizedFallbackCover}"
                       />
                     </span>

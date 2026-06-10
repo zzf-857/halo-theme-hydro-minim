@@ -26,6 +26,11 @@
 - Plugin page settings means settings for optional plugin-backed surfaces such as links, moments, photos, equipment, friends, bangumi, Steam, and Docsme.
 - Effective setting means a theme setting that changes site identity, visual presentation, layout behavior, feature availability, content quantity, or plugin integration behavior.
 - Microcopy default means routine labels, empty states, install hints, and button text that belong in template defaults rather than in the theme settings page.
+- Hero enhanced media means optional visual media in the home Hero that enriches the first viewport after the page is usable. It must not decide whether navigation, text, or article entry points can respond.
+- Hero cover frame means the lightweight visual state shown before optional Hero media is ready. It carries the Hero atmosphere while heavier media loads, fails, or is skipped.
+- Progressive image shell means the theme-owned visual wrapper around image content while the real image is loading, unavailable, or failed. It protects layout stability and keeps image-heavy pages readable without making image delivery a new service boundary.
+- Halo thumbnail ladder means the Halo-generated `s`, `m`, `l`, and `xl` thumbnail sizes used by theme templates for responsive image candidates. It is the preferred source of smaller image variants before introducing external CDN or proxy infrastructure.
+- Gallery failure shell means a photo card remains visible when its image cannot load. The photo content still exists; only the bitmap is temporarily unavailable.
 
 ## Current Decisions
 
@@ -45,3 +50,5 @@
 - Mobile menu branches must not open the first group by default. Current-route scoring should choose the deepest matching link and expand only its parent branch chain.
 - Theme settings should stay operator-minded. New settings should enter the existing identity, presentation, navigation, home, content, plugins, or advanced domains before adding another top-level domain.
 - Microcopy defaults should not become settings unless site owners have a clear reason to edit that wording as part of normal theme operation.
+- Image-heavy surfaces should use a progressive image shell plus Halo thumbnail ladder before introducing an external image proxy or CDN requirement. The theme is responsible for graceful loading and failure states; site infrastructure remains optional.
+- Gallery images should keep their card footprint when loading fails. Do not remove failed photo cards from the masonry flow; show a quiet failure state and prevent broken images from opening an empty lightbox.

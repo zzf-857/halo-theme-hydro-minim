@@ -96,6 +96,7 @@
           th:href="${bangumi.spec.url}"
           target="_blank"
           rel="noreferrer noopener"
+          data-progressive-media
         >
           <span class="hydro-bangumi-card__index" th:text="${#numbers.formatInteger(bangumiStat.index + 1, 2)}"
             >01</span
@@ -108,9 +109,14 @@
           >
           <img
             th:if="${not #strings.isEmpty(bangumi.spec.cover)}"
-            th:src="${#strings.contains(bangumi.spec.cover, '@') ? #strings.substringBefore(bangumi.spec.cover, '@') : bangumi.spec.cover}"
+            th:with="bangumiCover=${#strings.contains(bangumi.spec.cover, '@') ? #strings.substringBefore(bangumi.spec.cover, '@') : bangumi.spec.cover}"
+            th:src="${thumbnail.gen(bangumiCover, 'm')}"
+            th:srcset="|${thumbnail.gen(bangumiCover, 's')} 360w, ${thumbnail.gen(bangumiCover, 'm')} 720w, ${thumbnail.gen(bangumiCover, 'l')} 1080w|"
+            sizes="(max-width: 720px) calc((100vw - 3rem) / 2), 18vw"
             th:alt="${bangumi.spec.title}"
             loading="lazy"
+            decoding="async"
+            data-progressive-image
             referrerpolicy="no-referrer"
           />
           <strong th:text="${bangumi.spec.title}">番剧名称</strong>

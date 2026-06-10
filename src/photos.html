@@ -69,10 +69,19 @@
         <div class="hydro-photo-card" th:each="photo : ${photosData.items}">
           <button
             class="hydro-photo-card__inner"
-            th:attr="data-src=${photo.spec.url},data-alt=${photo.spec.displayName}"
+            th:attr="data-src=${photo.spec.url},data-alt=${photo.spec.displayName},data-media-error-text=${photo.spec.displayName ?: '图片暂时不可见'}"
+            data-progressive-media
             data-lightbox-trigger
           >
-            <img th:src="${photo.spec.url}" th:alt="${photo.spec.displayName}" loading="lazy" />
+            <img
+              th:src="${thumbnail.gen(photo.spec.url, 'm')}"
+              th:srcset="|${thumbnail.gen(photo.spec.url, 's')} 420w, ${thumbnail.gen(photo.spec.url, 'm')} 760w, ${thumbnail.gen(photo.spec.url, 'l')} 1160w|"
+              sizes="(max-width: 720px) calc((100vw - 2.75rem) / 2), (max-width: 1100px) calc((100vw - 5rem) / 2), 31vw"
+              th:alt="${photo.spec.displayName}"
+              loading="lazy"
+              decoding="async"
+              data-progressive-image
+            />
             <div class="hydro-photo-card__overlay">
               <div class="hydro-photo-card__info">
                 <h3
