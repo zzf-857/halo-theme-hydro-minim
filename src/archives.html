@@ -60,7 +60,17 @@
                 </div>
 
                 <div class="hydro-archive__items">
-                  <a th:each="post : ${month.posts}" class="hydro-archive__item" th:href="@{${post.status.permalink}}">
+                  <a
+                    th:each="post,stat : ${month.posts}"
+                    class="hydro-archive__item"
+                    th:href="@{${post.status.permalink}}"
+                    th:with="
+                      fallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                      cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover},
+                      optimizedCover=${#strings.contains(cover, 'images.unsplash.com') ? cover + (#strings.contains(cover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : cover},
+                      optimizedFallbackCover=${#strings.contains(fallbackCover, 'images.unsplash.com') ? fallbackCover + (#strings.contains(fallbackCover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : fallbackCover}
+                    "
+                  >
                     <time
                       class="hydro-archive__item-date"
                       th:datetime="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"
@@ -81,12 +91,17 @@
                       </em>
                     </span>
                     <span
-                      th:if="${not #strings.isEmpty(post.spec.cover)}"
                       th:unless="${theme.config.content?.archive != null and theme.config.content.archive.show_post_cover == false}"
                       class="hydro-archive__item-cover"
                       aria-hidden="true"
                     >
-                      <img th:src="${thumbnail.gen(post.spec.cover, 's')}" th:alt="${post.spec.title}" loading="lazy" />
+                      <img
+                        th:src="${optimizedCover}"
+                        th:alt="${post.spec.title}"
+                        loading="lazy"
+                        decoding="async"
+                        th:attr="data-fallback-cover=${optimizedFallbackCover}"
+                      />
                     </span>
                     <span class="hydro-archive__item-arrow" aria-hidden="true">
                       <svg viewBox="0 0 24 24">
