@@ -74,18 +74,21 @@ spec:
           children:
             - $formkit: attachment
               name: article_cover_1
+              key: identity_defaults_article_cover_1
               label: 默认文章封面 1
               accepts:
                 - image/*
               value: /themes/halo-theme-hydro-minim/assets/images/article-1.jpg
             - $formkit: attachment
               name: article_cover_2
+              key: identity_defaults_article_cover_2
               label: 默认文章封面 2
               accepts:
                 - image/*
               value: /themes/halo-theme-hydro-minim/assets/images/article-2.jpg
             - $formkit: attachment
               name: article_cover_3
+              key: identity_defaults_article_cover_3
               label: 默认文章封面 3
               accepts:
                 - image/*
@@ -96,6 +99,7 @@ spec:
           children:
             - $formkit: array
               name: links
+              key: identity_social_links
               label: 站点社交链接
               value:
                 - label: Twitter
@@ -122,20 +126,24 @@ spec:
               children:
                 - $formkit: text
                   name: label
+                  key: identity_social_links_label
                   label: 名称
                   value: ""
                 - $formkit: url
                   name: url
+                  key: identity_social_links_url
                   label: 链接
                   value: ""
                   validation: required
                 - $formkit: iconify
                   name: icon
+                  key: identity_social_links_icon
                   label: 图标（可选）
                   format: svg
                   value-only: true
                 - $formkit: switch
                   name: new_tab
+                  key: identity_social_links_new_tab
                   label: 新标签打开
                   value: true
         - $formkit: group
@@ -156,42 +164,52 @@ spec:
               value: 氢
             - $formkit: text
               name: brand_text
+              key: identity_footer_brand_text
               label: 页脚品牌短字
               value: 氢
             - $formkit: textarea
               name: description
+              key: identity_footer_description
               label: 页脚描述
               value: 艺术的生活家。在结构化与自由之间，寻找设计的平衡。
             - $formkit: switch
               name: show_nav
+              key: identity_footer_show_nav
               label: 显示页脚导航
               value: true
             - $formkit: switch
               name: show_social
+              key: identity_footer_show_social
               label: 显示页脚社交链接
               value: true
             - $formkit: text
               name: copyright
+              key: identity_footer_copyright
               label: 版权文案
               value: "© {year} {site}. 保留所有权利."
             - $formkit: text
               name: build_text
+              key: identity_footer_build_text
               label: 构建署名
               value: 用 ♥ 与氢气构建
             - $formkit: text
               name: icp_text
+              key: identity_footer_icp_text
               label: ICP 备案号
               value: ""
             - $formkit: url
               name: icp_link
+              key: identity_footer_icp_link
               label: ICP 备案链接
               value: https://beian.miit.gov.cn/
             - $formkit: text
               name: gongan_text
+              key: identity_footer_gongan_text
               label: 公安联网备案号
               value: ""
             - $formkit: url
               name: gongan_link
+              key: identity_footer_gongan_link
               label: 公安联网备案链接
               value: ""
 
@@ -204,6 +222,7 @@ spec:
           children:
             - $formkit: radio
               name: color_scheme
+              key: presentation_color_color_scheme
               label: 默认配色模式
               value: auto
               options:
@@ -215,19 +234,23 @@ spec:
                   value: dark
             - $formkit: color
               name: background_color
+              key: presentation_color_background_color
               label: 浅色背景
               value: "#F3F3F3"
             - $formkit: color
               name: dark_background_color
+              key: presentation_color_dark_background_color
               label: 深色背景
               value: "#101112"
             - $formkit: color
               name: accent_color
+              key: presentation_color_accent_color
               label: 浅色强调色
               help: 用于文字选中、正文链接、输入焦点、光标、搜索命中和轻量高亮。
               value: "#FF6B6B"
             - $formkit: color
               name: dark_accent_color
+              key: presentation_color_dark_accent_color
               label: 深色强调色
               value: "#FF8A8A"
         - $formkit: group
@@ -236,6 +259,7 @@ spec:
           children:
             - $formkit: switch
               name: show_grain
+              key: presentation_motion_show_grain
               label: 显示轻微颗粒
               value: true
             - $formkit: switch
@@ -282,6 +306,7 @@ spec:
               value: true
             - $formkit: switch
               name: enable_lightbox
+              key: presentation_motion_enable_lightbox
               label: 启用图片灯箱
               value: true
         - $formkit: group
@@ -290,10 +315,12 @@ spec:
           children:
             - $formkit: text
               name: to_light_label
+              key: presentation_theme_toggle_to_light_label
               label: 切换到浅色提示
               value: 切换为浅色模式
             - $formkit: text
               name: to_dark_label
+              key: presentation_theme_toggle_to_dark_label
               label: 切换到深色提示
               value: 切换为深色模式
 
@@ -324,10 +351,12 @@ spec:
                   value: page
             - $formkit: switch
               name: allow_color_switch
+              key: navigation_header_allow_color_switch
               label: 允许访客切换深浅色
               value: true
             - $formkit: text
               name: mobile_menu_label
+              key: navigation_header_mobile_menu_label
               label: 移动端菜单按钮提示
               value: 菜单
         - $formkit: group
@@ -336,6 +365,7 @@ spec:
           children:
             - $formkit: array
               name: links
+              key: navigation_fallback_menu_links
               label: 无主菜单时的默认导航
               value:
                 - label: 文章
@@ -352,10 +382,12 @@ spec:
               children:
                 - $formkit: text
                   name: label
+                  key: navigation_fallback_menu_links_label
                   label: 名称
                   value: ""
                 - $formkit: url
                   name: url
+                  key: navigation_fallback_menu_links_url
                   label: 链接
                   value: ""
         - $formkit: group
@@ -364,10 +396,12 @@ spec:
           children:
             - $formkit: text
               name: previous_label
+              key: navigation_pagination_previous_label
               label: 上一页文案
               value: 上一页
             - $formkit: text
               name: next_label
+              key: navigation_pagination_next_label
               label: 下一页文案
               value: 下一页
         - $formkit: group
@@ -532,6 +566,7 @@ spec:
                   validation: required
                 - $formkit: array
                   name: items
+                  key: navigation_floating_fab_profiles_items
                   label: 快捷项
                   value: []
                   min: 0
@@ -816,6 +851,7 @@ spec:
           children:
             - $formkit: switch
               name: show_cover
+              key: content_post_show_cover
               label: 显示文章封面 Hero
               value: true
             - $formkit: switch
@@ -843,30 +879,37 @@ spec:
               value: ""
             - $formkit: switch
               name: show_neighbors
+              key: content_post_show_neighbors
               label: 显示上一篇/下一篇
               value: true
             - $formkit: switch
               name: enable_comment
+              key: content_post_enable_comment
               label: 启用评论区
               value: true
             - $formkit: switch
               name: enable_toc
+              key: content_post_enable_toc
               label: 启用文章目录
               value: true
             - $formkit: switch
               name: enable_reading_progress
+              key: content_post_enable_reading_progress
               label: 启用阅读进度
               value: true
             - $formkit: switch
               name: enable_action_rail
+              key: content_post_enable_action_rail
               label: 启用阅读操作栏
               value: true
             - $formkit: switch
               name: enable_upvote
+              key: content_post_enable_upvote
               label: 启用点赞动作
               value: true
             - $formkit: switch
               name: enable_share
+              key: content_post_enable_share
               label: 启用分享动作
               value: true
             - $formkit: switch
@@ -890,22 +933,27 @@ spec:
           children:
             - $formkit: switch
               name: show_cover
+              key: content_page_show_cover
               label: 显示页面封面
               value: true
             - $formkit: switch
               name: show_publish_time
+              key: content_page_show_publish_time
               label: 显示发布时间
               value: true
             - $formkit: switch
               name: enable_comment
+              key: content_page_enable_comment
               label: 启用评论区
               value: true
             - $formkit: switch
               name: about_show_stats
+              key: content_page_about_show_stats
               label: 关于页显示统计
               value: true
             - $formkit: switch
               name: about_enable_comment
+              key: content_page_about_enable_comment
               label: 关于页启用评论
               value: true
         - $formkit: group
@@ -914,18 +962,22 @@ spec:
           children:
             - $formkit: text
               name: title
+              key: content_archive_title
               label: 归档标题
               value: 归档
             - $formkit: textarea
               name: description
+              key: content_archive_description
               label: 归档描述
               value: 按时间折叠所有文章，像翻阅一组轻薄的创作年表。
             - $formkit: switch
               name: show_meta
+              key: content_archive_show_meta
               label: 显示归档统计
               value: true
             - $formkit: switch
               name: show_post_cover
+              key: content_archive_show_post_cover
               label: 显示文章封面
               value: true
         - $formkit: group
@@ -934,26 +986,32 @@ spec:
           children:
             - $formkit: text
               name: category_title
+              key: content_taxonomy_category_title
               label: 分类页标题
               value: 分类
             - $formkit: textarea
               name: category_description
+              key: content_taxonomy_category_description
               label: 分类页描述
               value: 按主题收束文章，从一个分类进入一组连续的阅读线索。
             - $formkit: switch
               name: category_show_meta
+              key: content_taxonomy_category_show_meta
               label: 分类页显示统计
               value: true
             - $formkit: text
               name: tag_title
+              key: content_taxonomy_tag_title
               label: 标签页标题
               value: 标签
             - $formkit: textarea
               name: tag_description
+              key: content_taxonomy_tag_description
               label: 标签页描述
               value: 把散落的文章压缩成一组轻量关键词，从一个符号进入另一条阅读路径。
             - $formkit: switch
               name: tag_show_meta
+              key: content_taxonomy_tag_show_meta
               label: 标签页显示统计
               value: true
         - $formkit: group
@@ -962,18 +1020,22 @@ spec:
           children:
             - $formkit: text
               name: title
+              key: content_search_title
               label: 搜索页标题
               value: 搜索
             - $formkit: textarea
               name: description
+              key: content_search_description
               label: 搜索页描述
               value: 输入关键词，在轻量索引里找到想读的内容。
             - $formkit: text
               name: placeholder
+              key: content_search_placeholder
               label: 搜索框占位
               value: 输入关键词
             - $formkit: number
               name: limit
+              key: content_search_limit
               label: 搜索结果数量
               value: 10
               min: 1
@@ -1082,6 +1144,7 @@ spec:
           children:
             - $formkit: number
               name: page_size
+              key: plugins_moments_page_size
               label: 每页数量
               value: 10
               min: 1
@@ -1089,14 +1152,17 @@ spec:
               step: 1
             - $formkit: switch
               name: enable_upvote
+              key: plugins_moments_enable_upvote
               label: 启用点赞
               value: true
             - $formkit: switch
               name: enable_comment
+              key: plugins_moments_enable_comment
               label: 启用评论
               value: true
             - $formkit: switch
               name: show_detail_link
+              key: plugins_moments_show_detail_link
               label: 显示详情入口
               value: true
         - $formkit: group
@@ -1105,6 +1171,7 @@ spec:
           children:
             - $formkit: number
               name: page_size
+              key: plugins_photos_page_size
               label: 每页数量
               value: 12
               min: 1
@@ -1112,6 +1179,7 @@ spec:
               step: 1
             - $formkit: switch
               name: enable_comment
+              key: plugins_photos_enable_comment
               label: 启用评论区
               value: true
         - $formkit: group
@@ -1120,6 +1188,7 @@ spec:
           children:
             - $formkit: switch
               name: enable_comment
+              key: plugins_equipment_enable_comment
               label: 启用评论区
               value: true
         - $formkit: group
@@ -1128,6 +1197,7 @@ spec:
           children:
             - $formkit: number
               name: page_size
+              key: plugins_friends_page_size
               label: 每页数量
               value: 12
               min: 1
@@ -1135,6 +1205,7 @@ spec:
               step: 1
             - $formkit: switch
               name: enable_comment
+              key: plugins_friends_enable_comment
               label: 启用评论区
               value: true
         - $formkit: group
@@ -1143,6 +1214,7 @@ spec:
           children:
             - $formkit: number
               name: item_limit
+              key: plugins_bangumi_item_limit
               label: 展示数量
               value: 24
               min: 1
@@ -1150,6 +1222,7 @@ spec:
               step: 1
             - $formkit: switch
               name: enable_comment
+              key: plugins_bangumi_enable_comment
               label: 启用评论区
               value: true
         - $formkit: group
@@ -1158,6 +1231,7 @@ spec:
           children:
             - $formkit: number
               name: recent_limit
+              key: plugins_steam_recent_limit
               label: 最近游玩数量
               value: 8
               min: 1
@@ -1165,6 +1239,7 @@ spec:
               step: 1
             - $formkit: number
               name: game_page_size
+              key: plugins_steam_game_page_size
               label: 游戏库每页数量
               value: 18
               min: 1
@@ -1172,10 +1247,12 @@ spec:
               step: 1
             - $formkit: switch
               name: enable_game_link
+              key: plugins_steam_enable_game_link
               label: 启用游戏外链
               value: true
             - $formkit: switch
               name: enable_comment
+              key: plugins_steam_enable_comment
               label: 启用评论区
               value: true
         - $formkit: group
@@ -1190,10 +1267,12 @@ spec:
               value: true
             - $formkit: switch
               name: enable_comment
+              key: plugins_docs_enable_comment
               label: 启用评论区
               value: true
             - $formkit: url
               name: install_link
+              key: plugins_docs_install_link
               label: 插件安装链接
               value: https://www.halo.run/store/apps/app-yffxw
 
@@ -1206,21 +1285,25 @@ spec:
           children:
             - $formkit: code
               name: head_html
+              key: advanced_inject_head_html
               label: Head HTML
               language: html
               value: ""
             - $formkit: code
               name: footer_html
+              key: advanced_inject_footer_html
               label: Footer HTML
               language: html
               value: ""
             - $formkit: code
               name: code_css
+              key: advanced_inject_code_css
               label: 自定义 CSS
               language: css
               value: ""
             - $formkit: code
               name: code_js
+              key: advanced_inject_code_js
               label: 自定义 JavaScript
               language: javascript
               value: ""
@@ -1230,6 +1313,7 @@ spec:
           children:
             - $formkit: number
               name: steam_cache_ttl_minutes
+              key: advanced_performance_steam_cache_ttl_minutes
               label: Steam 前端缓存分钟数
               value: 3
               min: 0
