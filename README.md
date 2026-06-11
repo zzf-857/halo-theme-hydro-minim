@@ -33,7 +33,7 @@ dist/halo-theme-hydro-minim-1.0.0.zip
 - [主题功能介绍](./docs/theme-features.md)：面向应用市场、宣传页和站点介绍，梳理 Hydro-Minim 的定位、功能卖点和页面覆盖。
 - [主题使用教程](./docs/theme-usage-guide.md)：面向站长后台配置，按“品牌与站点 / 视觉与动效 / 导航与结构 / 首页 / 内容页面 / 插件页面 / 高级设置”分组说明。
 - [宣传图源文件](./docs/promotion/index.html)：可维护的宣传图 HTML 设计稿。
-- 宣传图 PNG：位于 `public/assets/promotion/`，包括主视觉、功能矩阵、配置导览和插件生态四张图。
+- 宣传图 PNG：位于 `docs/promotion/`，包括主视觉、功能矩阵、配置导览和插件生态四张图。
 
 ## 快捷操作按钮
 
