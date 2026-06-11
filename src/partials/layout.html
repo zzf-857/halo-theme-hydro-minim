@@ -9,8 +9,6 @@
     data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
     data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
     data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
-    data-hydro-scroll-tilt=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_scroll_tilt != false},
-    data-hydro-text-scramble=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_text_scramble != false},
     data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
   "
   xmlns:th="http://www.thymeleaf.org"
@@ -29,8 +27,6 @@
       data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
       data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
       data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
-      data-enable-scroll-tilt=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_scroll_tilt != false},
-      data-enable-text-scramble=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_text_scramble != false},
       data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
       data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
       data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},

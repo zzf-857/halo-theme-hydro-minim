@@ -25,6 +25,9 @@
 - Core content page settings means settings for built-in reading and discovery surfaces: posts, single pages, archives, taxonomy pages, search, and share posters.
 - Plugin page settings means settings for optional plugin-backed surfaces such as links, moments, photos, equipment, friends, bangumi, Steam, and Docsme.
 - Effective setting means a theme setting that changes site identity, visual presentation, layout behavior, feature availability, content quantity, or plugin integration behavior.
+- Perceptible setting means a theme setting whose enabled and disabled states create a site-owner-visible difference on the frontend. A setting that is technically wired but not meaningfully noticeable is not considered effective.
+- Presentation setting means a perceptible setting in the presentation domain that controls a whole frontend experience category, not one hidden implementation detail.
+- Desktop hover setting means a presentation setting whose visible effect is guaranteed on pointer-and-hover devices. It may gracefully degrade on touch-first devices.
 - Microcopy default means routine labels, empty states, install hints, and button text that belong in template defaults rather than in the theme settings page.
 - Hero enhanced media means optional visual media in the home Hero that enriches the first viewport after the page is usable. It must not decide whether navigation, text, or article entry points can respond.
 - Hero cover frame means the lightweight visual state shown before optional Hero media is ready. It carries the Hero atmosphere while heavier media loads, fails, or is skipped.

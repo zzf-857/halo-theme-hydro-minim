@@ -65,14 +65,12 @@
             th:href="@{${item.status.href}}"
             th:text="${item.status.displayName}"
             th:target="${item.spec.target?.value}"
-            data-scramble
           ></a>
           <div th:unless="${#lists.isEmpty(item.children)}" class="hydro-dropdown" data-hydro-dropdown>
             <a
               th:href="@{${item.status.href}}"
               th:text="${item.status.displayName}"
               th:target="${item.spec.target?.value}"
-              data-scramble
             ></a>
             <ul class="hydro-dropdown__menu">
               <li th:each="child : ${item.children}">
@@ -94,15 +92,14 @@
             th:each="item : ${theme.config.navigation.fallback_menu.links}"
             th:href="${item.url}"
             th:text="${item.label}"
-            data-scramble
           ></a>
         </th:block>
         <th:block
           th:unless="${theme.config.navigation?.fallback_menu?.links != null and not #lists.isEmpty(theme.config.navigation.fallback_menu.links)}"
         >
-          <a href="#articles" data-scramble>文章</a>
-          <a href="#categories" data-scramble>分类</a>
-          <a href="#about" data-scramble>关于</a>
+          <a href="#articles">文章</a>
+          <a href="#categories">分类</a>
+          <a href="#about">关于</a>
         </th:block>
       </th:block>
     </nav>

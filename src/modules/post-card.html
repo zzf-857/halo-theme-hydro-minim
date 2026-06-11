@@ -1,6 +1,7 @@
 <article
   th:fragment="post-card(post, index)"
   class="hydro-list-card"
+  data-tilt-card
   th:with="
     rawFallbackCover=${index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
     fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},

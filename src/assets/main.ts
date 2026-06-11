@@ -20,8 +20,6 @@ const motionEnabled = document.body.dataset.enableMotion !== "false";
 const themeTransitionEnabled = document.body.dataset.themeTransition !== "false";
 const heroMotionEnabled = document.body.dataset.enableHeroMotion !== "false";
 const cardHoverEnabled = document.body.dataset.enableCardHover !== "false";
-const scrollTiltEnabled = document.body.dataset.enableScrollTilt !== "false";
-const textScrambleEnabled = document.body.dataset.enableTextScramble !== "false";
 const lightboxEnabled = document.body.dataset.enableLightbox !== "false";
 const smoothScrollEnabled = document.body.dataset.smoothScroll !== "false";
 const mobilePostQuery = window.matchMedia("(max-width: 48rem)");
@@ -232,8 +230,6 @@ function initAppearanceState() {
   root.dataset.hydroThemeTransition = themeTransitionEnabled ? "true" : "false";
   root.dataset.hydroHeroMotion = heroMotionEnabled ? "true" : "false";
   root.dataset.hydroCardHover = cardHoverEnabled ? "true" : "false";
-  root.dataset.hydroScrollTilt = scrollTiltEnabled ? "true" : "false";
-  root.dataset.hydroTextScramble = textScrambleEnabled ? "true" : "false";
   root.dataset.hydroLightbox = lightboxEnabled ? "true" : "false";
 
   root.style.setProperty("--hydro-coral-light", lightAccent);
@@ -1052,45 +1048,6 @@ function initNavigation() {
   });
 }
 
-function initScrambleLinks() {
-  if (!motionEnabled || !textScrambleEnabled) {
-    return;
-  }
-
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-  document.querySelectorAll<HTMLAnchorElement>("[data-scramble]").forEach((link) => {
-    if (link.closest(".hydro-nav__links")) {
-      return;
-    }
-
-    const label = link.textContent ?? "";
-    link.addEventListener("mouseenter", () => {
-      let iterations = 0;
-      const maxIterations = 10;
-      const interval = window.setInterval(() => {
-        link.textContent = Array.from(label)
-          .map((char, index) => {
-            if (char.trim() === "") {
-              return char;
-            }
-            if (index < iterations / 2) {
-              return char;
-            }
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join("");
-
-        iterations += 1;
-        if (iterations > maxIterations) {
-          window.clearInterval(interval);
-          link.textContent = label;
-        }
-      }, 30);
-    });
-  });
-}
-
 function initHero() {
   const hero = document.querySelector<HTMLElement>("[data-hydro-hero]");
 
@@ -1267,7 +1224,7 @@ function initRevealAnimations() {
           ease: "power2.out",
           stagger: prefersReducedMotion.matches ? 0.1 : 0.24,
           y: 0,
-          onComplete: () => gsap.set(cards, { clearProps: "willChange" }),
+          onComplete: () => gsap.set(cards, { clearProps: "transform,willChange" }),
         },
         "-=0.08",
       );
@@ -1410,8 +1367,15 @@ function initTiltCards() {
     let pointerX = 0;
     let pointerY = 0;
     let tiltRaf = 0;
-    const setRotateX = gsap.quickTo(card, "rotateX", { duration: 0.26, ease: "power2.out" });
-    const setRotateY = gsap.quickTo(card, "rotateY", { duration: 0.26, ease: "power2.out" });
+    gsap.set(card, {
+      "--hydro-card-lift": "0px",
+      "--hydro-card-scale": "1",
+      "--hydro-card-tilt-x": "0deg",
+      "--hydro-card-tilt-y": "0deg",
+      transformPerspective: 1100,
+      transformStyle: "preserve-3d",
+    });
+
     const readCardRect = () => {
       cardRect = card.getBoundingClientRect();
       return cardRect;
@@ -1424,10 +1388,10 @@ function initTiltCards() {
       }
       const x = pointerX - rect.left;
       const y = pointerY - rect.top;
-      const rotateX = (y - rect.height / 2) / 20;
-      const rotateY = (rect.width / 2 - x) / 20;
-      setRotateX(rotateX);
-      setRotateY(rotateY);
+      const rotateX = gsap.utils.clamp(-9, 9, (rect.height / 2 - y) / 14);
+      const rotateY = gsap.utils.clamp(-9, 9, (x - rect.width / 2) / 14);
+      card.style.setProperty("--hydro-card-tilt-x", `${rotateX}deg`);
+      card.style.setProperty("--hydro-card-tilt-y", `${rotateY}deg`);
     };
     const scheduleTilt = (event: PointerEvent) => {
       pointerX = event.clientX;
@@ -1438,8 +1402,12 @@ function initTiltCards() {
       tiltRaf = window.requestAnimationFrame(flushTilt);
     };
 
-    card.addEventListener("pointerenter", () => {
+    card.addEventListener("pointerenter", (event) => {
       readCardRect();
+      card.classList.add("is-hydro-card-hovered");
+      card.style.setProperty("--hydro-card-lift", "-10px");
+      card.style.setProperty("--hydro-card-scale", "1.024");
+      scheduleTilt(event);
     });
     card.addEventListener("pointermove", scheduleTilt, { passive: true });
 
@@ -1449,8 +1417,11 @@ function initTiltCards() {
         window.cancelAnimationFrame(tiltRaf);
         tiltRaf = 0;
       }
-      setRotateX(0);
-      setRotateY(0);
+      card.classList.remove("is-hydro-card-hovered");
+      card.style.setProperty("--hydro-card-lift", "0px");
+      card.style.setProperty("--hydro-card-scale", "1");
+      card.style.setProperty("--hydro-card-tilt-x", "0deg");
+      card.style.setProperty("--hydro-card-tilt-y", "0deg");
     });
 
     invalidateCardRects.push(() => {
@@ -1507,79 +1478,6 @@ function initCategoryCursor() {
       cursorRaf = 0;
     }
   });
-}
-
-function initScrollTilt() {
-  if (!motionEnabled || !scrollTiltEnabled || prefersReducedMotion.matches) {
-    return;
-  }
-
-  const tiltTargets = gsap.utils
-    .toArray<HTMLElement>(".tilt-on-scroll, [data-hydro-scroll-tilt-target]")
-    .filter(
-      (target) =>
-        target.tagName.toLowerCase() !== "main" &&
-        !target.matches("[data-hydro-hero], [data-hydro-nav], .hydro-fab-group, .hydro-mobile-menu") &&
-        !target.closest("[data-hydro-hero], [data-hydro-nav], .hydro-fab-group, .hydro-mobile-menu"),
-    );
-  if (tiltTargets.length === 0) {
-    return;
-  }
-
-  let lastScrollY = window.scrollY;
-  let settleTimer: number | undefined;
-  let ticking = false;
-  let tiltActive = false;
-  const setters = tiltTargets.map((target) =>
-    gsap.quickTo(target, "rotateX", {
-      duration: 0.18,
-      ease: "power2.out",
-    }),
-  );
-
-  const setTilt = (rotateX: number) => {
-    setters.forEach((setter) => setter(rotateX));
-  };
-  const setTiltActive = (active: boolean) => {
-    if (tiltActive === active) {
-      return;
-    }
-    tiltActive = active;
-    tiltTargets.forEach((target) => target.classList.toggle("is-scroll-tilting", active));
-  };
-
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (ticking) {
-        return;
-      }
-      window.requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        const velocity = currentScrollY - lastScrollY;
-        if (Math.abs(velocity) < 1) {
-          ticking = false;
-          return;
-        }
-        const rotateX = Math.max(-0.8, Math.min(0.8, velocity * 0.018));
-        setTiltActive(true);
-        setTilt(rotateX);
-        if (settleTimer) {
-          window.clearTimeout(settleTimer);
-        }
-        settleTimer = window.setTimeout(() => {
-          setTilt(0);
-          window.setTimeout(() => {
-            setTiltActive(false);
-          }, 220);
-        }, 140);
-        lastScrollY = currentScrollY;
-        ticking = false;
-      });
-      ticking = true;
-    },
-    { passive: true },
-  );
 }
 
 function initFooterMarquee() {
@@ -3251,7 +3149,6 @@ initHydroNotice();
 initAuthAltchaFloatingAnchor();
 initColorScheme();
 initNavigation();
-initScrambleLinks();
 initLenis();
 initHero();
 initFallbackCoverImages();
@@ -3259,7 +3156,6 @@ initArticleMediaPrewarm();
 initRevealAnimations();
 initTiltCards();
 initCategoryCursor();
-initScrollTilt();
 initFooterMarquee();
 initAuthorPage();
 initPostContentEnhancements();

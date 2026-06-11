@@ -260,54 +260,49 @@ spec:
             - $formkit: switch
               name: show_grain
               key: presentation_motion_show_grain
-              label: 显示轻微颗粒
+              label: 显示轻微颗粒质感
+              help: 独立于全局动效，用可见但克制的噪声层增加页面纸感。
               value: true
             - $formkit: switch
               name: enable_motion
               id: presentation_motion_enable_motion
               key: presentation_motion_enable_motion
               label: 启用全局动效
+              help: 关闭后停用大部分 JS 动效、CSS 动画和过渡。
               value: true
             - $formkit: switch
               if: $get(presentation_motion_enable_motion).value === true
               key: presentation_motion_smooth_scroll
               name: smooth_scroll
-              label: 启用平滑滚动
+              label: 启用 Lenis 平滑滚动
+              help: 用于页面滚动、锚点跳转和目录定位。
               value: true
             - $formkit: switch
               if: $get(presentation_motion_enable_motion).value === true
               key: presentation_motion_enable_theme_transition
               name: enable_theme_transition
               label: 启用深浅色光幕过渡
+              help: 控制点击深浅色切换时的圆形光幕动画。
               value: true
             - $formkit: switch
               if: $get(presentation_motion_enable_motion).value === true
               key: presentation_motion_enable_hero_motion
               name: enable_hero_motion
-              label: 启用 Hero 图片动效
+              label: 启用 Hero 图片跟随
+              help: 控制 Hero 图片的鼠标跟随位移；入场 reveal 由全局动效控制。
               value: true
             - $formkit: switch
               if: $get(presentation_motion_enable_motion).value === true
               key: presentation_motion_enable_card_hover
               name: enable_card_hover
-              label: 启用卡片 3D Hover
-              value: true
-            - $formkit: switch
-              if: $get(presentation_motion_enable_motion).value === true
-              key: presentation_motion_enable_scroll_tilt
-              name: enable_scroll_tilt
-              label: 启用主内容滚动倾斜
-              value: true
-            - $formkit: switch
-              if: $get(presentation_motion_enable_motion).value === true
-              key: presentation_motion_enable_text_scramble
-              name: enable_text_scramble
-              label: 启用文字扰动
+              label: 启用文章卡片 3D Hover
+              help: 作用于桌面端首页和文章列表卡片的倾斜、图片缩放、遮罩、箭头和浮层质感。
               value: true
             - $formkit: switch
               name: enable_lightbox
               key: presentation_motion_enable_lightbox
-              label: 启用图片灯箱
+              label: 启用图片灯箱交互
+              help: 作用于文章正文、瞬间和图库图片；不依赖全局动效。
               value: true
         - $formkit: group
           name: theme_toggle
