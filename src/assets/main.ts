@@ -277,6 +277,24 @@ function showHydroNotice(
   window.HydroNotice?.show({ message, ...options });
 }
 
+function isMemberPluginAvailable() {
+  const value = document.body.dataset.memberPluginAvailable;
+  return value == null ? true : value === "true";
+}
+
+function isMemberAuthenticated() {
+  const value = document.body.dataset.memberAuthenticated;
+  return value == null ? true : value === "true";
+}
+
+function showMemberPluginUnavailableNotice(id: string, title = "会员功能") {
+  showHydroNotice("请先安装并启用会员插件", { id, title, variant: "warning" });
+}
+
+function showMemberLoginRequiredNotice(id: string, title = "会员功能") {
+  showHydroNotice("请先登录后再使用会员功能", { id, title, variant: "warning" });
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -2450,20 +2468,46 @@ function initPostFavoriteAction(page: HTMLElement) {
     const label = button.querySelector<HTMLElement>("span");
     button.dataset.favoriteLabel = label?.textContent?.trim() || "收藏";
     button.dataset.favoritedLabel = page.dataset.postFavoritedLabel || "已收藏";
-    button.disabled = true;
   });
 
   void (async () => {
-    const memberFavorite = await waitForMemberFavorite();
-    if (!memberFavorite) {
+    if (!isMemberPluginAvailable()) {
       favoriteButtons.forEach((button) => {
-        button.hidden = true;
+        button.addEventListener("click", () => {
+          showMemberPluginUnavailableNotice("hydro-post-favorite", "文章收藏");
+        });
       });
       return;
     }
 
+    if (!isMemberAuthenticated()) {
+      favoriteButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          showMemberLoginRequiredNotice("hydro-post-favorite", "文章收藏");
+        });
+      });
+      return;
+    }
+
+    favoriteButtons.forEach((button) => {
+      button.disabled = true;
+    });
+
+    const memberFavorite = await waitForMemberFavorite();
+    if (!memberFavorite) {
+      favoriteButtons.forEach((button) => {
+        button.disabled = false;
+        button.addEventListener("click", () => {
+          showMemberPluginUnavailableNotice("hydro-post-favorite", "文章收藏");
+        });
+      });
+      return;
+    }
+
+    let currentStatus: MemberFavoriteStatus | null = null;
     try {
       const status = await memberFavorite.getStatus(subject);
+      currentStatus = status;
       syncPostFavoriteButtons(favoriteButtons, status);
     } finally {
       favoriteButtons.forEach((button) => {
@@ -2477,13 +2521,19 @@ function initPostFavoriteAction(page: HTMLElement) {
           return;
         }
 
+        if (currentStatus?.authenticated === false) {
+          showMemberLoginRequiredNotice("hydro-post-favorite", "文章收藏");
+          return;
+        }
+
         button.disabled = true;
         try {
           const result = await memberFavorite.toggle(subject);
           if (result.authenticated === false) {
-            window.location.href = result.loginUrl || memberFavorite.getLoginUrl?.() || "/login";
+            showMemberLoginRequiredNotice("hydro-post-favorite", "文章收藏");
             return;
           }
+          currentStatus = result;
           syncPostFavoriteButtons(favoriteButtons, result);
           showHydroNotice(
             result.favorited ? `已收藏 · ${Number(result.count || 0)}` : `已取消收藏 · ${Number(result.count || 0)}`,
@@ -5013,6 +5063,8 @@ function initFab() {
   const fabActionDependencies: HydroFabActionDependencies = {
     copyText: (text) => copyTextToClipboard(text),
     getWindow: () => window,
+    isMemberAuthenticated,
+    isMemberPluginAvailable,
     notify: (message, options) => showHydroNotice(message, options),
     root: document,
     scrollToElement,

@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hydro-Minim Promotion Kit</title>
+    <style>
+      :root {
+        --paper: #f3f3f3;
+        --paper-strong: #fbfbf8;
+        --ink: #101112;
+        --muted: rgb(16 17 18 / 58%);
+        --faint: rgb(16 17 18 / 10%);
+        --line: rgb(16 17 18 / 14%);
+        --line-strong: rgb(16 17 18 / 34%);
+        --coral: #ff6b6b;
+        --teal: #4ecdc4;
+        --yellow: #ffe66d;
+        --dark: #101112;
+        --dark-ink: #f5f3ef;
+        --mono: "Space Mono", "SFMono-Regular", "Menlo", "Consolas", "Noto Sans SC", "PingFang SC", monospace;
+        --sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        background: #d9d9d3;
+        color: var(--ink);
+        font-family: var(--mono);
+      }
+
+      body {
+        padding: 24px;
+      }
+
+      .poster-stack {
+        display: grid;
+        gap: 24px;
+      }
+
+      .poster {
+        position: relative;
+        overflow: hidden;
+        width: 1600px;
+        height: 900px;
+        border: 1px solid rgb(0 0 0 / 12%);
+        background:
+          linear-gradient(rgb(16 17 18 / 3.4%) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(16 17 18 / 3.4%) 1px, transparent 1px), var(--paper);
+        background-size:
+          86px 86px,
+          86px 86px,
+          auto;
+        isolation: isolate;
+      }
+
+      .poster::before {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background-image: url("../../public/assets/promotion/hydro-minim-abstract-backdrop.png");
+        background-position: center;
+        background-size: cover;
+        content: "";
+        opacity: 0.14;
+        mix-blend-mode: multiply;
+      }
+
+      .poster::after {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(circle at 12% 16%, rgb(78 205 196 / 14%), transparent 280px),
+          radial-gradient(circle at 82% 74%, rgb(255 107 107 / 12%), transparent 330px),
+          linear-gradient(135deg, rgb(255 255 255 / 58%), transparent 55%);
+        content: "";
+        pointer-events: none;
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 20% 30%, rgb(0 0 0 / 4%) 0 1px, transparent 1px),
+          radial-gradient(circle at 70% 60%, rgb(0 0 0 / 3.5%) 0 1px, transparent 1px);
+        background-size:
+          6px 6px,
+          8px 8px;
+        opacity: 0.36;
+        pointer-events: none;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .brand img {
+        display: block;
+        width: 72px;
+        height: 72px;
+      }
+
+      .brand__text {
+        display: grid;
+        gap: 5px;
+      }
+
+      .brand__name {
+        font-family: var(--sans);
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: 0;
+        line-height: 1;
+      }
+
+      .brand__slug {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: rgb(16 17 18 / 52%);
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 46px;
+        height: 1px;
+        background: var(--line-strong);
+        content: "";
+      }
+
+      h1,
+      h2,
+      p,
+      ul,
+      dl,
+      dd {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        font-family: var(--sans);
+        font-size: 118px;
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 0.96;
+      }
+
+      h2 {
+        font-family: var(--sans);
+        font-size: 74px;
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 1;
+      }
+
+      .lead {
+        max-width: 660px;
+        color: rgb(16 17 18 / 66%);
+        font-family: var(--sans);
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: 0;
+        line-height: 1.55;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: rgb(255 255 255 / 46%);
+        color: rgb(16 17 18 / 70%);
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .device {
+        position: relative;
+        border: 1px solid rgb(16 17 18 / 22%);
+        border-radius: 26px;
+        background: linear-gradient(135deg, rgb(255 255 255 / 70%), rgb(255 255 255 / 28%)), rgb(255 255 255 / 46%);
+        box-shadow:
+          0 36px 90px rgb(16 17 18 / 12%),
+          inset 0 1px 0 rgb(255 255 255 / 72%);
+        backdrop-filter: blur(18px);
+      }
+
+      .device--desktop {
+        width: 760px;
+        height: 480px;
+        padding: 22px;
+      }
+
+      .device--mobile {
+        width: 250px;
+        height: 510px;
+        border-radius: 34px;
+        padding: 18px;
+      }
+
+      .device__bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+
+      .device__dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .device__dots span {
+        width: 10px;
+        height: 10px;
+        border: 1px solid rgb(16 17 18 / 34%);
+        border-radius: 50%;
+        background: rgb(255 255 255 / 44%);
+      }
+
+      .device__url {
+        width: 220px;
+        height: 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgb(16 17 18 / 4%);
+      }
+
+      .mock-hero {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 28px;
+        height: 390px;
+      }
+
+      .mock-hero__media {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgb(16 17 18 / 18%);
+        border-radius: 18px;
+        background:
+          linear-gradient(135deg, rgb(16 17 18 / 16%), transparent 56%),
+          radial-gradient(circle at 66% 32%, rgb(78 205 196 / 28%), transparent 180px), rgb(16 17 18 / 8%);
+      }
+
+      .mock-hero__media::before {
+        position: absolute;
+        inset: 52px 42px;
+        border: 1px solid rgb(16 17 18 / 18%);
+        border-radius: 999px;
+        content: "";
+        transform: rotate(-9deg);
+      }
+
+      .mock-hero__media::after {
+        position: absolute;
+        right: 28px;
+        bottom: 28px;
+        width: 88px;
+        height: 28px;
+        border: 1px solid rgb(16 17 18 / 22%);
+        border-radius: 999px;
+        background: rgb(255 255 255 / 34%);
+        content: "氢视窗";
+        color: rgb(16 17 18 / 56%);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 28px;
+        text-align: center;
+      }
+
+      .mock-hero__copy {
+        display: grid;
+        align-content: end;
+        gap: 20px;
+        padding-bottom: 4px;
+      }
+
+      .mock-title {
+        font-family: var(--sans);
+        font-size: 78px;
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 0.92;
+      }
+
+      .mock-lines {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mock-lines span {
+        display: block;
+        height: 8px;
+        border-radius: 999px;
+        background: rgb(16 17 18 / 12%);
+      }
+
+      .mock-lines span:nth-child(2) {
+        width: 78%;
+      }
+
+      .mock-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .mock-list__item {
+        display: grid;
+        grid-template-columns: 42px 1fr 58px;
+        align-items: center;
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        color: rgb(16 17 18 / 58%);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .mock-list__item strong {
+        overflow: hidden;
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        letter-spacing: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .mobile-screen {
+        height: 100%;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 18px;
+        background: var(--paper);
+      }
+
+      .mobile-pill {
+        display: grid;
+        grid-template-columns: 34px 1fr 34px;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+        border: 1px solid rgb(16 17 18 / 16%);
+        border-radius: 999px;
+        padding: 5px;
+        background: rgb(255 255 255 / 78%);
+      }
+
+      .mobile-pill span,
+      .icon-dot {
+        display: block;
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: rgb(16 17 18 / 4%);
+      }
+
+      .mobile-article {
+        display: grid;
+        gap: 14px;
+        margin-top: 42px;
+      }
+
+      .mobile-article h3 {
+        margin: 0;
+        font-family: var(--sans);
+        font-size: 30px;
+        letter-spacing: 0;
+        line-height: 1.05;
+      }
+
+      .mobile-text {
+        display: grid;
+        gap: 8px;
+      }
+
+      .mobile-text span {
+        height: 7px;
+        border-radius: 999px;
+        background: rgb(16 17 18 / 13%);
+      }
+
+      .mobile-reader {
+        position: absolute;
+        right: 28px;
+        bottom: 28px;
+        left: 28px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        border: 1px solid rgb(16 17 18 / 16%);
+        border-radius: 999px;
+        padding: 8px;
+        background: rgb(255 255 255 / 82%);
+        box-shadow: 0 16px 36px rgb(16 17 18 / 10%);
+      }
+
+      .mobile-reader span {
+        height: 24px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgb(16 17 18 / 4%);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+
+      .metric {
+        min-height: 160px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px;
+        background: rgb(255 255 255 / 48%);
+      }
+
+      .metric b {
+        display: block;
+        margin-bottom: 18px;
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 8px;
+        font-family: var(--sans);
+        font-size: 21px;
+        letter-spacing: 0;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .settings-map {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 34px;
+      }
+
+      .settings-panel {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 26px;
+        background: rgb(255 255 255 / 56%);
+        box-shadow: 0 24px 60px rgb(16 17 18 / 8%);
+      }
+
+      .settings-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .settings-item {
+        display: grid;
+        grid-template-columns: 112px 1fr auto;
+        align-items: center;
+        gap: 16px;
+        border: 1px solid rgb(16 17 18 / 10%);
+        border-radius: 16px;
+        padding: 14px 16px;
+        background: rgb(255 255 255 / 42%);
+      }
+
+      .settings-item span {
+        color: rgb(16 17 18 / 48%);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .settings-item strong {
+        font-family: var(--sans);
+        font-size: 20px;
+        letter-spacing: 0;
+      }
+
+      .toggle {
+        width: 48px;
+        height: 26px;
+        border: 1px solid rgb(16 17 18 / 18%);
+        border-radius: 999px;
+        padding: 3px;
+        background: rgb(78 205 196 / 22%);
+      }
+
+      .toggle::before {
+        display: block;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--ink);
+        content: "";
+        transform: translateX(20px);
+      }
+
+      .plugin-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+
+      .plugin-card {
+        min-height: 160px;
+        border: 1px solid rgb(245 243 239 / 14%);
+        border-radius: 20px;
+        padding: 22px;
+        background: rgb(245 243 239 / 6%);
+        color: var(--dark-ink);
+      }
+
+      .plugin-card b {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid rgb(245 243 239 / 22%);
+        border-radius: 50%;
+        margin-bottom: 24px;
+        color: var(--teal);
+        font-size: 16px;
+      }
+
+      .plugin-card strong {
+        display: block;
+        margin-bottom: 8px;
+        font-family: var(--sans);
+        font-size: 21px;
+        letter-spacing: 0;
+      }
+
+      .plugin-card span {
+        color: rgb(245 243 239 / 58%);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .poster--hero {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 40px;
+        padding: 72px;
+      }
+
+      .poster--hero .left {
+        display: grid;
+        align-content: space-between;
+      }
+
+      .poster--hero .copy {
+        display: grid;
+        gap: 34px;
+      }
+
+      .poster--hero .right {
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+
+      .poster--hero .device--mobile {
+        position: absolute;
+        right: 0;
+        bottom: 58px;
+        transform: rotate(3deg);
+      }
+
+      .poster--features {
+        padding: 74px;
+      }
+
+      .poster--features .header,
+      .poster--settings .header,
+      .poster--plugins .header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 48px;
+        margin-bottom: 52px;
+      }
+
+      .poster--features h2,
+      .poster--settings h2,
+      .poster--plugins h2 {
+        max-width: 820px;
+      }
+
+      .poster--features .lead,
+      .poster--settings .lead,
+      .poster--plugins .lead {
+        max-width: 540px;
+        font-size: 23px;
+      }
+
+      .feature-bottom {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .feature-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .strip-card {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 20px;
+        background: rgb(255 255 255 / 44%);
+      }
+
+      .strip-card strong {
+        display: block;
+        margin-bottom: 10px;
+        font-family: var(--sans);
+        font-size: 20px;
+      }
+
+      .strip-card span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .poster--settings {
+        padding: 74px;
+      }
+
+      .poster--settings .settings-map {
+        align-items: stretch;
+      }
+
+      .config-visual {
+        position: relative;
+        min-height: 520px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgb(255 255 255 / 54%), rgb(255 255 255 / 18%)), rgb(255 255 255 / 30%);
+        overflow: hidden;
+      }
+
+      .config-visual::before {
+        position: absolute;
+        inset: 42px;
+        border: 1px solid rgb(16 17 18 / 14%);
+        border-radius: 999px;
+        content: "";
+        transform: rotate(-12deg);
+      }
+
+      .config-visual::after {
+        position: absolute;
+        right: 72px;
+        bottom: 72px;
+        width: 260px;
+        height: 260px;
+        border: 1px solid rgb(16 17 18 / 12%);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 50% 50%, rgb(255 107 107 / 24%), transparent 44%),
+          radial-gradient(circle at 36% 38%, rgb(78 205 196 / 26%), transparent 34%);
+        content: "";
+      }
+
+      .config-pills {
+        position: absolute;
+        top: 84px;
+        left: 70px;
+        display: grid;
+        gap: 16px;
+        width: 360px;
+      }
+
+      .config-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 16px 18px;
+        background: rgb(255 255 255 / 68%);
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .config-pill i {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--coral);
+      }
+
+      .poster--plugins {
+        padding: 74px;
+        background:
+          linear-gradient(rgb(245 243 239 / 3%) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(245 243 239 / 3%) 1px, transparent 1px), var(--dark);
+        background-size:
+          86px 86px,
+          86px 86px,
+          auto;
+        color: var(--dark-ink);
+      }
+
+      .poster--plugins::before {
+        opacity: 0.08;
+        mix-blend-mode: screen;
+      }
+
+      .poster--plugins::after {
+        background:
+          radial-gradient(circle at 20% 18%, rgb(78 205 196 / 16%), transparent 320px),
+          radial-gradient(circle at 82% 76%, rgb(255 107 107 / 16%), transparent 340px);
+      }
+
+      .poster--plugins .eyebrow {
+        color: rgb(245 243 239 / 56%);
+      }
+
+      .poster--plugins .eyebrow::before {
+        background: rgb(245 243 239 / 28%);
+      }
+
+      .poster--plugins .lead {
+        color: rgb(245 243 239 / 62%);
+      }
+
+      .plugin-band {
+        display: grid;
+        grid-template-columns: 1.12fr 0.88fr;
+        gap: 24px;
+      }
+
+      .dark-window {
+        min-height: 530px;
+        border: 1px solid rgb(245 243 239 / 14%);
+        border-radius: 28px;
+        padding: 28px;
+        background: linear-gradient(135deg, rgb(245 243 239 / 8%), rgb(245 243 239 / 3%)), rgb(245 243 239 / 4%);
+        box-shadow: 0 34px 90px rgb(0 0 0 / 28%);
+      }
+
+      .dark-window__bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 36px;
+      }
+
+      .dark-window__line {
+        width: 280px;
+        height: 16px;
+        border-radius: 999px;
+        background: rgb(245 243 239 / 12%);
+      }
+
+      .timeline {
+        display: grid;
+        gap: 18px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 86px 1fr;
+        gap: 20px;
+        border-top: 1px solid rgb(245 243 239 / 12%);
+        padding-top: 18px;
+      }
+
+      .timeline-item time {
+        color: rgb(245 243 239 / 42%);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .timeline-card {
+        border: 1px solid rgb(245 243 239 / 12%);
+        border-radius: 18px;
+        padding: 18px;
+        background: rgb(245 243 239 / 5%);
+      }
+
+      .timeline-card strong {
+        display: block;
+        margin-bottom: 12px;
+        font-family: var(--sans);
+        font-size: 22px;
+      }
+
+      .timeline-card span {
+        display: block;
+        height: 9px;
+        border-radius: 999px;
+        margin-top: 9px;
+        background: rgb(245 243 239 / 13%);
+      }
+
+      .footer-note {
+        position: absolute;
+        right: 74px;
+        bottom: 50px;
+        color: rgb(16 17 18 / 42%);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .poster--plugins .footer-note {
+        color: rgb(245 243 239 / 38%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="poster-stack">
+      <section class="poster poster--hero" id="poster-hero" aria-label="Hydro-Minim 主宣传图">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="left">
+          <div class="brand">
+            <img src="../../public/assets/brand/hydro-minim-mark.svg" alt="" />
+            <div class="brand__text">
+              <span class="brand__name">氢·简</span>
+              <span class="brand__slug">Hydro-Minim</span>
+            </div>
+          </div>
+          <div class="copy">
+            <span class="eyebrow">Halo Theme / Minimal Blog</span>
+            <h1>轻盈克制的 Halo 博客主题</h1>
+            <p class="lead">灰白纸面、细线、轻颗粒与低饱和动效，把内容放回第一位。</p>
+            <div class="chip-row">
+              <span class="chip">Halo >= 2.20</span>
+              <span class="chip">深浅色切换</span>
+              <span class="chip">阅读进度</span>
+              <span class="chip">插件页适配</span>
+            </div>
+          </div>
+          <span class="eyebrow">Version 1.0.0-alpha3</span>
+        </div>
+        <div class="right">
+          <div class="device device--desktop">
+            <div class="device__bar">
+              <div class="device__dots"><span></span><span></span><span></span></div>
+              <div class="device__url"></div>
+            </div>
+            <div class="mock-hero">
+              <div class="mock-hero__media"></div>
+              <div class="mock-hero__copy">
+                <div class="mock-title">探索</div>
+                <div class="mock-lines"><span></span><span></span><span></span></div>
+                <div class="mock-list">
+                  <div class="mock-list__item"><span>01</span><strong>数字设计的未来</strong><time>2026.06</time></div>
+                  <div class="mock-list__item">
+                    <span>02</span><strong>把博客写成一张轻纸</strong><time>2026.05</time>
+                  </div>
+                  <div class="mock-list__item">
+                    <span>03</span><strong>在结构里保留呼吸</strong><time>2026.04</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="device device--mobile">
+            <div class="mobile-screen">
+              <div class="mobile-pill"><span></span><i></i><span></span></div>
+              <div class="mobile-article">
+                <h3>轻量阅读流</h3>
+                <div class="mobile-text"><span></span><span></span><span></span><span></span></div>
+              </div>
+              <div class="mobile-reader"><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">halo-theme-hydro-minim</div>
+      </section>
+
+      <section class="poster poster--features" id="poster-features" aria-label="Hydro-Minim 功能矩阵">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="header">
+          <div>
+            <span class="eyebrow">Feature Matrix</span>
+            <h2>从首页到插件页，都不是摆设</h2>
+          </div>
+          <p class="lead">Hero、文章阅读、分类标签、归档搜索、友链瞬间图库和文档页，一套视觉系统全覆盖。</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <b>01</b><strong>Hydro 首页</strong><span>图片/视频 Hero，精选文章，最新文章，分类模块和关于模块。</span>
+          </div>
+          <div class="metric">
+            <b>02</b><strong>阅读系统</strong><span>目录、进度、侧向操作栏、移动端底部阅读条和相关文章。</span>
+          </div>
+          <div class="metric">
+            <b>03</b><strong>发现页面</strong><span>分类目录、云朵标签、年份归档、页面搜索和推荐文章。</span>
+          </div>
+          <div class="metric">
+            <b>04</b><strong>传播能力</strong><span>文章海报、瞬间海报、复制链接、点赞、评论和灯箱。</span>
+          </div>
+        </div>
+        <div class="feature-bottom">
+          <div class="settings-panel">
+            <span class="eyebrow">Mobile First Enough</span>
+            <div class="mobile-article" style="margin-top: 30px">
+              <h3>手机端不硬塞侧栏</h3>
+              <div class="mobile-text"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="feature-strip">
+            <div class="strip-card">
+              <strong>搜索插件皮肤</strong><span>适配 PluginSearchWidget，弹窗和页面两种入口。</span>
+            </div>
+            <div class="strip-card">
+              <strong>渐进式图片外壳</strong><span>图库和正文图片加载失败也不破坏布局。</span>
+            </div>
+            <div class="strip-card">
+              <strong>HydroNotice</strong><span>统一胶囊提示 API，方便插件和自定义脚本复用。</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">Theme functions based on current source</div>
+      </section>
+
+      <section class="poster poster--settings" id="poster-settings" aria-label="Hydro-Minim 配置宣传图">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="header">
+          <div>
+            <span class="eyebrow">Operator-Minded Settings</span>
+            <h2>按站长运营思路组织配置</h2>
+          </div>
+          <p class="lead">品牌、视觉、导航、首页、内容、插件、高级设置。后台配置跟使用场景走，不跟源码文件名瞎跑。</p>
+        </div>
+        <div class="settings-map">
+          <div class="settings-panel">
+            <div class="brand">
+              <img src="../../public/assets/brand/hydro-minim-mark.svg" alt="" />
+              <div class="brand__text">
+                <span class="brand__name" style="font-size: 30px">主题配置</span>
+                <span class="brand__slug">Halo Console</span>
+              </div>
+            </div>
+            <div class="settings-list">
+              <div class="settings-item">
+                <span>identity</span><strong>品牌与站点</strong>
+                <div class="toggle"></div>
+              </div>
+              <div class="settings-item">
+                <span>motion</span><strong>视觉与动效</strong>
+                <div class="toggle"></div>
+              </div>
+              <div class="settings-item">
+                <span>navigation</span><strong>导航与结构</strong>
+                <div class="toggle"></div>
+              </div>
+              <div class="settings-item">
+                <span>content</span><strong>内容页面</strong>
+                <div class="toggle"></div>
+              </div>
+              <div class="settings-item">
+                <span>plugins</span><strong>插件页面</strong>
+                <div class="toggle"></div>
+              </div>
+            </div>
+          </div>
+          <div class="config-visual">
+            <div class="config-pills">
+              <div class="config-pill">深浅色光幕过渡 <i></i></div>
+              <div class="config-pill">Hero 图片跟随 <i style="background: var(--teal)"></i></div>
+              <div class="config-pill">文章卡片 3D Hover <i style="background: var(--yellow)"></i></div>
+              <div class="config-pill">页面级快捷操作 <i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">docs/theme-usage-guide.md</div>
+      </section>
+
+      <section class="poster poster--plugins" id="poster-plugins" aria-label="Hydro-Minim 插件生态宣传图">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="header">
+          <div>
+            <span class="eyebrow">Halo Plugin Pages</span>
+            <h2>插件缺失不炸页，插件可用就成体系</h2>
+          </div>
+          <p class="lead">友链、瞬间、图库、装备、朋友圈、追番、Steam 和 Docsme 文档，都有 Hydro-Minim 的页面语言。</p>
+        </div>
+        <div class="plugin-band">
+          <div class="dark-window">
+            <div class="dark-window__bar">
+              <div class="device__dots"><span></span><span></span><span></span></div>
+              <div class="dark-window__line"></div>
+            </div>
+            <div class="timeline">
+              <div class="timeline-item">
+                <time>06.11</time>
+                <div class="timeline-card">
+                  <strong>瞬间时间线</strong><span></span><span style="width: 72%"></span>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <time>06.08</time>
+                <div class="timeline-card"><strong>图库灯箱</strong><span></span><span style="width: 58%"></span></div>
+              </div>
+              <div class="timeline-item">
+                <time>06.01</time>
+                <div class="timeline-card">
+                  <strong>Docsme 文档目录</strong><span></span><span style="width: 66%"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="plugin-grid">
+            <div class="plugin-card">
+              <b>01</b><strong>友链</strong><span>站点信息、在线提交、修改申请、评论。</span>
+            </div>
+            <div class="plugin-card"><b>02</b><strong>瞬间</strong><span>时间线、标签、点赞、评论、海报。</span></div>
+            <div class="plugin-card"><b>03</b><strong>图库</strong><span>分组、分页、瀑布流、灯箱。</span></div>
+            <div class="plugin-card"><b>04</b><strong>Docsme</strong><span>文档中心、目录、详情页、评论。</span></div>
+            <div class="plugin-card"><b>05</b><strong>Steam</strong><span>最近游玩、游戏库、外链和缓存。</span></div>
+            <div class="plugin-card"><b>06</b><strong>装备</strong><span>硬件、软件和创作工具清单。</span></div>
+            <div class="plugin-card"><b>07</b><strong>朋友圈</strong><span>订阅源动态流和分页。</span></div>
+            <div class="plugin-card"><b>08</b><strong>追番</strong><span>番剧条目展示和评论区。</span></div>
+          </div>
+        </div>
+        <div class="footer-note">Hydro Content Surface</div>
+      </section>
+    </div>
+  </body>
+</html>

@@ -31,6 +31,8 @@
       data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
       data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
       data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
       data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
       data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
       data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},

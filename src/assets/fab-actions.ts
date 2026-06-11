@@ -11,6 +11,8 @@ export type HydroMinimActionHandler = (context: HydroFabActionContext) => void |
 export type HydroFabActionDependencies = {
   copyText: (text: string) => Promise<void>;
   getWindow: () => Window;
+  isMemberAuthenticated?: () => boolean;
+  isMemberPluginAvailable?: () => boolean;
   navigateTo?: (url: string) => void;
   notify?: (message: string, options?: HydroFabNoticeOptions) => void;
   root: ParentNode;
@@ -204,6 +206,30 @@ function showActionNotice(
   dependencies.notify?.(text, { id: "hydro-fab-action", title: "快捷", variant: "success", ...options });
 }
 
+function showMemberPluginUnavailableNotice(dependencies: HydroFabActionDependencies, id: string): void {
+  showActionNotice(dependencies, "请先安装并启用会员插件", {
+    id,
+    title: "会员功能",
+    variant: "warning",
+  });
+}
+
+function showMemberLoginRequiredNotice(dependencies: HydroFabActionDependencies, id: string): void {
+  showActionNotice(dependencies, "请先登录后再使用会员功能", {
+    id,
+    title: "会员功能",
+    variant: "warning",
+  });
+}
+
+function isMemberPluginAvailable(dependencies: HydroFabActionDependencies): boolean {
+  return dependencies.isMemberPluginAvailable?.() ?? true;
+}
+
+function isMemberAuthenticated(dependencies: HydroFabActionDependencies): boolean {
+  return dependencies.isMemberAuthenticated?.() ?? true;
+}
+
 function navigateTo(url: string | undefined, dependencies: HydroFabActionDependencies, win: Window): void {
   if (!url) {
     return;
@@ -269,9 +295,19 @@ async function runMemberSignInAction(
   dependencies: HydroFabActionDependencies,
   win: Window,
 ): Promise<void> {
+  if (!isMemberPluginAvailable(dependencies)) {
+    showMemberPluginUnavailableNotice(dependencies, "hydro-member-sign-in");
+    return;
+  }
+
+  if (!isMemberAuthenticated(dependencies)) {
+    showMemberLoginRequiredNotice(dependencies, "hydro-member-sign-in");
+    return;
+  }
+
   const memberSignIn = await waitForMemberApi(win, "memberSignIn");
   if (!memberSignIn) {
-    element.hidden = true;
+    showMemberPluginUnavailableNotice(dependencies, "hydro-member-sign-in");
     warn(dependencies, "Hydro-Minim FAB member sign-in API is unavailable.");
     return;
   }
@@ -284,7 +320,7 @@ async function runMemberSignInAction(
 
   const status = await memberSignIn.getStatus();
   if (status.authenticated === false) {
-    navigateTo(status.loginUrl || memberSignIn.getLoginUrl?.(), dependencies, win);
+    showMemberLoginRequiredNotice(dependencies, "hydro-member-sign-in");
     return;
   }
 
@@ -298,7 +334,7 @@ async function runMemberSignInAction(
   try {
     const result = await memberSignIn.signIn();
     if (result.authenticated === false) {
-      navigateTo(result.loginUrl || memberSignIn.getLoginUrl?.(), dependencies, win);
+      showMemberLoginRequiredNotice(dependencies, "hydro-member-sign-in");
       return;
     }
     syncSignInElement(element, result);
@@ -338,10 +374,22 @@ async function runMemberFavoriteAction(
   dependencies: HydroFabActionDependencies,
   win: Window,
 ): Promise<void> {
-  const memberFavorite = await waitForMemberApi(win, "memberFavorite");
+  if (!isMemberPluginAvailable(dependencies)) {
+    showMemberPluginUnavailableNotice(dependencies, "hydro-member-favorite");
+    return;
+  }
+
+  if (!isMemberAuthenticated(dependencies)) {
+    showMemberLoginRequiredNotice(dependencies, "hydro-member-favorite");
+    return;
+  }
+
   const subject = readCurrentPostSubject(dependencies.root, win);
+  const memberFavorite = await waitForMemberApi(win, "memberFavorite");
   if (!memberFavorite || !subject) {
-    element.hidden = true;
+    if (!memberFavorite) {
+      showMemberPluginUnavailableNotice(dependencies, "hydro-member-favorite");
+    }
     warn(dependencies, "Hydro-Minim FAB member favorite API or post subject is unavailable.");
     return;
   }
@@ -350,7 +398,7 @@ async function runMemberFavoriteAction(
   syncFavoriteElement(element, status);
 
   if (status.authenticated === false) {
-    navigateTo(status.loginUrl || memberFavorite.getLoginUrl?.(), dependencies, win);
+    showMemberLoginRequiredNotice(dependencies, "hydro-member-favorite");
     return;
   }
 
@@ -358,7 +406,7 @@ async function runMemberFavoriteAction(
   try {
     const result = await memberFavorite.toggle(subject);
     if (result.authenticated === false) {
-      navigateTo(result.loginUrl || memberFavorite.getLoginUrl?.(), dependencies, win);
+      showMemberLoginRequiredNotice(dependencies, "hydro-member-favorite");
       return;
     }
     syncFavoriteElement(element, result);
