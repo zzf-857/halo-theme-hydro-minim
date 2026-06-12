@@ -3756,6 +3756,43 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered .hydro-list
   stroke-dashoffset: 0;
 }
 
+.hydro-footer-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.hydro-footer-stats div {
+  min-width: 0;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 9%);
+  border-radius: var(--hydro-radius-sm);
+  padding: 0.85rem 0.95rem;
+  background: rgb(var(--hydro-paper-rgb) / 28%);
+}
+
+.hydro-footer-stats dt {
+  margin: 0 0 0.35rem;
+  color: rgb(var(--hydro-ink-rgb) / 45%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hydro-footer-stats dd {
+  margin: 0;
+  color: var(--hydro-solid);
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.hydro-footer-stats div:first-child {
+  grid-column: 1 / -1;
+}
+
 .hydro-footer__bar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

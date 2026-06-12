@@ -199,8 +199,8 @@ spec:
             - $formkit: switch
               name: show_social
               key: identity_footer_show_social
-              label: 显示页脚社交链接
-              help: 开启后页脚展示上方配置的有效社交链接。
+              label: 显示页脚站点统计
+              help: 开启后页脚展示 Halo 站点统计，包括访问、文章、评论、点赞和分类数量。
               value: true
             - $formkit: text
               name: copyright

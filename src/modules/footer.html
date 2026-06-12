@@ -17,8 +17,7 @@
     footerHasLegal = ${footerHasIcp or footerHasGongan},
     footerThemeName = ${theme.spec?.displayName ?: 'Hydro-Minim'},
     footerThemeUrl = ${theme.spec?.repo ?: (theme.spec?.homepage ?: '/')},
-    footerHaloUrl = ${'https://www.halo.run/'},
-    socialLinks = ${theme.config.identity?.social?.links}
+    footerHaloUrl = ${'https://www.halo.run/'}
   "
 >
   <div
@@ -82,23 +81,33 @@
         </ul>
       </div>
 
-      <div th:if="${footerConfig == null or footerConfig.show_social != false}">
-        <h2>社交</h2>
-        <ul>
-          <li
-            th:each="item : ${socialLinks}"
-            th:if="${socialLinks != null and not #strings.isEmpty(item.url) and item.url != '#'}"
-          >
-            <a
-              class="hydro-wavy-link"
-              th:href="${item.url}"
-              th:target="${item.new_tab == true ? '_blank' : '_self'}"
-              rel="noreferrer"
-            >
-              <span th:text="${item.label}">Social</span><include src="wavy-line.html" />
-            </a>
-          </li>
-        </ul>
+      <div
+        th:if="${footerConfig == null or footerConfig.show_social != false}"
+        th:with="footerStats=${siteStatsFinder.getStats()}"
+      >
+        <h2>统计</h2>
+        <dl class="hydro-footer-stats" aria-label="站点统计">
+          <div>
+            <dt>访问</dt>
+            <dd th:text="${footerStats?.visit ?: 0}">0</dd>
+          </div>
+          <div>
+            <dt>文章</dt>
+            <dd th:text="${footerStats?.post ?: 0}">0</dd>
+          </div>
+          <div>
+            <dt>评论</dt>
+            <dd th:text="${footerStats?.comment ?: 0}">0</dd>
+          </div>
+          <div>
+            <dt>点赞</dt>
+            <dd th:text="${footerStats?.upvote ?: 0}">0</dd>
+          </div>
+          <div>
+            <dt>分类</dt>
+            <dd th:text="${footerStats?.category ?: 0}">0</dd>
+          </div>
+        </dl>
       </div>
     </div>
 
