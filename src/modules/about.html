@@ -1,6 +1,6 @@
 <section id="about" class="hydro-section hydro-about" data-about-section>
   <div class="hydro-container">
-    <div class="hydro-about__grid" th:with="categories = ${categoryFinder.listAsTree()}">
+    <div class="hydro-about__grid" th:with="siteStats = ${siteStatsFinder.getStats()}">
       <div class="hydro-about__intro">
         <span class="hydro-about__eyebrow about-text-line" th:text="${theme.config.home?.about?.eyebrow ?: 'About'}">
           About
@@ -20,18 +20,26 @@
           <p th:text="${theme.config.home?.about?.paragraph_3}"></p>
         </div>
 
-        <div class="hydro-about__stats about-text-line">
-          <div>
-            <strong th:text="${posts.total ?: 0}">63</strong>
-            <span>篇文章</span>
+        <div class="hydro-about__stats about-text-line" aria-label="站点统计">
+          <div class="hydro-about__stat hydro-about__stat--primary">
+            <span>访问</span>
+            <strong th:text="${siteStats?.visit ?: 0}">0</strong>
           </div>
-          <div>
-            <strong th:text="${#lists.size(categories)}">12</strong>
-            <span>个分类</span>
+          <div class="hydro-about__stat">
+            <span>文章</span>
+            <strong th:text="${siteStats?.post ?: 0}">63</strong>
           </div>
-          <div>
-            <strong th:text="${theme.config.home?.about?.readers ?: '2.4k'}">2.4k</strong>
-            <span>位读者</span>
+          <div class="hydro-about__stat">
+            <span>评论</span>
+            <strong th:text="${siteStats?.comment ?: 0}">0</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>点赞</span>
+            <strong th:text="${siteStats?.upvote ?: 0}">0</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>分类</span>
+            <strong th:text="${siteStats?.category ?: 0}">12</strong>
           </div>
         </div>
 

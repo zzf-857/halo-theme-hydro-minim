@@ -3584,33 +3584,46 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered .hydro-list
 
 .hydro-about__stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  border-top: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
-  border-bottom: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 12%);
+  background: rgb(var(--hydro-ink-rgb) / 10%);
 }
 
-.hydro-about__stats div {
+.hydro-about__stat {
+  display: grid;
+  align-content: space-between;
   min-width: 0;
-  padding: clamp(1.1rem, 2.4vw, 1.65rem) clamp(0.75rem, 1.8vw, 1.25rem);
-  border-right: 1px solid rgb(var(--hydro-ink-rgb) / 10%);
+  min-height: clamp(7rem, 9vw, 9.25rem);
+  padding: clamp(1rem, 1.8vw, 1.45rem);
+  background: rgb(var(--hydro-paper-rgb) / 72%);
 }
 
-.hydro-about__stats div:last-child {
-  border-right: 0;
+.hydro-about__stat--primary {
+  grid-column: span 2;
+  background:
+    linear-gradient(135deg, rgb(var(--hydro-ink-rgb) / 7%), transparent 62%), rgb(var(--hydro-paper-rgb) / 80%);
 }
 
 .hydro-about__stats strong {
   display: block;
-  margin-bottom: 0.45rem;
-  font-size: clamp(2rem, 4.6vw, 4rem);
+  font-size: clamp(1.65rem, 3.4vw, 3.2rem);
   line-height: 0.92;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.hydro-about__stat--primary strong {
+  font-size: clamp(2.3rem, 5vw, 4.25rem);
 }
 
 .hydro-about__stats span {
   color: rgb(var(--hydro-ink-rgb) / 42%);
-  font-size: 0.82rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .hydro-socials {
@@ -3754,43 +3767,6 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered .hydro-list
 
 .hydro-wavy-link:hover .hydro-wavy-link__line path {
   stroke-dashoffset: 0;
-}
-
-.hydro-footer-stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin: 0;
-}
-
-.hydro-footer-stats div {
-  min-width: 0;
-  border: 1px solid rgb(var(--hydro-ink-rgb) / 9%);
-  border-radius: var(--hydro-radius-sm);
-  padding: 0.85rem 0.95rem;
-  background: rgb(var(--hydro-paper-rgb) / 28%);
-}
-
-.hydro-footer-stats dt {
-  margin: 0 0 0.35rem;
-  color: rgb(var(--hydro-ink-rgb) / 45%);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hydro-footer-stats dd {
-  margin: 0;
-  color: var(--hydro-solid);
-  font-size: clamp(1.15rem, 2vw, 1.65rem);
-  font-weight: 700;
-  line-height: 1;
-  overflow-wrap: anywhere;
-}
-
-.hydro-footer-stats div:first-child {
-  grid-column: 1 / -1;
 }
 
 .hydro-footer__bar {
@@ -6434,7 +6410,11 @@ html.lenis body {
   }
 
   .hydro-about__stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hydro-about__stat--primary {
+    grid-column: 1 / -1;
   }
 
   .hydro-section {
@@ -9669,14 +9649,16 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
     backdrop-filter: blur(12px);
   }
 
-  .hydro-about__stats div {
+  .hydro-about__stat {
     display: grid;
     min-width: 0;
-    place-items: center;
+    min-height: 6.25rem;
     padding: 0.85rem 0.35rem;
     border: 1px solid rgb(var(--hydro-ink-rgb) / 8%);
     border-radius: 0.85rem;
     background: rgb(var(--hydro-paper-rgb) / 18%);
+    place-items: center;
+    text-align: center;
   }
 
   .hydro-about__stats strong {
@@ -10414,10 +10396,14 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
   }
 
   .hydro-about__stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hydro-about__stats div {
+  .hydro-about__stat--primary {
+    grid-column: 1 / -1;
+  }
+
+  .hydro-about__stat {
     display: grid;
     align-items: center;
     justify-content: center;
@@ -10649,7 +10635,7 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
     padding-top: 0.35rem;
   }
 
-  .hydro-about__stats div {
+  .hydro-about__stat {
     padding: clamp(1.1rem, 2.4vw, 1.65rem) clamp(0.75rem, 1.8vw, 1.25rem);
   }
 

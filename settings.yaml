@@ -199,8 +199,8 @@ spec:
             - $formkit: switch
               name: show_social
               key: identity_footer_show_social
-              label: 显示页脚站点统计
-              help: 开启后页脚展示 Halo 站点统计，包括访问、文章、评论、点赞和分类数量。
+              label: 显示页脚社交链接
+              help: 开启后页脚展示上方配置的有效社交链接。
               value: true
             - $formkit: text
               name: copyright
@@ -958,13 +958,6 @@ spec:
               label: 关于段落三
               help: 首页关于模块的第三段正文，适合放补充说明或个人宣言。
               value: 33% 的自由，66% 的内容。这是氢视窗的哲学，也是我们对内容创作的坚持——在结构化的框架中，保留艺术的呼吸空间。
-            - $formkit: text
-              if: $get(home_about_enabled).value === true
-              key: home_about_readers
-              name: readers
-              label: 读者展示值
-              help: 关于模块中的展示数字，仅作为视觉文案，不会自动统计真实读者数。
-              value: 2.4k
             - $formkit: switch
               if: $get(home_about_enabled).value === true
               key: home_about_show_socials

@@ -27,16 +27,24 @@
             th:with="siteStats=${siteStatsFinder.getStats()}"
           >
             <div>
+              <dt>Visits</dt>
+              <dd th:text="${siteStats?.visit ?: 0}">0</dd>
+            </div>
+            <div>
               <dt>Articles</dt>
               <dd th:text="${siteStats?.post ?: 0}">0</dd>
             </div>
             <div>
-              <dt>Categories</dt>
-              <dd th:text="${siteStats?.category ?: 0}">0</dd>
+              <dt>Comments</dt>
+              <dd th:text="${siteStats?.comment ?: 0}">0</dd>
             </div>
             <div>
-              <dt>Readers</dt>
-              <dd th:text="${theme.config.home?.about?.readers ?: '2.4k'}">2.4k</dd>
+              <dt>Upvotes</dt>
+              <dd th:text="${siteStats?.upvote ?: 0}">0</dd>
+            </div>
+            <div>
+              <dt>Categories</dt>
+              <dd th:text="${siteStats?.category ?: 0}">0</dd>
             </div>
           </dl>
         </div>
