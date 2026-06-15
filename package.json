@@ -6,11 +6,13 @@
     "build": "pnpm run build-only && pnpm package",
     "build-only": "tsc && vp build",
     "check": "vp check --fix",
+    "check:ci": "vp check",
     "dev": "vp build --watch",
     "issue-pr": "bash scripts/issue-pr.sh",
     "package": "theme-package",
     "prepare": "vp config",
-    "test": "vp test run --environment jsdom"
+    "test": "vp test run --environment jsdom",
+    "test:automation": "node --test tests/automation.test.mjs"
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",
