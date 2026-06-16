@@ -1382,9 +1382,6 @@ function initTiltCards() {
 
   cards.forEach((card) => {
     let cardRect: DOMRect | null = null;
-    let pointerX = 0;
-    let pointerY = 0;
-    let tiltRaf = 0;
     gsap.set(card, {
       "--hydro-card-lift": "0px",
       "--hydro-card-scale": "1",
@@ -1398,48 +1395,53 @@ function initTiltCards() {
       cardRect = card.getBoundingClientRect();
       return cardRect;
     };
-    const flushTilt = () => {
-      tiltRaf = 0;
+
+    const handleMove = (event: PointerEvent) => {
       const rect = cardRect ?? readCardRect();
       if (rect.width <= 0 || rect.height <= 0) {
         return;
       }
-      const x = pointerX - rect.left;
-      const y = pointerY - rect.top;
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
       const rotateX = gsap.utils.clamp(-9, 9, (rect.height / 2 - y) / 14);
       const rotateY = gsap.utils.clamp(-9, 9, (x - rect.width / 2) / 14);
-      card.style.setProperty("--hydro-card-tilt-x", `${rotateX}deg`);
-      card.style.setProperty("--hydro-card-tilt-y", `${rotateY}deg`);
-    };
-    const scheduleTilt = (event: PointerEvent) => {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      if (tiltRaf) {
-        return;
-      }
-      tiltRaf = window.requestAnimationFrame(flushTilt);
+      
+      gsap.to(card, {
+        "--hydro-card-tilt-x": `${rotateX}deg`,
+        "--hydro-card-tilt-y": `${rotateY}deg`,
+        duration: 0.25,
+        ease: "power1.out",
+        overwrite: "auto",
+      });
     };
 
     card.addEventListener("pointerenter", (event) => {
       readCardRect();
       card.classList.add("is-hydro-card-hovered");
-      card.style.setProperty("--hydro-card-lift", "-10px");
-      card.style.setProperty("--hydro-card-scale", "1.024");
-      scheduleTilt(event);
+      gsap.to(card, {
+        "--hydro-card-lift": "-10px",
+        "--hydro-card-scale": "1.024",
+        duration: 0.4,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+      handleMove(event);
     });
-    card.addEventListener("pointermove", scheduleTilt, { passive: true });
+
+    card.addEventListener("pointermove", handleMove, { passive: true });
 
     card.addEventListener("pointerleave", () => {
       cardRect = null;
-      if (tiltRaf) {
-        window.cancelAnimationFrame(tiltRaf);
-        tiltRaf = 0;
-      }
       card.classList.remove("is-hydro-card-hovered");
-      card.style.setProperty("--hydro-card-lift", "0px");
-      card.style.setProperty("--hydro-card-scale", "1");
-      card.style.setProperty("--hydro-card-tilt-x", "0deg");
-      card.style.setProperty("--hydro-card-tilt-y", "0deg");
+      gsap.to(card, {
+        "--hydro-card-lift": "0px",
+        "--hydro-card-scale": "1",
+        "--hydro-card-tilt-x": "0deg",
+        "--hydro-card-tilt-y": "0deg",
+        duration: 0.5,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
     });
 
     invalidateCardRects.push(() => {
