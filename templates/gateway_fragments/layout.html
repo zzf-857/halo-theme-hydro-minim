@@ -63,7 +63,7 @@
         root.classList.toggle("color-scheme-light", requestedMode === "light");
         root.classList.toggle("color-scheme-auto", requestedMode === "auto");
       })();
-    </script>
+    </script>
     <th:block th:replace="~{gateway_fragments/common::basicStaticResources}"></th:block>
     <th:block th:if="${head != null}">
       <th:block th:replace="${head}" />

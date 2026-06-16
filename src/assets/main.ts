@@ -1382,7 +1382,7 @@ function initTiltCards() {
 
   cards.forEach((card) => {
     let cardRect: DOMRect | null = null;
-    
+
     // Inject card sheen element if it doesn't exist
     if (!card.querySelector(".card-sheen")) {
       const sheen = document.createElement("span");
@@ -1414,14 +1414,14 @@ function initTiltCards() {
       }
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
       // VibeTracker calculation (max 6.5 degrees tilt)
       const rotateX = ((y - centerY) / centerY) * 6.5;
       const rotateY = ((x - centerX) / centerX) * 6.5;
-      
+
       gsap.to(card, {
         "--hydro-card-tilt-x": `${rotateX}deg`,
         "--hydro-card-tilt-y": `${rotateY}deg`,

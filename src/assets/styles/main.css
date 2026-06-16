@@ -3011,8 +3011,7 @@ body.hydro-auth-page .returntosite-content a:hover {
   perspective: 1000px;
   transform: translate3d(0, var(--hydro-card-lift), 0) rotateX(var(--hydro-card-tilt-x))
     rotateY(var(--hydro-card-tilt-y)) scale(var(--hydro-card-scale));
-  transition:
-    box-shadow 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hydro-card[style*="matrix"],
