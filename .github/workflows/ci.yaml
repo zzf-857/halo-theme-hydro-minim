@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   quality:
@@ -22,15 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@v4
         with:
           version: "10.33.0"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: pnpm
@@ -47,11 +47,34 @@ jobs:
       - name: Build theme package
         run: pnpm run build
 
-      - name: Upload theme package
+      - name: Upload theme package (Artifact)
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: halo-theme-hydro-minim
           path: dist/*.zip
           if-no-files-found: error
           retention-days: 7
+
+      - name: 获取主题版本号
+        if: ${{ github.event_name != 'pull_request' }}
+        id: get_version
+        run: |
+          VERSION=$(grep '^  version:' theme.yaml | sed 's/  version: //')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 发布到 GitHub Releases（latest）
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "最新构建 v${{ steps.get_version.outputs.version }}"
+          body: |
+            🚀 由 GitHub Actions 自动构建
+
+            **版本**：${{ steps.get_version.outputs.version }}
+            **提交**：${{ github.sha }}
+
+            下载下方 `.zip` 文件，在 Halo 后台 → 外观 → 主题 → 升级 中上传即可。
+          files: dist/*.zip
+          make_latest: true
