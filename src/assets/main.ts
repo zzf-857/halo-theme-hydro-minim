@@ -1468,7 +1468,12 @@ function initTiltCards() {
 
       // 四个角都呈现下压效果：鼠标靠近哪个角，哪个角就下沉
       const rotateX = -((y - centerY) / centerY) * 6.5;
-      const rotateY = ((x - centerX) / centerX) * 6.5;
+      let rotateY = ((x - centerX) / centerX) * 6.5;
+
+      // 复用到下面两个角：如果处于下半部分，由于本地坐标偏转，对调 Y 轴旋转的正负号
+      if (y > centerY) {
+        rotateY = -rotateY;
+      }
 
       // Update proxy values smoothly
       tiltXTo(rotateX);
