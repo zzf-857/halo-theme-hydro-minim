@@ -1409,6 +1409,36 @@ function initTiltCards() {
       transformStyle: "preserve-3d",
     });
 
+    // 1. Create a proxy object to hold tween values
+    const proxy = {
+      tiltX: 0,
+      tiltY: 0,
+      sheenX: 50,
+      sheenY: 50,
+    };
+
+    // 2. Cache gsap.quickTo instances updating proxy values and writing to CSS variables via onUpdate
+    const tiltXTo = gsap.quickTo(proxy, "tiltX", {
+      duration: 0.15,
+      ease: "power2.out",
+      onUpdate: () => card.style.setProperty("--hydro-card-tilt-x", `${proxy.tiltX}deg`),
+    });
+    const tiltYTo = gsap.quickTo(proxy, "tiltY", {
+      duration: 0.15,
+      ease: "power2.out",
+      onUpdate: () => card.style.setProperty("--hydro-card-tilt-y", `${proxy.tiltY}deg`),
+    });
+    const sheenXTo = gsap.quickTo(proxy, "sheenX", {
+      duration: 0.15,
+      ease: "power2.out",
+      onUpdate: () => card.style.setProperty("--sheen-x", `${proxy.sheenX}%`),
+    });
+    const sheenYTo = gsap.quickTo(proxy, "sheenY", {
+      duration: 0.15,
+      ease: "power2.out",
+      onUpdate: () => card.style.setProperty("--sheen-y", `${proxy.sheenY}%`),
+    });
+
     const getCardCache = (): CardRectCache => {
       if (!rectCache) {
         const prevTransform = card.style.transform;
@@ -1437,18 +1467,14 @@ function initTiltCards() {
       const centerY = info.height / 2;
 
       // 四个角都呈现下压效果：鼠标靠近哪个角，哪个角就下沉
-      const rotateX = ((y - centerY) / centerY) * 6.5;
-      const rotateY = -((x - centerX) / centerX) * 6.5;
+      const rotateX = -((y - centerY) / centerY) * 6.5;
+      const rotateY = ((x - centerX) / centerX) * 6.5;
 
-      gsap.to(card, {
-        "--hydro-card-tilt-x": `${rotateX}deg`,
-        "--hydro-card-tilt-y": `${rotateY}deg`,
-        "--sheen-x": `${(x / info.width) * 100}%`,
-        "--sheen-y": `${(y / info.height) * 100}%`,
-        duration: 0.15, // VibeTracker duration
-        ease: "power2.out", // VibeTracker ease
-        overwrite: "auto",
-      });
+      // Update proxy values smoothly
+      tiltXTo(rotateX);
+      tiltYTo(rotateY);
+      sheenXTo((x / info.width) * 100);
+      sheenYTo((y / info.height) * 100);
     };
 
     card.addEventListener("pointerenter", (event) => {
@@ -1479,6 +1505,11 @@ function initTiltCards() {
         ease: "power3.out", // VibeTracker leave ease
         overwrite: "auto",
       });
+      // Reset proxy values so next pointerenter starts transition from correct state
+      proxy.tiltX = 0;
+      proxy.tiltY = 0;
+      proxy.sheenX = 50;
+      proxy.sheenY = 50;
     });
 
     invalidateCardRects.push(() => {
