@@ -1,0 +1,58 @@
+<article
+  th:fragment="post-card(post, index)"
+  class="hydro-list-card"
+  data-tilt-card
+  th:with="
+    rawFallbackCover=${index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+    fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
+    cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover}
+  "
+>
+  <a th:href="@{${post.status.permalink}}">
+    <div class="hydro-list-card__media" data-progressive-media>
+      <img
+        th:src="${thumbnail.gen(cover, 'm')}"
+        th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+        sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1100px) 50vw, 33vw"
+        th:alt="${post.spec.title}"
+        loading="lazy"
+        decoding="async"
+        data-progressive-image
+        th:attr="data-fallback-cover=${fallbackCover}"
+      />
+      <div class="hydro-card__shade" aria-hidden="true"></div>
+      <span
+        class="hydro-card__badge"
+        th:text="${not #lists.isEmpty(post.categories) ? post.categories[0].spec.displayName : '文章'}"
+      >
+        文章
+      </span>
+      <time
+        class="hydro-card__date"
+        aria-label="文章发布时间"
+        th:datetime="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+        th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd')}"
+        >2024.01.15</time
+      >
+      <div class="hydro-card__metrics" aria-label="文章互动统计">
+        <span th:text="|${theme.config.content?.post?.visit_label ?: '阅读'} ${post.stats.visit ?: 0}|">阅读 0</span>
+        <span th:text="|${theme.config.content?.post?.comment_label ?: '评论'} ${post.stats.comment ?: 0}|"
+          >评论 0</span
+        >
+        <span th:text="|${theme.config.content?.post?.upvote_label ?: '点赞'} ${post.stats.upvote ?: 0}|">点赞 0</span>
+      </div>
+      <span class="hydro-card__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 17 17 7M8 7h9v9"></path>
+        </svg>
+      </span>
+    </div>
+    <div class="hydro-list-card__body">
+      <h2 th:text="${post.spec.title}">文章标题</h2>
+      <p th:text="${post.status.excerpt}">文章摘要</p>
+      <div class="hydro-list-card__tags" th:if="${not #lists.isEmpty(post.tags)}">
+        <span th:each="tag : ${post.tags}" th:text="|#${tag.spec.displayName}|">#tag</span>
+      </div>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,281 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title
+      th:text="|${docTree?.spec?.title ?: '文档目录'} - ${project?.spec?.displayName ?: 'Docsme'} - ${site.title}|"
+    >
+      文档目录
+    </title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section
+    class="hydro-doc-shell hydro-doc-shell--catalog"
+    th:with="hasDocsPlugin=${pluginFinder.available('plugin-docsme')},hasDocsCompatible=${pluginFinder.available('plugin-docsme', '>=1.4.0')},hasCatalogPayload=${project != null and docTree != null},hasCatalogNodes=${sonNodes != null and not #lists.isEmpty(sonNodes)}"
+    th:classappend="${not hasDocsCompatible or not hasCatalogPayload} ? ' hydro-doc-shell--empty' : ''"
+  >
+    <th:block th:if="${hasDocsCompatible and hasCatalogPayload}">
+      <aside class="hydro-doc-sidebar" th:if="${docTrees != null}">
+        <a class="hydro-doc-project" th:href="${project.status.permalink}">
+          <span th:text="${theme.config.plugins?.docs?.eyebrow ?: 'Docs'}">Docs</span>
+          <strong th:text="${project.spec.displayName}">文档项目</strong>
+        </a>
+        <nav class="hydro-doc-tree" aria-label="文档导航">
+          <th:block th:replace="~{doc :: hydro-doc-tree(docTrees=${docTrees})}" />
+        </nav>
+      </aside>
+
+      <article class="hydro-doc-main">
+        <nav class="hydro-doc-breadcrumb" aria-label="面包屑">
+          <a th:href="${project.status.permalink}" th:text="${project.spec.displayName}">文档首页</a>
+          <th:block th:each="crumb : ${crumbs}">
+            <span>/</span>
+            <a th:href="${crumb.status.permalink}" th:text="${crumb.spec.title}">目录</a>
+          </th:block>
+        </nav>
+
+        <header class="hydro-doc-header">
+          <p th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</p>
+          <h1 th:text="${docTree.spec.title}">目录名称</h1>
+        </header>
+
+        <div th:if="${hasCatalogNodes}" class="hydro-docs-grid hydro-docs-grid--catalog">
+          <a class="hydro-docs-card" th:each="node,nodeStat : ${sonNodes}" th:href="${node.status.permalink}">
+            <span class="hydro-docs-card__index" th:text="${#numbers.formatInteger(nodeStat.index + 1, 2)}">01</span>
+            <span class="hydro-docs-card__icon"><b th:text="${node.spec.type == 'TREE' ? 'DIR' : 'DOC'}">DOC</b></span>
+            <strong th:text="${node.spec.title}">文档标题</strong>
+            <p th:if="${not #strings.isEmpty(node.spec.description)}" th:text="${node.spec.description}">描述</p>
+          </a>
+        </div>
+
+        <div th:if="${not hasCatalogNodes}" class="hydro-plugin-empty">
+          <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+          <strong th:text="${theme.config.plugins?.docs?.catalog_empty_title ?: '目录暂时为空'}">目录暂时为空</strong>
+          <p
+            th:text="${theme.config.plugins?.docs?.catalog_empty_text ?: 'plugin-docsme 已可用。在 Docsme 中添加子文档后，这里会显示目录入口。'}"
+          >
+            plugin-docsme 已可用。在 Docsme 中添加子文档后，这里会显示目录入口。
+          </p>
+        </div>
+
+        <nav class="hydro-doc-nav" th:if="${linkNavigation}">
+          <a th:if="${linkNavigation.hasPrevious}" th:href="${linkNavigation.previous.link}">
+            <span th:text="${theme.config.plugins?.docs?.previous_label ?: '上一篇'}">上一篇</span>
+            <strong th:text="${linkNavigation.previous.title}">上一篇</strong>
+          </a>
+          <a th:if="${linkNavigation.hasNext}" th:href="${linkNavigation.next.link}">
+            <span th:text="${theme.config.plugins?.docs?.next_label ?: '下一篇'}">下一篇</span>
+            <strong th:text="${linkNavigation.next.title}">下一篇</strong>
+          </a>
+        </nav>
+      </article>
+    </th:block>
+
+    <article class="hydro-doc-main hydro-doc-main--empty" th:if="${not hasDocsPlugin}">
+      <div class="hydro-plugin-notice">
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.docs?.install_text ?: '需要安装并启用 plugin-docsme 1.4.0 或更高版本，目录页才能读取文档树。'}"
+          >需要安装并启用 plugin-docsme 1.4.0 或更高版本，目录页才能读取文档树。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+      <div class="hydro-plugin-empty hydro-plugin-empty--install">
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.docs?.install_text ?: '请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。'}"
+        >
+          请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。
+        </p>
+      </div>
+    </article>
+
+    <article class="hydro-doc-main hydro-doc-main--empty" th:if="${hasDocsPlugin and not hasDocsCompatible}">
+      <div class="hydro-plugin-notice">
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '已检测到 plugin-docsme，但当前目录模板需要 1.4.0 或更高版本。'}"
+          >已检测到 plugin-docsme，但当前目录模板需要 1.4.0 或更高版本。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+      <div class="hydro-plugin-empty hydro-plugin-empty--install">
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档目录页。'}"
+        >
+          请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档目录页。
+        </p>
+      </div>
+    </article>
+
+    <article class="hydro-doc-main hydro-doc-main--empty" th:if="${hasDocsCompatible and not hasCatalogPayload}">
+      <div class="hydro-plugin-empty">
+        <span th:text="${theme.config.plugins?.docs?.catalog_eyebrow ?: 'Catalog'}">Catalog</span>
+        <strong th:text="${theme.config.plugins?.docs?.catalog_unavailable_title ?: '目录暂时不可用'}"
+          >目录暂时不可用</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.docs?.catalog_unavailable_description ?: 'plugin-docsme 已可用。请确认该目录存在、已发布，并且当前路由由 Docsme 正确提供。'}"
+        >
+          plugin-docsme 已可用。请确认该目录存在、已发布，并且当前路由由 Docsme 正确提供。
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <th:block th:if="${pluginFinder.available('plugin-docsme', '>=1.4.0')}">
+    <script>
+      window.docsme = { disableThemeFunction: true };
+    </script>
+    <th:block th:replace="~{plugin:plugin-docsme:modules/plugin-scripts}" />
+  </th:block>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

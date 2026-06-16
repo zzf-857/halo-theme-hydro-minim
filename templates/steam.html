@@ -1,0 +1,295 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.plugins?.steam?.title ?: 'Steam 游戏库'} - ${site.title}|">Steam 游戏库</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-list-hero">
+    <div class="hydro-container">
+      <p th:text="${theme.config.plugins?.steam?.eyebrow ?: 'Steam'}">Steam</p>
+      <h1 th:text="${theme.config.plugins?.steam?.title ?: 'Steam 游戏库'}">Steam 游戏库</h1>
+      <span th:text="${theme.config.plugins?.steam?.description ?: '用一张轻盈的游戏清单，记录最近的游玩状态与收藏。'}"
+        >用一张轻盈的游戏清单，记录最近的游玩状态与收藏。</span
+      >
+    </div>
+  </section>
+
+  <section
+    class="hydro-plugin-page hydro-steam-page"
+    th:with="hasSteamPlugin=${pluginFinder.available('steam') or pluginFinder.available('halo-plugin-steam') or pluginFinder.available('PluginSteam')}"
+    th:attr="
+      data-hydro-steam=${hasSteamPlugin ? 'true' : null},
+      data-recent-limit=${theme.config.plugins?.steam?.recent_limit ?: 8},
+      data-page-size=${theme.config.plugins?.steam?.game_page_size ?: 18},
+      data-enable-game-link=${theme.config.plugins?.steam == null or theme.config.plugins.steam.enable_game_link != false},
+      data-empty-text=${theme.config.plugins?.steam?.empty_text ?: '暂无 Steam 游戏数据'},
+      data-error-text=${theme.config.plugins?.steam?.error_text ?: 'Steam 数据暂时不可用'},
+      data-sync-hint-text=${theme.config.plugins?.steam?.sync_hint_text ?: '请确认 plugin-steam 已同步账号数据。'},
+      data-config-hint-text=${theme.config.plugins?.steam?.config_hint_text ?: '请确认 plugin-steam 已启用，并已填写 Steam ID/API 配置。'},
+      data-library-loading-text=${theme.config.plugins?.steam?.library_loading_text ?: '正在加载游戏库。'},
+      data-cache-ttl-minutes=${theme.config.advanced?.performance?.steam_cache_ttl_minutes ?: 3}
+    "
+  >
+    <div class="hydro-container">
+      <div class="hydro-plugin-notice" th:if="${not hasSteamPlugin}">
+        <strong th:text="${theme.config.plugins?.steam?.install_title ?: '需要安装 Steam 插件'}"
+          >需要安装 Steam 插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.steam?.install_text ?: '需要安装并启用 plugin-steam。在 Halo Console -> 应用市场搜索“Steam 游戏库”，配置 Steam 账号后这里会自动读取。'}"
+          >需要安装并启用 plugin-steam。在 Halo Console -> 应用市场搜索“Steam 游戏库”，配置 Steam
+          账号后这里会自动读取。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.steam?.install_link ?: 'https://www.halo.run/store/apps/app-0ojqyzfh'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.steam?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+
+      <div class="hydro-plugin-notice" data-steam-error hidden>
+        <strong>Steam API</strong>
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.steam?.error_text ?: 'Steam 数据暂时不可用'}"
+          >Steam 数据暂时不可用</span
+        >
+      </div>
+
+      <div th:if="${not hasSteamPlugin}" class="hydro-plugin-empty hydro-plugin-empty--install">
+        <span th:text="${theme.config.plugins?.steam?.eyebrow ?: 'Steam Library'}">Steam Library</span>
+        <strong th:text="${theme.config.plugins?.steam?.install_title ?: '需要安装 Steam 插件'}"
+          >需要安装 Steam 插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.steam?.install_text ?: '请安装 plugin-steam，路径：Halo Console -> 应用市场 -> 搜索“Steam 游戏库”。'}"
+        >
+          请安装 plugin-steam，路径：Halo Console -> 应用市场 -> 搜索“Steam 游戏库”。
+        </p>
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.steam?.install_link ?: 'https://www.halo.run/store/apps/app-0ojqyzfh'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.steam?.install_link_label ?: '查看插件'}"
+          >查看插件</a
+        >
+      </div>
+
+      <div th:if="${hasSteamPlugin}" class="hydro-plugin-empty" data-steam-empty hidden>
+        <span th:text="${theme.config.plugins?.steam?.eyebrow ?: 'Steam Library'}">Steam Library</span>
+        <strong th:text="${theme.config.plugins?.steam?.empty_text ?: '暂无 Steam 游戏数据'}"
+          >暂无 Steam 游戏数据</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.steam?.empty_available_text ?: 'plugin-steam 已可用。同步账号数据后，这里会展示最近游玩和游戏库。'}"
+        >
+          plugin-steam 已可用。同步账号数据后，这里会展示最近游玩和游戏库。
+        </p>
+      </div>
+
+      <div th:if="${hasSteamPlugin}" class="hydro-steam-profile" data-steam-profile>
+        <div class="hydro-steam-profile__avatar" data-steam-avatar></div>
+        <div class="hydro-steam-profile__body">
+          <span data-steam-status th:text="${theme.config.plugins?.steam?.profile_loading_status ?: 'Loading'}"
+            >Loading</span
+          >
+          <h2 data-steam-name th:text="${theme.config.plugins?.steam?.profile_loading_name ?: '正在读取 Steam 资料'}">
+            正在读取 Steam 资料
+          </h2>
+        </div>
+        <div class="hydro-steam-profile__level" data-steam-level>Lv. --</div>
+      </div>
+
+      <div th:if="${hasSteamPlugin}" class="hydro-steam-stats">
+        <div>
+          <span th:text="${theme.config.plugins?.steam?.games_metric_label ?: 'Games'}">Games</span>
+          <strong data-steam-stat="games">--</strong>
+        </div>
+        <div>
+          <span th:text="${theme.config.plugins?.steam?.total_time_metric_label ?: 'Total Time'}">Total Time</span>
+          <strong data-steam-stat="total">--</strong>
+        </div>
+        <div>
+          <span th:text="${theme.config.plugins?.steam?.recent_metric_label ?: 'Recent'}">Recent</span>
+          <strong data-steam-stat="recent">--</strong>
+        </div>
+      </div>
+
+      <section th:if="${hasSteamPlugin}" class="hydro-plugin-section">
+        <div class="hydro-plugin-section__head">
+          <span th:text="${theme.config.plugins?.steam?.recent_section_eyebrow ?: 'Recent'}">Recent</span>
+          <h2 th:text="${theme.config.plugins?.steam?.recent_section_title ?: '最近游玩'}">最近游玩</h2>
+        </div>
+        <div class="hydro-game-grid" data-steam-recent>
+          <div
+            class="hydro-plugin-empty hydro-plugin-empty--small"
+            th:text="${theme.config.plugins?.steam?.recent_loading_text ?: '正在加载最近游玩。'}"
+          >
+            正在加载最近游玩。
+          </div>
+        </div>
+      </section>
+
+      <section th:if="${hasSteamPlugin}" class="hydro-plugin-section">
+        <div class="hydro-plugin-section__head">
+          <span th:text="${theme.config.plugins?.steam?.library_section_eyebrow ?: 'Library'}">Library</span>
+          <h2 th:text="${theme.config.plugins?.steam?.library_section_title ?: '游戏库'}">游戏库</h2>
+        </div>
+        <div class="hydro-game-grid" data-steam-games>
+          <div
+            class="hydro-plugin-empty hydro-plugin-empty--small"
+            th:text="${theme.config.plugins?.steam?.library_loading_text ?: '正在加载游戏库。'}"
+          >
+            正在加载游戏库。
+          </div>
+        </div>
+        <nav class="hydro-pagination hydro-steam-pagination" data-steam-pagination hidden>
+          <button type="button" data-steam-prev th:text="${theme.config.plugins?.steam?.previous_label ?: '上一页'}">
+            上一页
+          </button>
+          <span data-steam-page>1 / 1</span>
+          <button type="button" data-steam-next th:text="${theme.config.plugins?.steam?.next_label ?: '下一页'}">
+            下一页
+          </button>
+        </nav>
+      </section>
+
+      <section
+        id="comment"
+        class="hydro-plugin-comments"
+        th:if="${(theme.config.plugins?.steam == null or theme.config.plugins.steam.enable_comment != false) and haloCommentEnabled and singlePage != null}"
+      >
+        <h2 th:text="${theme.config.plugins?.steam?.comments_title ?: '评论'}">评论</h2>
+        <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
+      </section>
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

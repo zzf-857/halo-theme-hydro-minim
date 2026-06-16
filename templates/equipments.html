@@ -1,0 +1,299 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.plugins?.equipment?.title ?: '我的装备'} - ${site.title}|">我的装备</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-list-hero">
+    <div class="hydro-container">
+      <p th:text="${theme.config.plugins?.equipment?.eyebrow ?: 'Equipment'}">Equipment</p>
+      <h1 th:text="${theme.config.plugins?.equipment?.title ?: '我的装备'}">我的装备</h1>
+      <span th:text="${theme.config.plugins?.equipment?.description ?: '记录日常使用的硬件、软件与创作工具。'}"
+        >记录日常使用的硬件、软件与创作工具。</span
+      >
+    </div>
+  </section>
+
+  <section
+    class="hydro-plugin-page hydro-equipment-page"
+    data-hydro-filter-root
+    th:with="
+      hasEquipmentPlugin=${pluginFinder.available('equipment') or pluginFinder.available('plugin-equipment') or pluginFinder.available('PluginEquipment') or pluginFinder.available('PluginEquipments')},
+      equipmentGroups=${groups != null ? groups : (hasEquipmentPlugin and equipmentFinder != null ? equipmentFinder.groupBy() : null)},
+      hasEquipmentData=${equipmentGroups != null and not #lists.isEmpty(equipmentGroups)}"
+  >
+    <div class="hydro-container">
+      <div class="hydro-plugin-notice" th:if="${not hasEquipmentPlugin}">
+        <strong th:text="${theme.config.plugins?.equipment?.install_title ?: '需要安装装备插件'}"
+          >需要安装装备插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.equipment?.install_text ?: '需要安装并启用 plugin-equipment。在 Halo Console -> 应用市场搜索“装备管理”，添加装备分组后这里会自动展示。'}"
+          >需要安装并启用 plugin-equipment。在 Halo Console ->
+          应用市场搜索“装备管理”，添加装备分组后这里会自动展示。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.equipment?.install_link ?: 'https://www.halo.run/store/apps/app-ytygyqml'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.equipment?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+
+      <nav class="hydro-plugin-tabs" th:if="${hasEquipmentData}" aria-label="装备分组">
+        <button
+          class="is-active"
+          type="button"
+          data-hydro-plugin-filter="all"
+          th:text="${theme.config.plugins?.equipment?.all_group_label ?: '全部'}"
+        >
+          全部
+        </button>
+        <button
+          th:each="group : ${equipmentGroups}"
+          type="button"
+          th:attr="data-hydro-plugin-filter=${group.metadata.name}"
+          th:text="${group.spec.displayName}"
+        >
+          分组
+        </button>
+      </nav>
+
+      <div th:if="${hasEquipmentData}" class="hydro-plugin-stack">
+        <section
+          class="hydro-plugin-group"
+          th:each="group,groupStat : ${equipmentGroups}"
+          th:attr="data-hydro-filter-group=${group.metadata.name}"
+        >
+          <div class="hydro-plugin-group__header">
+            <span th:text="${#numbers.formatInteger(groupStat.index + 1, 2)}">01</span>
+            <div>
+              <h2 th:text="${group.spec.displayName}">分组名称</h2>
+              <p th:if="${not #strings.isEmpty(group.spec.description)}" th:text="${group.spec.description}">
+                分组描述
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="hydro-equipment-grid"
+            th:if="${group.equipments != null and not #lists.isEmpty(group.equipments)}"
+          >
+            <a
+              class="hydro-equipment-card"
+              th:each="equipment,equipmentStat : ${group.equipments}"
+              th:href="${#strings.isEmpty(equipment.spec.url) ? '#' : equipment.spec.url}"
+              th:target="${#strings.isEmpty(equipment.spec.url) ? '_self' : '_blank'}"
+              rel="noreferrer noopener"
+            >
+              <span class="hydro-equipment-card__index" th:text="${#numbers.formatInteger(equipmentStat.index + 1, 2)}"
+                >01</span
+              >
+              <div class="hydro-equipment-card__media" data-progressive-media>
+                <img
+                  th:if="${not #strings.isEmpty(equipment.spec.cover)}"
+                  th:src="${thumbnail.gen(equipment.spec.cover, 'm')}"
+                  th:srcset="|${thumbnail.gen(equipment.spec.cover, 's')} 420w, ${thumbnail.gen(equipment.spec.cover, 'm')} 800w, ${thumbnail.gen(equipment.spec.cover, 'l')} 1200w|"
+                  sizes="(max-width: 720px) calc(100vw - 2rem), 33vw"
+                  th:alt="${equipment.spec.displayName}"
+                  loading="lazy"
+                  decoding="async"
+                  data-progressive-image
+                />
+                <div th:if="${#strings.isEmpty(equipment.spec.cover)}" class="hydro-plugin-placeholder">
+                  <span th:text="${theme.config.plugins?.equipment?.placeholder_label ?: 'Hydro Gear'}"
+                    >Hydro Gear</span
+                  >
+                </div>
+              </div>
+              <div class="hydro-equipment-card__body">
+                <strong th:text="${equipment.spec.displayName}">装备名称</strong>
+                <p
+                  th:text="${equipment.spec.description ?: (theme.config.plugins?.equipment?.fallback_description ?: '暂无描述。')}"
+                >
+                  暂无描述。
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <div
+            th:if="${group.equipments == null or #lists.isEmpty(group.equipments)}"
+            class="hydro-plugin-empty hydro-plugin-empty--small"
+            th:text="${theme.config.plugins?.equipment?.group_empty_text ?: '该分组暂无装备。可在 plugin-equipment 中补充条目。'}"
+          >
+            该分组暂无装备。可在 plugin-equipment 中补充条目。
+          </div>
+        </section>
+      </div>
+
+      <div
+        th:if="${not hasEquipmentPlugin and not hasEquipmentData}"
+        class="hydro-plugin-empty hydro-plugin-empty--install"
+      >
+        <span th:text="${theme.config.plugins?.equipment?.eyebrow ?: 'Equipment'}">Equipment</span>
+        <strong th:text="${theme.config.plugins?.equipment?.install_title ?: '需要安装装备插件'}"
+          >需要安装装备插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.equipment?.install_text ?: '请安装 plugin-equipment，路径：Halo Console -> 应用市场 -> 搜索“装备管理”。'}"
+        >
+          请安装 plugin-equipment，路径：Halo Console -> 应用市场 -> 搜索“装备管理”。
+        </p>
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.equipment?.install_link ?: 'https://www.halo.run/store/apps/app-ytygyqml'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.equipment?.install_link_label ?: '查看插件'}"
+          >查看插件</a
+        >
+      </div>
+
+      <div th:if="${hasEquipmentPlugin and not hasEquipmentData}" class="hydro-plugin-empty">
+        <span th:text="${theme.config.plugins?.equipment?.eyebrow ?: 'Equipment'}">Equipment</span>
+        <strong th:text="${theme.config.plugins?.equipment?.empty_text ?: '暂无装备数据'}">暂无装备数据</strong>
+        <p
+          th:text="${theme.config.plugins?.equipment?.empty_available_text ?: 'plugin-equipment 已可用。创建分组并添加硬件、软件或创作工具后，这里会呈现清单。'}"
+        >
+          plugin-equipment 已可用。创建分组并添加硬件、软件或创作工具后，这里会呈现清单。
+        </p>
+      </div>
+
+      <section
+        id="comment"
+        class="hydro-plugin-comments"
+        th:if="${(theme.config.plugins?.equipment == null or theme.config.plugins.equipment.enable_comment != false) and haloCommentEnabled and singlePage != null}"
+      >
+        <h2 th:text="${theme.config.plugins?.equipment?.comments_title ?: '留言'}">留言</h2>
+        <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
+      </section>
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

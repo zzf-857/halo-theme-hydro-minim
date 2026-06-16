@@ -1,0 +1,72 @@
+<section id="about" class="hydro-section hydro-about" data-about-section>
+  <div class="hydro-container">
+    <div class="hydro-about__grid" th:with="siteStats = ${siteStatsFinder.getStats()}">
+      <div class="hydro-about__intro">
+        <span class="hydro-about__eyebrow about-text-line" th:text="${theme.config.home?.about?.eyebrow ?: 'About'}">
+          About
+        </span>
+        <h2 class="hydro-about__title">
+          <span class="about-text-line" th:text="${theme.config.home?.about?.title ?: '关于'}">关于</span>
+          <span class="about-text-line" th:text="${theme.config.home?.about?.subtitle ?: '艺术的生活家'}">
+            艺术的生活家
+          </span>
+        </h2>
+        <p class="hydro-about__lead about-text-line" th:text="${theme.config.home?.about?.paragraph_1}"></p>
+      </div>
+
+      <div class="hydro-about__content">
+        <div class="hydro-about__statement about-text-line">
+          <p th:text="${theme.config.home?.about?.paragraph_2}"></p>
+          <p th:text="${theme.config.home?.about?.paragraph_3}"></p>
+        </div>
+
+        <div class="hydro-about__stats about-text-line" aria-label="站点统计">
+          <div class="hydro-about__stat hydro-about__stat--primary">
+            <span>访问</span>
+            <strong th:text="${siteStats?.visit ?: 0}">0</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>文章</span>
+            <strong th:text="${siteStats?.post ?: 0}">63</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>评论</span>
+            <strong th:text="${siteStats?.comment ?: 0}">0</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>点赞</span>
+            <strong th:text="${siteStats?.upvote ?: 0}">0</strong>
+          </div>
+          <div class="hydro-about__stat">
+            <span>分类</span>
+            <strong th:text="${siteStats?.category ?: 0}">12</strong>
+          </div>
+        </div>
+
+        <div
+          class="hydro-socials about-text-line"
+          th:if="${theme.config.home?.about == null or (theme.config.home.about.show_socials != false and theme.config.home.about.show_socials != 'false')}"
+        >
+          <a
+            th:each="item : ${theme.config.identity?.social?.links}"
+            th:if="${not #strings.isEmpty(item.url) and item.url != '#'}"
+            th:href="${item.url}"
+            th:attr="aria-label=${item.label}"
+            th:target="${item.new_tab == true ? '_blank' : '_self'}"
+            rel="noreferrer noopener"
+          >
+            <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+            <svg
+              class="hydro-socials__fallback-icon"
+              th:if="${#strings.isEmpty(item.icon)}"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M4 4l16 16M20 4 4 20"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

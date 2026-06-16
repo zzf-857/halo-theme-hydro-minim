@@ -1,0 +1,46 @@
+<section id="categories" class="hydro-section hydro-categories" data-categories-section>
+  <div class="hydro-section-heading">
+    <h2 class="hydro-section-title" th:text="${theme.config.home?.categories?.title ?: '分类'}">分类</h2>
+  </div>
+
+  <div
+    class="hydro-category-slices"
+    th:with="
+      categories = ${categoryFinder.listAsTree()},
+      categoriesSizeText=${theme.config.home?.categories?.size == null ? '' : #strings.trim('' + theme.config.home.categories.size)},
+      categoriesSizeRaw=${categoriesSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(categoriesSizeText) : 4},
+      categoriesSize=${categoriesSizeRaw < 1 ? 4 : categoriesSizeRaw}
+    "
+  >
+    <a
+      class="hydro-category-slice"
+      th:each="category,stat : ${categories}"
+      th:if="${stat.index < categoriesSize}"
+      th:href="@{${category.status.permalink}}"
+    >
+      <strong th:text="${category.spec.displayName}">设计</strong>
+      <em th:text="${category.spec.description ?: '继续探索这个分类下的内容'}">视觉艺术与界面设计的探索</em>
+      <span class="hydro-category-slice__cta">
+        <span>探索</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"></path>
+        </svg>
+      </span>
+      <b th:text="${category.postCount ?: 0}" aria-label="文章数">24</b>
+    </a>
+
+    <a class="hydro-category-slice hydro-category-slice--all" th:href="@{/archives}">
+      <strong>全部</strong>
+      <em>浏览所有文章内容</em>
+      <span class="hydro-category-slice__cta">
+        <span>探索</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"></path>
+        </svg>
+      </span>
+      <b th:text="${posts.total ?: 0}" aria-label="文章数">63</b>
+    </a>
+  </div>
+
+  <div class="hydro-cursor" data-hydro-cursor>查看</div>
+</section>

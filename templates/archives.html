@@ -1,0 +1,257 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.content?.archive?.title ?: '归档'} - ${site.title}|">归档</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-archive-page">
+    <div class="hydro-container">
+      <header class="hydro-archive-hero">
+        <div class="hydro-archive-hero__copy">
+          <p
+            class="hydro-archive-hero__kicker"
+            th:text="${theme.config.content?.archive?.eyebrow ?: 'Hydro-Minim / Archives'}"
+          >
+            Hydro-Minim / Archives
+          </p>
+          <h1 th:text="${theme.config.content?.archive?.title ?: '归档'}">归档</h1>
+          <span
+            th:text="${theme.config.content?.archive?.description ?: '文章按发布时间归入年份和月份，方便回看往期内容。'}"
+          >
+            文章按发布时间归入年份和月份，方便回看往期内容。
+          </span>
+        </div>
+        <dl
+          class="hydro-archive-hero__meta"
+          th:if="${(theme.config.content?.archive == null or theme.config.content.archive.show_meta != false) and archives.total gt 0}"
+        >
+          <div>
+            <dt th:text="${theme.config.content?.archive?.articles_metric_label ?: 'Articles'}">Articles</dt>
+            <dd th:text="${archives.total}">0</dd>
+          </div>
+          <div>
+            <dt th:text="${theme.config.content?.archive?.page_metric_label ?: 'Page'}">Page</dt>
+            <dd th:text="|${archives.page}/${archives.totalPages}|">1/1</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="hydro-archive" th:if="${archives.total gt 0}">
+        <th:block th:each="archive : ${archives.items}">
+          <section class="hydro-archive__year">
+            <div class="hydro-archive__year-head">
+              <p th:text="${theme.config.content?.archive?.year_label ?: 'Year'}">Year</p>
+              <h2 th:text="${archive.year}">2026</h2>
+              <span th:text="|${#lists.size(archive.months)} ${theme.config.content?.archive?.month_unit ?: '个月份'}|">
+                3 个月份
+              </span>
+            </div>
+
+            <div class="hydro-archive__months">
+              <section class="hydro-archive__month" th:each="month : ${archive.months}">
+                <div class="hydro-archive__month-head">
+                  <h3
+                    th:text="|${#numbers.formatInteger(month.month, 2)} ${theme.config.content?.archive?.month_suffix ?: '月'}|"
+                  >
+                    04 月
+                  </h3>
+                  <span th:text="|${#lists.size(month.posts)} ${theme.config.content?.archive?.post_unit ?: '篇'}|"
+                    >4 篇</span
+                  >
+                </div>
+
+                <div class="hydro-archive__items">
+                  <a
+                    th:each="post,stat : ${month.posts}"
+                    class="hydro-archive__item"
+                    th:href="@{${post.status.permalink}}"
+                    th:with="
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
+                      cover=${#strings.isEmpty(post.spec.cover) ? fallbackCover : post.spec.cover},
+                      optimizedCover=${#strings.contains(cover, 'images.unsplash.com') ? cover + (#strings.contains(cover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : cover},
+                      optimizedFallbackCover=${#strings.contains(fallbackCover, 'images.unsplash.com') ? fallbackCover + (#strings.contains(fallbackCover, '?') ? '&w=320&fit=crop&auto=format' : '?w=320&fit=crop&auto=format') : fallbackCover}
+                    "
+                  >
+                    <time
+                      class="hydro-archive__item-date"
+                      th:datetime="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+                      th:text="${#dates.format(post.spec.publishTime, 'MM.dd')}"
+                    >
+                      04.26
+                    </time>
+                    <span class="hydro-archive__item-main">
+                      <strong th:text="${post.spec.title}">文章标题</strong>
+                      <span th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">
+                        文章摘要
+                      </span>
+                      <em
+                        th:if="${not #lists.isEmpty(post.categories)}"
+                        th:text="${post.categories[0].spec.displayName}"
+                      >
+                        分类
+                      </em>
+                    </span>
+                    <span
+                      th:unless="${theme.config.content?.archive != null and theme.config.content.archive.show_post_cover == false}"
+                      class="hydro-archive__item-cover"
+                      aria-hidden="true"
+                      data-progressive-media
+                    >
+                      <img
+                        th:src="${thumbnail.gen(optimizedCover, 's')}"
+                        th:alt="${post.spec.title}"
+                        loading="lazy"
+                        decoding="async"
+                        data-progressive-image
+                        th:attr="data-fallback-cover=${optimizedFallbackCover}"
+                      />
+                    </span>
+                    <span class="hydro-archive__item-arrow" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M7 17 17 7M9 7h8v8"></path>
+                      </svg>
+                    </span>
+                  </a>
+                </div>
+              </section>
+            </div>
+          </section>
+        </th:block>
+      </div>
+      <div
+        th:if="${archives.total == 0}"
+        class="hydro-empty"
+        th:text="${theme.config.content?.archive?.empty_text ?: '还没有归档文章。'}"
+      >
+        还没有归档文章。
+      </div>
+      <th:block
+        th:replace="~{modules/pagination :: pagination(${archives.prevUrl},${archives.nextUrl},${archives.totalPages},${archives.page},${archives.hasPrevious()},${archives.hasNext()})}"
+      />
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

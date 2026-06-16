@@ -1,0 +1,297 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.plugins?.docs?.title ?: '文档中心'} - ${site.title}|">文档中心</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-list-hero">
+    <div class="hydro-container">
+      <p th:text="${theme.config.plugins?.docs?.eyebrow ?: 'Docs'}">Docs</p>
+      <h1 th:text="${theme.config.plugins?.docs?.title ?: '文档中心'}">文档中心</h1>
+      <span th:text="${theme.config.plugins?.docs?.description ?: '把项目说明、使用手册和长期知识整理成清晰的入口。'}"
+        >把项目说明、使用手册和长期知识整理成清晰的入口。</span
+      >
+    </div>
+  </section>
+
+  <section
+    class="hydro-plugin-page hydro-docs-page"
+    th:with="
+      hasDocsPlugin=${pluginFinder.available('plugin-docsme')},
+      hasDocsCompatible=${pluginFinder.available('plugin-docsme', '>=1.4.0')},
+      docsProjects=${hasDocsCompatible ? (projects != null ? projects : docsmeProjectsFinder.listAll()) : null},
+      hasDocsProjects=${docsProjects != null and not #lists.isEmpty(docsProjects)},
+      docsProjectTotal=${hasDocsProjects ? #aggregates.sum(docsProjects.![status.totalDocs ?: 0]) : 0}"
+  >
+    <div class="hydro-container">
+      <div th:if="${hasDocsCompatible and hasDocsProjects}" class="hydro-docs-overview">
+        <div>
+          <span th:text="${theme.config.plugins?.docs?.overview_label ?: 'Knowledge base'}">Knowledge base</span>
+          <strong th:text="${#lists.size(docsProjects)}">3</strong>
+          <em th:text="${theme.config.plugins?.docs?.project_count_suffix ?: '个项目'}">个项目</em>
+        </div>
+        <div>
+          <span th:text="${theme.config.plugins?.docs?.doc_count_label ?: 'Published'}">Published</span>
+          <strong th:text="${docsProjectTotal}">24</strong>
+          <em th:text="${theme.config.plugins?.docs?.doc_count_suffix ?: '篇文档'}">篇文档</em>
+        </div>
+      </div>
+
+      <div class="hydro-plugin-notice" th:if="${not hasDocsPlugin}">
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.docs?.install_text ?: '需要安装并启用 plugin-docsme 1.4.0 或更高版本。安装后创建文档项目，这里会展示知识库入口。'}"
+          >需要安装并启用 plugin-docsme 1.4.0 或更高版本。安装后创建文档项目，这里会展示知识库入口。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+
+      <div class="hydro-plugin-notice" th:if="${hasDocsPlugin and not hasDocsCompatible}">
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
+        <span
+          class="hydro-plugin-notice__body"
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '已检测到 plugin-docsme，但当前文档模板需要 1.4.0 或更高版本。升级后文档项目会在这里展示。'}"
+          >已检测到 plugin-docsme，但当前文档模板需要 1.4.0 或更高版本。升级后文档项目会在这里展示。</span
+        >
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '应用市场'}"
+          >应用市场</a
+        >
+      </div>
+
+      <div th:if="${hasDocsCompatible and hasDocsProjects}" class="hydro-docs-grid hydro-docs-grid--projects">
+        <a
+          class="hydro-docs-card"
+          th:each="project,projectStat : ${docsProjects}"
+          th:href="${project.status.permalink}"
+        >
+          <span class="hydro-docs-card__index" th:text="${#numbers.formatInteger(projectStat.index + 1, 2)}">01</span>
+          <span class="hydro-docs-card__icon">
+            <img
+              th:if="${not #strings.isEmpty(project.spec.icon)}"
+              th:src="${project.spec.icon}"
+              th:alt="${project.spec.displayName}"
+            />
+            <b th:if="${#strings.isEmpty(project.spec.icon)}">DOC</b>
+          </span>
+          <span
+            class="hydro-docs-card__lock"
+            th:if="${project.spec.authorizeRequired}"
+            th:text="${theme.config.plugins?.docs?.private_label ?: 'Private'}"
+            >Private</span
+          >
+          <strong th:text="${project.spec.displayName}">文档项目</strong>
+          <p th:if="${not #strings.isEmpty(project.spec.description)}" th:text="${project.spec.description}">
+            文档说明
+          </p>
+          <span class="hydro-docs-card__meta">
+            <em
+              th:text="|${project.status.totalDocs ?: 0} ${theme.config.plugins?.docs?.doc_count_suffix ?: '篇文档'}|"
+            >
+              0 篇文档
+            </em>
+            <em th:text="${project.spec.preferredLanguage ?: project.spec.slug}">default</em>
+          </span>
+        </a>
+      </div>
+
+      <div th:if="${not hasDocsPlugin and not hasDocsProjects}" class="hydro-plugin-empty hydro-plugin-empty--install">
+        <span th:text="${theme.config.plugins?.docs?.doc_eyebrow ?: 'Documentation'}">Documentation</span>
+        <strong th:text="${theme.config.plugins?.docs?.install_title ?: '需要安装 Docsme 插件'}"
+          >需要安装 Docsme 插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.docs?.install_text ?: '请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。'}"
+        >
+          请安装 plugin-docsme 1.4.0 或更高版本，路径：Halo Console -> 应用市场 -> 搜索“Docsme”。
+        </p>
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '查看插件'}"
+          >查看插件</a
+        >
+      </div>
+
+      <div th:if="${hasDocsPlugin and not hasDocsCompatible}" class="hydro-plugin-empty hydro-plugin-empty--install">
+        <span th:text="${theme.config.plugins?.docs?.doc_eyebrow ?: 'Documentation'}">Documentation</span>
+        <strong th:text="${theme.config.plugins?.docs?.upgrade_title ?: '需要升级 Docsme 插件'}"
+          >需要升级 Docsme 插件</strong
+        >
+        <p
+          th:text="${theme.config.plugins?.docs?.upgrade_text ?: '请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档中心。'}"
+        >
+          请将 plugin-docsme 升级到 1.4.0 或更高版本，升级后再刷新文档中心。
+        </p>
+        <a
+          class="hydro-plugin-install-link"
+          th:href="${theme.config.plugins?.docs?.install_link ?: 'https://www.halo.run/store/apps/app-yffxw'}"
+          target="_blank"
+          rel="noreferrer noopener"
+          th:text="${theme.config.plugins?.docs?.install_link_label ?: '查看插件'}"
+          >查看插件</a
+        >
+      </div>
+
+      <div th:if="${hasDocsCompatible and not hasDocsProjects}" class="hydro-plugin-empty">
+        <span th:text="${theme.config.plugins?.docs?.doc_eyebrow ?: 'Documentation'}">Documentation</span>
+        <strong th:text="${theme.config.plugins?.docs?.empty_text ?: '暂无文档项目'}">暂无文档项目</strong>
+        <p
+          th:text="${theme.config.plugins?.docs?.catalog_empty_text ?: 'plugin-docsme 已可用。创建文档项目并发布内容后，这里会展示文档入口。'}"
+        >
+          plugin-docsme 已可用。创建文档项目并发布内容后，这里会展示文档入口。
+        </p>
+      </div>
+
+      <section
+        id="comment"
+        class="hydro-plugin-comments"
+        th:if="${(theme.config.plugins?.docs == null or theme.config.plugins.docs.enable_comment != false) and haloCommentEnabled and singlePage != null}"
+      >
+        <h2 th:text="${theme.config.plugins?.docs?.comments_title ?: '评论'}">评论</h2>
+        <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
+      </section>
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

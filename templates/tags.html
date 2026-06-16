@@ -1,0 +1,218 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.content?.taxonomy?.tag_title ?: '标签'} - ${site.title}|">标签</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-tags-page">
+    <div class="hydro-container">
+      <header class="hydro-tags-hero">
+        <div class="hydro-tags-hero__copy">
+          <p th:text="${theme.config.content?.taxonomy?.tag_eyebrow ?: 'Hydro-Minim / Tags'}">Hydro-Minim / Tags</p>
+          <h1 th:text="${theme.config.content?.taxonomy?.tag_title ?: '标签'}">标签</h1>
+          <span
+            th:text="${theme.config.content?.taxonomy?.tag_description ?: '把散落的文章压缩成一组轻量关键词，从一个符号进入另一条阅读路径。'}"
+          >
+            把散落的文章压缩成一组轻量关键词，从一个符号进入另一条阅读路径。
+          </span>
+        </div>
+        <dl
+          class="hydro-tags-hero__meta"
+          th:if="${(theme.config.content?.taxonomy == null or theme.config.content.taxonomy.tag_show_meta != false) and not #lists.isEmpty(tags)}"
+        >
+          <div>
+            <dt th:text="${theme.config.content?.taxonomy?.tag_keywords_metric_label ?: 'Keywords'}">Keywords</dt>
+            <dd th:text="${#lists.size(tags)}">0</dd>
+          </div>
+          <div>
+            <dt th:text="${theme.config.content?.taxonomy?.tag_shape_metric_label ?: 'Shape'}">Shape</dt>
+            <dd th:text="${theme.config.content?.taxonomy?.tag_shape_value ?: 'Cloud'}">Cloud</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="hydro-tags-cloud-board" th:if="${not #lists.isEmpty(tags)}">
+        <svg
+          class="hydro-tags-sky"
+          aria-hidden="true"
+          focusable="false"
+          viewBox="0 0 1440 720"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="hydro-tags-sky-gradient" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="currentColor" stop-opacity="0.16" />
+              <stop offset="48%" stop-color="currentColor" stop-opacity="0.07" />
+              <stop offset="100%" stop-color="currentColor" stop-opacity="0.02" />
+            </linearGradient>
+            <radialGradient id="hydro-tags-sky-light" cx="28%" cy="18%" r="64%">
+              <stop offset="0%" stop-color="currentColor" stop-opacity="0.2" />
+              <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="1440" height="720" fill="url(#hydro-tags-sky-gradient)" />
+          <rect width="1440" height="720" fill="url(#hydro-tags-sky-light)" />
+          <g class="hydro-tags-sky__lines" fill="none" stroke="currentColor" stroke-linecap="round">
+            <path d="M-40 536 C 170 482 286 606 482 546 S 782 488 962 546 1240 590 1480 526" />
+            <path d="M64 170 C 128 112 210 114 256 168 C 302 116 394 124 426 190 C 498 184 540 214 564 254" />
+            <path d="M904 122 C 956 82 1036 92 1068 150 C 1132 132 1204 166 1222 226" />
+            <path d="M180 430 C 248 398 320 404 374 446 C 436 412 514 422 560 472" />
+            <path d="M910 424 C 978 382 1064 396 1104 452 C 1162 432 1228 454 1264 502" />
+          </g>
+          <g class="hydro-tags-sky__marks" fill="currentColor">
+            <circle cx="196" cy="256" r="3" />
+            <circle cx="716" cy="136" r="2.5" />
+            <circle cx="1278" cy="342" r="3" />
+            <circle cx="482" cy="612" r="2.5" />
+          </g>
+        </svg>
+        <div class="hydro-tags-cloud" aria-label="标签云">
+          <a
+            th:each="tag,stat : ${tags}"
+            th:href="@{${tag.status.permalink}}"
+            th:style="|--tag-order: ${stat.index}; --tag-weight: ${tag.postCount ?: 0}; --tag-chars: ${#strings.length(tag.spec.displayName ?: '')}; --tag-x: ${12 + ((stat.index * 37) % 76)}; --tag-y: ${16 + ((stat.index * 29) % 62)}; --tag-lane: ${stat.index % 9}; --tag-drift: ${(stat.index * 5) % 13}; --tag-rise: ${(stat.index * 7) % 11}; --tag-orbit: ${(stat.index * 11) % 17}; --tag-depth: ${(stat.index * 3) % 5}; --tag-phase: ${(stat.index * 13) % 19};|"
+            class="hydro-tag-chip"
+          >
+            <svg class="hydro-tag-chip__cloud" aria-hidden="true" focusable="false" viewBox="0 0 72 40">
+              <path
+                d="M20.2 32.5H54c7.1 0 12.8-5 12.8-11.2 0-5.6-4.7-10.3-10.9-11.1C52.9 4.5 46.5 1.8 40.1 4c-4 1.4-7.1 4.3-8.6 7.8-2.4-1.7-5.7-2.3-8.8-1.4-4.7 1.3-7.8 5-7.9 9.3-5.5.7-9.6 4.4-9.6 9 0 5.1 5.1 3.8 15 3.8Z"
+              />
+            </svg>
+            <span class="hydro-tag-chip__name" th:text="${tag.spec.displayName}">Tag</span>
+            <sup th:text="${tag.postCount ?: 0}">0</sup>
+          </a>
+        </div>
+      </div>
+      <div
+        th:if="${#lists.isEmpty(tags)}"
+        class="hydro-empty"
+        th:text="${theme.config.content?.taxonomy?.tag_empty_text ?: '还没有创建标签。'}"
+      >
+        还没有创建标签。
+      </div>
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

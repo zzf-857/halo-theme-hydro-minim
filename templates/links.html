@@ -1,0 +1,836 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.plugins?.links?.title ?: '友链'} - ${site.title}|">友链</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-list-hero">
+    <div class="hydro-container">
+      <p th:text="${theme.config.plugins?.links?.eyebrow ?: 'Links'}">Links</p>
+      <h1 th:text="${theme.config.plugins?.links?.title ?: '友链'}">友链</h1>
+      <span th:text="${theme.config.plugins?.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'}">
+        与志同道合的创作者相互连接，共同构建开放的网络。
+      </span>
+    </div>
+  </section>
+
+  <!-- 站点信息 + 友链申请 -->
+  <section
+    class="hydro-site-info"
+    th:with="
+      configuredSiteName=${theme.config.plugins?.links?.site_name},
+      configuredSiteUrlRaw=${theme.config.plugins?.links?.site_url},
+      configuredSiteLogoRaw=${theme.config.plugins?.links?.site_logo},
+      configuredSiteDescription=${theme.config.plugins?.links?.site_description},
+      siteName=${#strings.isEmpty(configuredSiteName) ? site.title : configuredSiteName},
+      siteUrlRaw=${#strings.isEmpty(configuredSiteUrlRaw) ? site.url : configuredSiteUrlRaw},
+      siteUrl=${#strings.isEmpty(siteUrlRaw) ? '' : (#strings.endsWith(siteUrlRaw, '/') ? #strings.substring(siteUrlRaw, 0, #strings.length(siteUrlRaw) - 1) : siteUrlRaw)},
+      fallbackSiteLogoRaw=${#strings.isEmpty(site.logo) ? (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo) : site.logo},
+      siteLogoRaw=${#strings.isEmpty(configuredSiteLogoRaw) ? fallbackSiteLogoRaw : configuredSiteLogoRaw},
+      siteBaseUrl=${#strings.isEmpty(siteUrl) ? '' : siteUrl},
+      siteLogo=${#strings.startsWith(siteLogoRaw, 'http://') or #strings.startsWith(siteLogoRaw, 'https://') or #strings.startsWith(siteLogoRaw, '//') ? siteLogoRaw : siteBaseUrl + (#strings.startsWith(siteLogoRaw, '/') ? siteLogoRaw : '/' + siteLogoRaw)},
+      fallbackSiteDescription=${site.seo != null and not #strings.isEmpty(site.seo.description) ? site.seo.description : (not #strings.isEmpty(site.subtitle) ? site.subtitle : (theme.config.plugins?.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'))},
+      siteDescription=${#strings.isEmpty(configuredSiteDescription) ? fallbackSiteDescription : configuredSiteDescription}"
+  >
+    <div class="hydro-container">
+      <div class="hydro-links-top">
+        <div class="hydro-site-info__card">
+          <div class="hydro-site-info__header">
+            <div class="hydro-site-info__identity">
+              <img class="hydro-site-info__logo" th:src="${siteLogo}" th:alt="|${siteName} logo|" loading="lazy" />
+              <div class="hydro-site-info__title">
+                <h2 th:text="${theme.config.plugins?.links?.site_info_title ?: '我的站点信息'}">我的站点信息</h2>
+                <span th:text="${theme.config.plugins?.links?.site_info_description ?: '方便你回链'}">方便你回链</span>
+              </div>
+            </div>
+          </div>
+          <div class="hydro-site-info__grid">
+            <div class="hydro-site-info__row">
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_name_label ?: '站名'}"
+                >站名</span
+              >
+              <span class="hydro-site-info__value" th:text="${siteName}">站点名称</span>
+              <button
+                class="hydro-copy-btn"
+                data-copy
+                th:data-copy-text="${siteName}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_name_label ?: '复制站名'},title=${theme.config.plugins?.links?.copy_site_name_label ?: '复制站名'}"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="hydro-site-info__row">
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_url_label ?: '链接'}"
+                >链接</span
+              >
+              <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${siteUrl}"
+                >https://example.com</span
+              >
+              <button
+                class="hydro-copy-btn"
+                data-copy
+                th:data-copy-text="${siteUrl}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_url_label ?: '复制链接'},title=${theme.config.plugins?.links?.copy_site_url_label ?: '复制链接'}"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="hydro-site-info__row">
+              <span class="hydro-site-info__label" th:text="${theme.config.plugins?.links?.site_logo_label ?: 'Logo'}"
+                >Logo</span
+              >
+              <span class="hydro-site-info__value hydro-site-info__value--mono" th:text="${siteLogo}">Logo URL</span>
+              <button
+                class="hydro-copy-btn"
+                data-copy
+                th:data-copy-text="${siteLogo}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_logo_label ?: '复制 Logo'},title=${theme.config.plugins?.links?.copy_site_logo_label ?: '复制 Logo'}"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="hydro-site-info__row hydro-site-info__row--description">
+              <span
+                class="hydro-site-info__label"
+                th:text="${theme.config.plugins?.links?.site_description_label ?: '描述'}"
+                >描述</span
+              >
+              <span class="hydro-site-info__value" th:text="${siteDescription}">站点描述</span>
+              <button
+                class="hydro-copy-btn"
+                data-copy
+                th:data-copy-text="${siteDescription}"
+                th:attr="aria-label=${theme.config.plugins?.links?.copy_site_description_label ?: '复制描述'},title=${theme.config.plugins?.links?.copy_site_description_label ?: '复制描述'}"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="hydro-links-apply__inner"
+          th:if="${not #strings.isEmpty(singlePage.content.content) or theme.config.plugins?.links?.enable_submit}"
+        >
+          <div class="hydro-links-apply__header">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2v20M2 12h20"></path>
+            </svg>
+            <h2 th:text="${theme.config.plugins?.links?.apply_title ?: '申请友链'}">申请友链</h2>
+          </div>
+
+          <div
+            class="hydro-prose"
+            th:if="${not #strings.isEmpty(singlePage.content.content)}"
+            th:utext="${singlePage.content.content}"
+          ></div>
+
+          <th:block th:if="${theme.config.plugins?.links?.enable_submit}">
+            <p
+              class="hydro-links-submit-note"
+              th:if="${#strings.isEmpty(singlePage.content.content)}"
+              th:text="${theme.config.plugins?.links?.submit_note ?: '支持在线提交友链申请，填写后将进入站点审核流程。'}"
+            >
+              支持在线提交友链申请，填写后将进入站点审核流程。
+            </p>
+
+            <div class="hydro-links-submit-actions">
+              <div id="hydro-link-submit-entry" class="hydro-links-submit-entry" style="display: none">
+                <button
+                  type="button"
+                  class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+                  data-link-submit-open
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 4v16M4 12h16"></path>
+                  </svg>
+                  <span th:text="${theme.config.plugins?.links?.submit_button_label ?: '在线提交'}">在线提交</span>
+                </button>
+              </div>
+
+              <div
+                th:if="${theme.config.plugins?.links?.enable_update}"
+                id="hydro-link-update-entry"
+                class="hydro-links-submit-entry"
+                style="display: none"
+              >
+                <button type="button" class="hydro-links-submit-btn" data-link-update-open>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 5 4 4"></path>
+                    <path d="M4 20h4l10-10-4-4L4 16z"></path>
+                  </svg>
+                  <span th:text="${theme.config.plugins?.links?.update_button_label ?: '修改友链'}">修改友链</span>
+                </button>
+              </div>
+
+              <div id="hydro-link-submit-unavailable" class="hydro-links-submit-unavailable" style="display: none">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 8v5"></path>
+                  <path d="M12 16.5h.01"></path>
+                  <path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.8 3h16.8a2 2 0 0 0 1.8-3L13.7 3.8a2 2 0 0 0-3.4 0z"></path>
+                </svg>
+                <span
+                  th:text="${theme.config.plugins?.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，暂不可在线提交'}"
+                >
+                  未检测到 LinksSubmit 插件，暂不可在线提交
+                </span>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 友链列表 -->
+  <section class="hydro-links-section">
+    <div class="hydro-container">
+      <th:block th:if="${not #lists.isEmpty(groups)}">
+        <div class="hydro-links-group" th:each="group : ${groups}">
+          <div class="hydro-links-group__header">
+            <div class="hydro-links-group__line"></div>
+            <h2 th:text="${group.spec.displayName}">分组名称</h2>
+            <span
+              class="hydro-links-group__count"
+              th:text="|${#lists.size(group.links)} ${theme.config.plugins?.links?.group_count_suffix ?: '个链接'}|"
+              >0 个链接</span
+            >
+            <button
+              class="hydro-links-random"
+              th:if="${#lists.size(group.links) > 1}"
+              data-random-link
+              th:attr="data-links=${#strings.arrayJoin(group.links.![spec.url], ',')},aria-label=${theme.config.plugins?.links?.random_label ?: '随机访问'},title=${theme.config.plugins?.links?.random_label ?: '随机访问'}"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
+                <path d="m18 2 4 4-4 4"></path>
+                <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
+                <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
+                <path d="m18 14 4 4-4 4"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="hydro-links-grid">
+            <a
+              class="hydro-link-card"
+              th:each="link, linkStat : ${group.links}"
+              th:href="${link.spec.url}"
+              th:title="${link.spec.description}"
+              th:attr="aria-label=|访问 ${link.spec.displayName}|"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <span class="hydro-link-card__index" th:text="${linkStat.index + 1}">1</span>
+              <div class="hydro-link-card__head">
+                <div class="hydro-link-card__avatar">
+                  <img
+                    th:if="${not #strings.isEmpty(link.spec.logo)}"
+                    th:src="${link.spec.logo}"
+                    th:alt="${link.spec.displayName}"
+                  />
+                  <span
+                    th:if="${#strings.isEmpty(link.spec.logo)}"
+                    th:text="${#strings.substring(link.spec.displayName,0,1)}"
+                    >A</span
+                  >
+                </div>
+                <div class="hydro-link-card__meta">
+                  <strong th:text="${link.spec.displayName}">站点名称</strong>
+                  <code th:text="${#strings.substringAfter(link.spec.url, '//')}">example.com</code>
+                </div>
+                <svg class="hydro-link-card__arrow" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 17 17 7M8 7h9v9"></path>
+                </svg>
+              </div>
+              <div class="hydro-link-card__desc">
+                <p th:text="${link.spec.description}">站点描述</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </th:block>
+
+      <div
+        th:if="${#lists.isEmpty(groups)}"
+        class="hydro-empty"
+        th:text="${theme.config.plugins?.links?.empty_text ?: '暂无友链。'}"
+      >
+        暂无友链。
+      </div>
+    </div>
+  </section>
+
+  <!-- 在线提交弹窗 -->
+  <div
+    th:if="${theme.config.plugins?.links?.enable_submit}"
+    id="hydro-link-submit-modal"
+    class="hydro-link-submit-modal"
+    aria-hidden="true"
+  >
+    <button class="hydro-link-submit-modal__overlay" data-link-submit-close aria-label="关闭提交弹窗"></button>
+
+    <div
+      class="hydro-link-submit-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hydro-link-submit-title"
+    >
+      <div class="hydro-link-submit-modal__header">
+        <div class="hydro-link-submit-modal__title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 13a5 5 0 0 1 0-7l1.8-1.8a5 5 0 0 1 7 7L17 13"></path>
+            <path d="M14 11a5 5 0 0 1 0 7l-1.8 1.8a5 5 0 0 1-7-7L7 11"></path>
+          </svg>
+          <div>
+            <h3
+              id="hydro-link-submit-title"
+              th:text="${theme.config.plugins?.links?.submit_modal_title ?: '提交友链申请'}"
+            >
+              提交友链申请
+            </h3>
+            <p
+              th:text="${theme.config.plugins?.links?.submit_modal_description ?: '填写你的网站信息，审核通过后将展示在友链页'}"
+            >
+              填写你的网站信息，审核通过后将展示在友链页
+            </p>
+          </div>
+        </div>
+
+        <button type="button" class="hydro-link-submit-modal__close" data-link-submit-close aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hydro-link-submit-modal__body" data-lenis-prevent>
+        <div id="hydro-link-submit-message" class="hydro-link-submit-message" style="display: none"></div>
+
+        <form id="hydro-link-submit-form" class="hydro-link-submit-form">
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">基本信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-url">网站地址 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-link-url"
+                  name="url"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}"
+                  required
+                />
+                <button
+                  type="button"
+                  id="hydro-link-auto-fetch-btn"
+                  class="hydro-links-submit-btn"
+                  data-link-auto-fetch
+                >
+                  自动填充
+                </button>
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-name">网站名称 <span>*</span></label>
+                <input
+                  id="hydro-link-name"
+                  name="displayName"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_name_placeholder ?: '我的博客'}"
+                  required
+                />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-logo">网站图标</label>
+                <input
+                  id="hydro-link-logo"
+                  name="logo"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
+                />
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-description">网站描述</label>
+              <textarea
+                id="hydro-link-description"
+                name="description"
+                rows="2"
+                th:placeholder="${theme.config.plugins?.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更多信息（可选）</div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-page-url">友链页面</label>
+                <input
+                  id="hydro-link-page-url"
+                  name="linkPageUrl"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_page_url_placeholder ?: '友链页面 URL'}"
+                />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-link-rss-url">RSS 地址</label>
+                <input
+                  id="hydro-link-rss-url"
+                  name="rssUrl"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
+                />
+              </div>
+            </div>
+
+            <div id="hydro-link-group-wrapper" class="hydro-link-submit-form__group" style="display: none">
+              <label for="hydro-link-group">申请分组</label>
+              <select id="hydro-link-group" name="groupName">
+                <option value="">默认分组</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">验证信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-link-email">联系邮箱 <span>*</span></label>
+              <input
+                id="hydro-link-email"
+                name="email"
+                type="email"
+                th:placeholder="${theme.config.plugins?.links?.form_email_placeholder ?: 'your@email.com'}"
+                required
+              />
+            </div>
+
+            <div
+              th:if="${theme.config.plugins?.links?.verify_type == 'email' or theme.config.plugins?.links?.verify_type == null}"
+              class="hydro-link-submit-form__group"
+            >
+              <label for="hydro-link-verify-code">邮箱验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-link-verify-code"
+                  name="verifyCode"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
+                />
+                <button type="button" id="hydro-link-send-code-btn" class="hydro-links-submit-btn" data-link-send-code>
+                  发送验证码
+                </button>
+              </div>
+            </div>
+
+            <div th:if="${theme.config.plugins?.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+              <label for="hydro-link-captcha">图形验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-link-captcha"
+                  name="captcha"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_captcha_placeholder ?: '请输入图中字符'}"
+                />
+                <img id="hydro-link-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="hydro-link-submit-modal__footer">
+        <div class="hydro-link-submit-form__actions">
+          <button type="button" class="hydro-links-submit-btn" data-link-submit-close>取消</button>
+          <button
+            type="submit"
+            form="hydro-link-submit-form"
+            id="hydro-link-submit-btn"
+            class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+          >
+            提交申请
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 在线修改弹窗 -->
+  <div
+    th:if="${theme.config.plugins?.links?.enable_submit and theme.config.plugins?.links?.enable_update}"
+    id="hydro-link-update-modal"
+    class="hydro-link-submit-modal"
+    aria-hidden="true"
+  >
+    <button class="hydro-link-submit-modal__overlay" data-link-update-close aria-label="关闭修改弹窗"></button>
+
+    <div
+      class="hydro-link-submit-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hydro-link-update-title"
+    >
+      <div class="hydro-link-submit-modal__header">
+        <div class="hydro-link-submit-modal__title">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m15 5 4 4"></path>
+            <path d="M4 20h4l10-10-4-4L4 16z"></path>
+          </svg>
+          <div>
+            <h3 id="hydro-link-update-title">修改友链信息</h3>
+            <p
+              th:text="${theme.config.plugins?.links?.update_modal_description ?: '请使用原友链邮箱验证身份后提交修改'}"
+            >
+              请使用原友链邮箱验证身份后提交修改
+            </p>
+          </div>
+        </div>
+
+        <button type="button" class="hydro-link-submit-modal__close" data-link-update-close aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hydro-link-submit-modal__body" data-lenis-prevent>
+        <div id="hydro-link-update-message" class="hydro-link-submit-message" style="display: none"></div>
+
+        <form id="hydro-link-update-form" class="hydro-link-submit-form">
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">原始信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-old-url">原网站地址 <span>*</span></label>
+              <input
+                id="hydro-update-old-url"
+                name="oldUrl"
+                type="url"
+                th:placeholder="|原友链地址 ${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}|"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更新内容</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-url">新网站地址 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-update-url"
+                  name="url"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_url_placeholder ?: 'https://example.com'}"
+                  required
+                />
+                <button type="button" id="hydro-link-update-auto-fetch-btn" class="hydro-links-submit-btn">
+                  自动填充
+                </button>
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-name">网站名称 <span>*</span></label>
+                <input
+                  id="hydro-update-name"
+                  name="displayName"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_name_placeholder ?: '我的博客'}"
+                  required
+                />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-logo">网站图标</label>
+                <input
+                  id="hydro-update-logo"
+                  name="logo"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_logo_placeholder ?: 'Logo URL（可选）'}"
+                />
+              </div>
+            </div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-description">网站描述</label>
+              <textarea
+                id="hydro-update-description"
+                name="description"
+                rows="2"
+                th:placeholder="${theme.config.plugins?.links?.form_description_placeholder ?: '一句话介绍你的网站（可选）'}"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">更多信息（可选）</div>
+
+            <div class="hydro-link-submit-form__row">
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-page-url">友链页面</label>
+                <input
+                  id="hydro-update-page-url"
+                  name="linkPageUrl"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_page_url_placeholder ?: '友链页面 URL'}"
+                />
+              </div>
+
+              <div class="hydro-link-submit-form__group">
+                <label for="hydro-update-rss-url">RSS 地址</label>
+                <input
+                  id="hydro-update-rss-url"
+                  name="rssUrl"
+                  type="url"
+                  th:placeholder="${theme.config.plugins?.links?.form_rss_url_placeholder ?: 'RSS 订阅地址'}"
+                />
+              </div>
+            </div>
+
+            <div id="hydro-link-update-group-wrapper" class="hydro-link-submit-form__group" style="display: none">
+              <label for="hydro-link-update-group">申请分组</label>
+              <select id="hydro-link-update-group" name="groupName">
+                <option value="">默认分组</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hydro-link-submit-form__section">
+            <div class="hydro-link-submit-form__section-title">验证信息</div>
+
+            <div class="hydro-link-submit-form__group">
+              <label for="hydro-update-email">联系邮箱 <span>*</span></label>
+              <input
+                id="hydro-update-email"
+                name="email"
+                type="email"
+                th:placeholder="${theme.config.plugins?.links?.form_email_placeholder ?: 'your@email.com'}"
+                required
+              />
+            </div>
+
+            <div
+              th:if="${theme.config.plugins?.links?.verify_type == 'email' or theme.config.plugins?.links?.verify_type == null}"
+              class="hydro-link-submit-form__group"
+            >
+              <label for="hydro-update-verify-code">邮箱验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-update-verify-code"
+                  name="verifyCode"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_code_placeholder ?: '请输入邮箱验证码'}"
+                />
+                <button type="button" id="hydro-link-update-send-code-btn" class="hydro-links-submit-btn">
+                  发送验证码
+                </button>
+              </div>
+            </div>
+
+            <div th:if="${theme.config.plugins?.links?.verify_type == 'captcha'}" class="hydro-link-submit-form__group">
+              <label for="hydro-update-captcha">图形验证码 <span>*</span></label>
+              <div class="hydro-link-submit-form__inline">
+                <input
+                  id="hydro-update-captcha"
+                  name="captcha"
+                  type="text"
+                  th:placeholder="${theme.config.plugins?.links?.form_captcha_placeholder ?: '请输入图中字符'}"
+                />
+                <img id="hydro-link-update-captcha-img" class="hydro-link-submit-form__captcha" alt="验证码" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="hydro-link-submit-modal__footer">
+        <div class="hydro-link-submit-form__actions">
+          <button type="button" class="hydro-links-submit-btn" data-link-update-close>取消</button>
+          <button
+            type="submit"
+            form="hydro-link-update-form"
+            id="hydro-link-update-submit-btn"
+            class="hydro-links-submit-btn hydro-links-submit-btn--primary"
+          >
+            提交修改
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    th:if="${theme.config.plugins?.links?.enable_submit}"
+    id="hydro-link-submit-config"
+    th:attr="
+      data-enable-submit=${theme.config.plugins?.links?.enable_submit},
+      data-enable-update=${theme.config.plugins?.links?.enable_update},
+      data-verify-type=${theme.config.plugins?.links?.verify_type ?: 'email'},
+      data-unavailable-text=${theme.config.plugins?.links?.unavailable_text ?: '未检测到 LinksSubmit 插件，请稍后重试。'},
+      data-submit-success-text=${theme.config.plugins?.links?.submit_success_text ?: '提交成功，请等待审核。'},
+      data-submit-error-text=${theme.config.plugins?.links?.submit_error_text ?: '提交失败，请稍后重试。'},
+      data-update-success-text=${theme.config.plugins?.links?.update_success_text ?: '修改成功。'},
+      data-update-error-text=${theme.config.plugins?.links?.update_error_text ?: '修改失败，请稍后重试。'}
+    "
+    hidden
+  ></div>
+
+  <!-- 评论 -->
+  <section
+    id="comment"
+    class="hydro-links-comments"
+    th:if="${(theme.config.plugins?.links == null or theme.config.plugins.links.enable_comment != false) and haloCommentEnabled}"
+  >
+    <div class="hydro-container">
+      <h2 th:text="${theme.config.plugins?.links?.comments_title ?: '评论'}">评论</h2>
+      <halo:comment group="plugin.halo.run" kind="Plugin" th:attr="name=${pluginName}" />
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

@@ -1,0 +1,194 @@
+<div th:remove="tag" th:fragment="form">
+  <script th:inline="javascript" type="text/javascript">
+    const publicKey = /*[[${publicKey}]]*/ "";
+    const jsencryptScriptSources = [
+      "/webjars/jsencrypt/3.5.4/bin/jsencrypt.min.js",
+      "/webjars/jsencrypt/3.3.2/bin/jsencrypt.min.js",
+      "/webjars/jsencrypt/bin/jsencrypt.min.js",
+    ];
+    let jsencryptReadyPromise = null;
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const existingScript = document.querySelector(`script[src="${src}"]`);
+        if (existingScript) {
+          existingScript.addEventListener("load", resolve, { once: true });
+          existingScript.addEventListener("error", reject, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        script.addEventListener("load", resolve, { once: true });
+        script.addEventListener("error", reject, { once: true });
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensureJSEncrypt() {
+      if (typeof JSEncrypt !== "undefined") {
+        return true;
+      }
+
+      if (jsencryptReadyPromise) {
+        return jsencryptReadyPromise;
+      }
+
+      jsencryptReadyPromise = loadJSEncrypt();
+      return jsencryptReadyPromise;
+    }
+
+    async function loadJSEncrypt() {
+      for (const src of jsencryptScriptSources) {
+        try {
+          await loadScript(src);
+          if (typeof JSEncrypt !== "undefined") {
+            return true;
+          }
+        } catch (error) {
+          console.warn("[Hydro] Failed to load login encryption script:", src, error);
+        }
+      }
+
+      return false;
+    }
+
+    function showLoginEncryptionError(loginForm) {
+      let alert = loginForm.querySelector(".hydro-login-encryption-error");
+      if (!alert) {
+        alert = document.createElement("div");
+        alert.className = "alert alert-error hydro-login-encryption-error";
+        alert.setAttribute("role", "alert");
+        loginForm.prepend(alert);
+      }
+      alert.textContent = "登录加密脚本加载失败，请刷新页面后重试。";
+    }
+
+    function setSubmitBusy(loginForm, busy) {
+      const submitButton = loginForm.querySelector('button[type="submit"]');
+      if (!submitButton) {
+        return;
+      }
+      submitButton.disabled = busy;
+      submitButton.classList.toggle("disabled", busy);
+    }
+
+    function resubmitEncryptedLoginForm(loginForm) {
+      if (typeof loginForm.requestSubmit === "function") {
+        loginForm.requestSubmit();
+        return;
+      }
+      loginForm.submit();
+    }
+
+    function encryptPassword(password) {
+      if (typeof JSEncrypt === "undefined") {
+        return null;
+      }
+      const encrypt = new JSEncrypt();
+      encrypt.setPublicKey(publicKey);
+      return encrypt.encrypt(password);
+    }
+
+    function fillEncryptedPassword(loginForm) {
+      const plainPasswordInput = document.getElementById("plainPassword");
+      const passwordInput = document.getElementById("password");
+      if (!plainPasswordInput || !passwordInput) {
+        showLoginEncryptionError(loginForm);
+        return false;
+      }
+
+      const encryptedPassword = encryptPassword(plainPasswordInput.value);
+      if (!encryptedPassword) {
+        showLoginEncryptionError(loginForm);
+        return false;
+      }
+
+      passwordInput.value = encryptedPassword;
+      loginForm.dataset.hydroPasswordEncrypted = "true";
+      return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginForm = document.getElementById("login-form");
+      if (!loginForm) {
+        return;
+      }
+      ensureJSEncrypt();
+
+      loginForm.addEventListener("submit", async function (event) {
+        if (loginForm.dataset.hydroPasswordEncrypted === "true") {
+          return;
+        }
+
+        if (typeof JSEncrypt !== "undefined") {
+          if (!fillEncryptedPassword(loginForm)) {
+            event.preventDefault();
+          }
+          return;
+        }
+
+        event.preventDefault();
+        if (loginForm.dataset.hydroPasswordEncrypting === "true") {
+          return;
+        }
+        loginForm.dataset.hydroPasswordEncrypting = "true";
+        setSubmitBusy(loginForm, true);
+
+        const isReady = await ensureJSEncrypt();
+        if (!isReady) {
+          delete loginForm.dataset.hydroPasswordEncrypting;
+          setSubmitBusy(loginForm, false);
+          showLoginEncryptionError(loginForm);
+          return;
+        }
+
+        if (!fillEncryptedPassword(loginForm)) {
+          delete loginForm.dataset.hydroPasswordEncrypting;
+          setSubmitBusy(loginForm, false);
+          return;
+        }
+
+        delete loginForm.dataset.hydroPasswordEncrypting;
+        resubmitEncryptedLoginForm(loginForm);
+      });
+    });
+  </script>
+
+  <input type="hidden" name="password" id="password" />
+
+  <div class="form-item">
+    <label for="username" th:text="#{form.username.label}"> </label>
+
+    <div class="form-input">
+      <input
+        id="username"
+        name="username"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="off"
+        required
+        autofocus
+      />
+    </div>
+  </div>
+  <div class="form-item">
+    <div class="form-label-group">
+      <label for="plainPassword" th:text="#{form.password.label}"> </label>
+      <a
+        class="form-item-extra-link"
+        tabindex="-1"
+        th:href="@{/password-reset/email}"
+        th:text="#{form.password.forgot}"
+      >
+      </a>
+    </div>
+
+    <th:block
+      th:replace="~{gateway_fragments/input :: password(id = 'plainPassword', name = null, required = 'true', minlength = null, maxlength = 257, enableToggle = true)}"
+    ></th:block>
+  </div>
+</div>

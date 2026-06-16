@@ -1,0 +1,860 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${post.spec.title} - ${site.title}|">文章</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <article
+    class="hydro-post-page"
+    th:with="
+      postConfig=${theme.config.content?.post},
+      enableToc=${postConfig == null or postConfig.enable_toc != false},
+      enableActionRail=${postConfig == null or postConfig.enable_action_rail != false},
+      enableUpvote=${postConfig == null or postConfig.enable_upvote != false},
+      enableShare=${postConfig == null or postConfig.enable_share != false},
+      enableReadingProgress=${postConfig == null or postConfig.enable_reading_progress != false},
+      enablePostLightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      enableRelatedPosts=${postConfig == null or postConfig.enable_related_posts != false},
+      showCover=${postConfig == null or postConfig.show_cover != false},
+      rawDefaultPostCover=${theme.config.identity?.defaults?.article_cover_1},
+      defaultPostCover=${#strings.isEmpty(rawDefaultPostCover) ? #theme.assets('/images/article-1.jpg') : rawDefaultPostCover},
+      postCover=${#strings.isEmpty(post.spec.cover) ? defaultPostCover : post.spec.cover},
+      postCoverFallbackLayer=${postCover == defaultPostCover ? '' : ', url(''' + defaultPostCover + ''')'},
+      showVisit=${postConfig == null or postConfig.show_visit != false},
+      showUpvoteMeta=${postConfig == null or postConfig.show_upvote_meta != false},
+      showCommentMeta=${postConfig == null or postConfig.show_comment_meta != false},
+      showAuthor=${postConfig == null or postConfig.show_author != false},
+      hasMemberPlugin=${pluginFinder.available('PluginMember')},
+      enableReward=${postConfig != null and postConfig.enable_reward == true and not #strings.isEmpty(postConfig.reward_qr)},
+      showNeighbors=${postConfig == null or postConfig.show_neighbors != false},
+      enablePostComment=${postConfig == null or postConfig.enable_comment != false},
+      relatedSizeText=${postConfig == null or postConfig.related_posts_size == null ? '' : #strings.trim('' + postConfig.related_posts_size)},
+      relatedSizeRaw=${relatedSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(relatedSizeText) : 3},
+      relatedSize=${relatedSizeRaw < 1 ? 3 : relatedSizeRaw},
+      relatedFallbackSizeText=${postConfig == null or postConfig.related_fallback_latest_size == null ? '' : #strings.trim('' + postConfig.related_fallback_latest_size)},
+      relatedFallbackSizeRaw=${relatedFallbackSizeText.matches('^[0-9]{1,3}$') ? T(java.lang.Integer).parseInt(relatedFallbackSizeText) : 8},
+      relatedFallbackSize=${relatedFallbackSizeRaw < 1 ? 8 : relatedFallbackSizeRaw},
+      postCursor=${postFinder.cursor(post.metadata.name)},
+      hasCategory=${not #lists.isEmpty(post.categories)},
+      primaryCategory=${hasCategory ? post.categories[0] : null}
+    "
+    th:attr="
+      data-post-name=${post.metadata.name},
+      data-post-title=${post.spec.title},
+      data-post-permalink=${post.status.permalink},
+      data-post-cover=${postCover},
+      data-post-enable-toc=${enableToc},
+      data-post-enable-action-rail=${enableActionRail},
+      data-post-enable-upvote=${enableUpvote},
+      data-post-enable-share=${enableShare},
+      data-post-enable-reading-progress=${enableReadingProgress},
+      data-post-enable-lightbox=${enablePostLightbox},
+      data-post-favorited-label=${postConfig?.action_favorited_label ?: '已收藏'},
+      data-post-upvote-error-text=${postConfig?.upvote_error_text ?: '点赞失败，请稍后再试'}
+    "
+  >
+    <header
+      class="hydro-post-hero hydro-post-hero--cover"
+      th:if="${showCover and not #strings.isEmpty(postCover)}"
+      th:style="|background-image: url('${postCover}')${postCoverFallbackLayer}|"
+    >
+      <div class="hydro-post-hero__shade"></div>
+      <div class="hydro-post-hero__inner">
+        <p class="hydro-post-hero__eyebrow" th:text="${postConfig?.eyebrow ?: 'Post'}">Post</p>
+        <h1 th:text="${post.spec.title}">文章标题</h1>
+        <p th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">文章摘要</p>
+        <div class="hydro-post-hero__meta">
+          <time th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
+          <a
+            th:if="${hasCategory}"
+            th:href="@{${primaryCategory.status.permalink}}"
+            th:text="${primaryCategory.spec.displayName}"
+          >
+            分类
+          </a>
+          <span th:if="${showVisit}" th:text="|${postConfig?.visit_label ?: '阅读'} ${post.stats.visit ?: 0}|"
+            >阅读 0</span
+          >
+          <span th:if="${showUpvoteMeta}" th:text="|${postConfig?.upvote_label ?: '点赞'} ${post.stats.upvote ?: 0}|">
+            点赞 0
+          </span>
+          <span
+            th:if="${showCommentMeta}"
+            th:text="|${postConfig?.comment_label ?: '评论'} ${post.stats.comment ?: 0}|"
+          >
+            评论 0
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <header class="hydro-post-hero hydro-post-hero--plain" th:if="${not showCover or #strings.isEmpty(postCover)}">
+      <div class="hydro-container hydro-post-hero__plain-inner">
+        <p class="hydro-post-hero__eyebrow" th:text="${postConfig?.eyebrow ?: 'Post'}">Post</p>
+        <h1 th:text="${post.spec.title}">文章标题</h1>
+        <p th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">文章摘要</p>
+        <div class="hydro-post-hero__meta">
+          <time th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
+          <a
+            th:if="${hasCategory}"
+            th:href="@{${primaryCategory.status.permalink}}"
+            th:text="${primaryCategory.spec.displayName}"
+          >
+            分类
+          </a>
+          <span th:if="${showVisit}" th:text="|${postConfig?.visit_label ?: '阅读'} ${post.stats.visit ?: 0}|"
+            >阅读 0</span
+          >
+          <span th:if="${showUpvoteMeta}" th:text="|${postConfig?.upvote_label ?: '点赞'} ${post.stats.upvote ?: 0}|">
+            点赞 0
+          </span>
+          <span
+            th:if="${showCommentMeta}"
+            th:text="|${postConfig?.comment_label ?: '评论'} ${post.stats.comment ?: 0}|"
+          >
+            评论 0
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div class="hydro-container hydro-post-body">
+      <section class="hydro-post-main">
+        <article
+          id="post-content"
+          class="hydro-post-prose"
+          data-post-content
+          th:utext="${post.content.content}"
+        ></article>
+
+        <section class="hydro-post-tags" th:if="${not #lists.isEmpty(post.tags)}">
+          <a th:each="tag : ${post.tags}" th:href="@{${tag.status.permalink}}" th:text="|#${tag.spec.displayName}|"
+            >#tag</a
+          >
+        </section>
+
+        <section class="hydro-post-author" th:if="${showAuthor and post.owner != null}">
+          <div class="hydro-post-author__identity">
+            <div class="hydro-post-author__avatar">
+              <img
+                th:if="${not #strings.isEmpty(post.owner.avatar)}"
+                th:src="${post.owner.avatar}"
+                th:alt="${post.owner.displayName ?: post.owner.name}"
+                loading="lazy"
+              />
+              <span
+                th:if="${#strings.isEmpty(post.owner.avatar)}"
+                th:text="${post.owner.displayName ?: post.owner.name}"
+                >A</span
+              >
+            </div>
+            <div class="hydro-post-author__body">
+              <p class="hydro-post-author__eyebrow">
+                <span th:text="${postConfig?.author_label ?: '作者'}">作者</span>
+                <span
+                  th:if="${#lists.size(post.contributors) > 1}"
+                  th:text="|${postConfig?.contributor_label ?: '协作'} ${#lists.size(post.contributors)} 人|"
+                >
+                  协作 1 人
+                </span>
+              </p>
+              <a
+                class="hydro-post-author__name"
+                th:href="@{${post.owner.permalink}}"
+                th:text="${post.owner.displayName ?: post.owner.name}"
+                >作者名</a
+              >
+              <p
+                class="hydro-post-author__bio"
+                th:if="${not #strings.isEmpty(post.owner.bio)}"
+                th:text="${post.owner.bio}"
+              >
+                作者简介
+              </p>
+            </div>
+          </div>
+          <div class="hydro-post-author__actions">
+            <button
+              type="button"
+              class="hydro-post-author__reward"
+              data-hydro-reward-open
+              aria-controls="hydro-post-reward"
+              aria-expanded="false"
+              th:if="${enableReward}"
+            >
+              <span th:text="${postConfig?.reward_label ?: '打赏作者'}">打赏作者</span>
+            </button>
+            <a
+              class="hydro-post-author__profile"
+              th:href="@{${post.owner.permalink}}"
+              th:attr="aria-label=|查看 ${(post.owner.displayName ?: post.owner.name)} 的主页|"
+              title="查看作者主页"
+            >
+              ↗
+            </a>
+          </div>
+        </section>
+
+        <nav
+          class="hydro-post-neighbors"
+          th:if="${showNeighbors and (postCursor.hasPrevious() or postCursor.hasNext())}"
+          aria-label="文章上下篇"
+        >
+          <a
+            class="hydro-post-neighbor hydro-post-neighbor--previous"
+            th:if="${postCursor.hasPrevious()}"
+            th:href="@{${postCursor.previous.status.permalink}}"
+            th:attr="aria-label=|${postConfig?.previous_label ?: '上一篇'}：${postCursor.previous.spec.title}|"
+          >
+            <span class="hydro-post-neighbor__rail" aria-hidden="true">
+              <span class="hydro-post-neighbor__arrow">&larr;</span>
+            </span>
+            <span class="hydro-post-neighbor__body">
+              <span class="hydro-post-neighbor__eyebrow" th:text="${postConfig?.previous_label ?: '上一篇'}"
+                >上一篇</span
+              >
+              <strong class="hydro-post-neighbor__title" th:text="${postCursor.previous.spec.title}">Previous</strong>
+              <span class="hydro-post-neighbor__hint" aria-hidden="true">回到前一站</span>
+            </span>
+          </a>
+          <a
+            class="hydro-post-neighbor hydro-post-neighbor--next"
+            th:if="${postCursor.hasNext()}"
+            th:href="@{${postCursor.next.status.permalink}}"
+            th:attr="aria-label=|${postConfig?.next_label ?: '下一篇'}：${postCursor.next.spec.title}|"
+          >
+            <span class="hydro-post-neighbor__body">
+              <span class="hydro-post-neighbor__eyebrow" th:text="${postConfig?.next_label ?: '下一篇'}">下一篇</span>
+              <strong class="hydro-post-neighbor__title" th:text="${postCursor.next.spec.title}">Next</strong>
+              <span class="hydro-post-neighbor__hint" aria-hidden="true">继续下一站</span>
+            </span>
+            <span class="hydro-post-neighbor__rail" aria-hidden="true">
+              <span class="hydro-post-neighbor__arrow">&rarr;</span>
+            </span>
+          </a>
+        </nav>
+
+        <section class="hydro-post-related" th:if="${enableRelatedPosts}">
+          <th:block
+            th:with="
+              fallbackPool=${postFinder.list({page: 1, size: relatedFallbackSize, sort: {'spec.publishTime,desc'}}).items},
+              relatedPool=${hasCategory ? postFinder.list({page: 1, size: relatedFallbackSize, categoryName: primaryCategory.metadata.name, sort: {'spec.publishTime,desc'}}).items : fallbackPool.?[false]},
+              relatedByCategory=${relatedPool.?[metadata.name != #ctx.getVariable('post').metadata.name]},
+              relatedPrimaryCount=${#lists.size(relatedByCategory)},
+              relatedPrimaryTake=${relatedPrimaryCount > relatedSize ? relatedSize : relatedPrimaryCount},
+              relatedNeedCount=${relatedSize - relatedPrimaryTake},
+              fallbackRelated=${fallbackPool.?[metadata.name != #ctx.getVariable('post').metadata.name]}
+            "
+          >
+            <header class="hydro-post-related__head">
+              <h2 th:text="${postConfig?.related_title ?: '继续阅读'}">继续阅读</h2>
+              <a th:href="@{/archives}" th:text="${postConfig?.related_archive_label ?: '全部归档'}">全部归档</a>
+            </header>
+            <div class="hydro-post-related__grid" th:attr="data-related-limit=${relatedSize}">
+              <article
+                class="hydro-post-related-card"
+                th:each="item,stat : ${relatedByCategory}"
+                th:if="${stat.index < relatedPrimaryTake}"
+                th:with="
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
+                  cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
+                "
+              >
+                <a th:href="@{${item.status.permalink}}">
+                  <figure class="hydro-post-related-card__media" data-progressive-media>
+                    <img
+                      th:src="${thumbnail.gen(cover, 'm')}"
+                      th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+                      sizes="(max-width: 720px) 76vw, (max-width: 1100px) 32vw, 24vw"
+                      th:alt="${item.spec.title}"
+                      loading="lazy"
+                      decoding="async"
+                      data-progressive-image
+                      th:attr="data-fallback-cover=${fallbackCover}"
+                    />
+                  </figure>
+                  <div class="hydro-post-related-card__body">
+                    <time th:text="${#dates.format(item.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
+                    <strong th:text="${item.spec.title}">文章标题</strong>
+                    <p th:text="${item.status.excerpt}">文章摘要</p>
+                    <span aria-hidden="true">阅读</span>
+                  </div>
+                </a>
+              </article>
+
+              <article
+                class="hydro-post-related-card"
+                th:each="item,stat : ${fallbackRelated}"
+                th:if="${relatedNeedCount > 0 and stat.index < relatedNeedCount}"
+                th:with="
+                  rawFallbackCover=${stat.index % 3 == 0 ? theme.config.identity?.defaults?.article_cover_1 : (stat.index % 3 == 1 ? theme.config.identity?.defaults?.article_cover_2 : theme.config.identity?.defaults?.article_cover_3)},
+                  fallbackCover=${#strings.isEmpty(rawFallbackCover) ? #theme.assets('/images/article-1.jpg') : rawFallbackCover},
+                  cover=${#strings.isEmpty(item.spec.cover) ? fallbackCover : item.spec.cover}
+                "
+              >
+                <a th:href="@{${item.status.permalink}}">
+                  <figure class="hydro-post-related-card__media" data-progressive-media>
+                    <img
+                      th:src="${thumbnail.gen(cover, 'm')}"
+                      th:srcset="|${thumbnail.gen(cover, 's')} 400w, ${thumbnail.gen(cover, 'm')} 800w, ${thumbnail.gen(cover, 'l')} 1200w|"
+                      sizes="(max-width: 720px) 76vw, (max-width: 1100px) 32vw, 24vw"
+                      th:alt="${item.spec.title}"
+                      loading="lazy"
+                      decoding="async"
+                      data-progressive-image
+                      th:attr="data-fallback-cover=${fallbackCover}"
+                    />
+                  </figure>
+                  <div class="hydro-post-related-card__body">
+                    <time th:text="${#dates.format(item.spec.publishTime, 'yyyy.MM.dd')}">2024.01.15</time>
+                    <strong th:text="${item.spec.title}">文章标题</strong>
+                    <p th:text="${item.status.excerpt}">文章摘要</p>
+                    <span aria-hidden="true">阅读</span>
+                  </div>
+                </a>
+              </article>
+            </div>
+          </th:block>
+        </section>
+
+        <section id="comment" class="hydro-post-comments" th:if="${enablePostComment and haloCommentEnabled}">
+          <h2 th:text="${postConfig?.comments_title ?: '评论'}">评论</h2>
+          <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+        </section>
+      </section>
+
+      <aside
+        id="hydro-post-mobile-drawer"
+        class="hydro-post-aside"
+        aria-hidden="false"
+        aria-label="文章阅读面板"
+        data-post-mobile-drawer
+        th:if="${enableToc or enableActionRail or enableReadingProgress}"
+      >
+        <button
+          type="button"
+          class="hydro-post-mobile-drawer__scrim"
+          data-post-mobile-toc-close
+          aria-label="关闭目录"
+        ></button>
+        <div class="hydro-post-mobile-drawer__sheet" data-lenis-prevent>
+          <header class="hydro-post-mobile-drawer__head">
+            <span class="hydro-post-mobile-drawer__handle" aria-hidden="true"></span>
+            <div>
+              <p th:text="${postConfig?.progress_title ?: '阅读进度'}">阅读进度</p>
+              <strong th:text="${postConfig?.toc_title ?: '目录'}">目录</strong>
+            </div>
+            <button type="button" data-post-mobile-toc-close aria-label="关闭目录">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+          </header>
+
+          <section class="hydro-post-panel hydro-post-panel--reader" th:if="${enableReadingProgress}">
+            <div class="hydro-post-reader__head">
+              <p th:text="${postConfig?.progress_title ?: '阅读进度'}">阅读进度</p>
+              <strong data-post-reading-percent data-post-mobile-reading-percent>0%</strong>
+            </div>
+            <div class="hydro-post-progress" aria-hidden="true">
+              <span data-post-reading-progress style="width: 0%"></span>
+            </div>
+            <dl class="hydro-post-reader__meta">
+              <div>
+                <dt>Published</dt>
+                <dd th:text="${#dates.format(post.spec.publishTime, 'MM.dd')}">01.15</dd>
+              </div>
+              <div th:if="${hasCategory}">
+                <dt>Filed</dt>
+                <dd>
+                  <a th:href="@{${primaryCategory.status.permalink}}" th:text="${primaryCategory.spec.displayName}">
+                    分类
+                  </a>
+                </dd>
+              </div>
+              <div th:if="${showVisit}">
+                <dt th:text="${postConfig?.visit_label ?: '阅读'}">阅读</dt>
+                <dd th:text="${post.stats.visit ?: 0}">0</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="hydro-post-panel hydro-post-panel--toc" data-post-toc-panel th:if="${enableToc}">
+            <div class="hydro-post-panel__head">
+              <h2 th:text="${postConfig?.toc_title ?: '目录'}">目录</h2>
+              <span
+                data-post-toc-state
+                th:attr="data-empty-text=${postConfig?.toc_empty_text ?: '无目录'},data-count-suffix=${postConfig?.toc_count_suffix ?: '节'}"
+                th:text="${postConfig?.toc_loading_text ?: '加载中'}"
+                >加载中</span
+              >
+            </div>
+            <nav class="hydro-post-toc" data-post-toc></nav>
+          </section>
+
+          <section class="hydro-post-panel hydro-post-panel--actions" th:if="${enableActionRail}">
+            <button
+              type="button"
+              class="hydro-post-action"
+              data-post-action="comment"
+              th:if="${enablePostComment and haloCommentEnabled}"
+            >
+              <span th:text="${postConfig?.action_comment_label ?: '评论'}">评论</span>
+              <strong th:text="${post.stats.comment ?: 0}">0</strong>
+            </button>
+            <button type="button" class="hydro-post-action" data-post-action="upvote" th:if="${enableUpvote}">
+              <span th:text="${postConfig?.action_upvote_label ?: '点赞'}">点赞</span>
+              <strong data-post-upvote-count th:text="${post.stats.upvote ?: 0}">0</strong>
+            </button>
+            <button
+              type="button"
+              class="hydro-post-action"
+              data-post-action="share"
+              data-hydro-poster-open
+              aria-controls="hydro-post-poster"
+              aria-expanded="false"
+              th:if="${enableShare}"
+            >
+              <span th:text="${postConfig?.action_share_label ?: '分享'}">分享</span>
+              <strong
+                th:text="${postConfig?.action_share_value_label ?: 'Poster'}"
+                th:attr="data-copied-text=${postConfig?.share_copied_text ?: '已复制'},data-copy-prompt-title=${postConfig?.copy_prompt_title ?: '复制链接'}"
+                >Poster</strong
+              >
+            </button>
+            <button
+              type="button"
+              class="hydro-post-action"
+              th:classappend="${hasMemberPlugin} ? ' hydro-post-action--favorite' : ''"
+              th:attr="data-post-action=${hasMemberPlugin ? 'favorite' : 'top'},aria-label=${hasMemberPlugin ? (postConfig?.action_favorite_label ?: '收藏文章') : (postConfig?.action_top_label ?: '回到顶部')}"
+            >
+              <span
+                th:text="${hasMemberPlugin ? (postConfig?.action_favorite_label ?: '收藏') : (postConfig?.action_top_label ?: '回到顶部')}"
+                >回到顶部</span
+              >
+              <strong th:text="${hasMemberPlugin ? '0' : '↑'}">↑</strong>
+            </button>
+          </section>
+        </div>
+      </aside>
+    </div>
+
+    <nav
+      class="hydro-post-mobile-bar"
+      data-post-mobile-bar
+      aria-label="移动端阅读操作"
+      th:if="${enableToc or enableActionRail or enableReadingProgress}"
+    >
+      <div class="hydro-post-mobile-bar__progress" aria-hidden="true" th:if="${enableReadingProgress}">
+        <span data-post-mobile-reading-progress style="width: 0%"></span>
+      </div>
+      <button
+        type="button"
+        class="hydro-post-mobile-bar__action"
+        data-post-mobile-toc-toggle
+        aria-controls="hydro-post-mobile-drawer"
+        aria-expanded="false"
+        th:if="${enableToc}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 6h13M8 12h13M8 18h13"></path>
+          <path d="M3 6h.01M3 12h.01M3 18h.01"></path>
+        </svg>
+        <span th:text="${postConfig?.toc_title ?: '目录'}">目录</span>
+        <strong data-post-mobile-reading-percent th:if="${enableReadingProgress}">0%</strong>
+      </button>
+      <button
+        type="button"
+        class="hydro-post-mobile-bar__action"
+        data-post-action="comment"
+        th:if="${enableActionRail and enablePostComment and haloCommentEnabled}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+        </svg>
+        <span th:text="${postConfig?.action_comment_label ?: '评论'}">评论</span>
+        <strong th:text="${post.stats.comment ?: 0}">0</strong>
+      </button>
+      <button
+        type="button"
+        class="hydro-post-mobile-bar__action"
+        data-post-action="upvote"
+        th:if="${enableActionRail and enableUpvote}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 11v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"></path>
+          <path d="M7 11l4-8a3 3 0 0 1 3 3v4h5a2 2 0 0 1 2 2.3l-1.1 7A2 2 0 0 1 18 21H7z"></path>
+        </svg>
+        <span th:text="${postConfig?.action_upvote_label ?: '点赞'}">点赞</span>
+        <strong data-post-upvote-count th:text="${post.stats.upvote ?: 0}">0</strong>
+      </button>
+      <button
+        type="button"
+        class="hydro-post-mobile-bar__action"
+        data-post-action="share"
+        data-hydro-poster-open
+        aria-controls="hydro-post-poster"
+        aria-expanded="false"
+        th:if="${enableActionRail and enableShare}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path>
+          <path d="m16 6-4-4-4 4M12 2v14"></path>
+        </svg>
+        <span th:text="${postConfig?.action_share_label ?: '分享'}">分享</span>
+        <strong th:text="${postConfig?.action_share_value_label ?: 'Poster'}">Poster</strong>
+      </button>
+    </nav>
+
+    <button
+      type="button"
+      class="hydro-post-mobile-top"
+      data-post-mobile-top
+      data-post-action="top"
+      aria-label="回到顶部"
+      th:if="${enableActionRail}"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"></path></svg>
+      <span th:text="${postConfig?.action_top_label ?: '回到顶部'}">回到顶部</span>
+    </button>
+
+    <div class="hydro-lightbox hydro-lightbox--post" data-lightbox aria-hidden="true" th:if="${enablePostLightbox}">
+      <button class="hydro-lightbox__close" data-lightbox-close aria-label="关闭图片灯箱">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <button class="hydro-lightbox__prev" data-lightbox-prev aria-label="上一张">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      </button>
+      <figure class="hydro-lightbox__figure">
+        <img class="hydro-lightbox__img" data-lightbox-img src="" alt="" />
+        <figcaption class="hydro-lightbox__caption" data-lightbox-caption></figcaption>
+      </figure>
+      <button class="hydro-lightbox__next" data-lightbox-next aria-label="下一张">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+      <div class="hydro-lightbox__counter" data-lightbox-counter></div>
+    </div>
+
+    <section
+      id="hydro-post-poster"
+      class="hydro-moment-poster hydro-post-poster"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hydro-post-poster-title"
+      aria-describedby="hydro-post-poster-description"
+      aria-hidden="true"
+      data-hydro-poster-dialog
+      data-hydro-poster-scope
+      hidden
+      th:if="${enableShare}"
+    >
+      <button
+        class="hydro-moment-poster__overlay"
+        type="button"
+        data-hydro-poster-close
+        aria-label="关闭分享海报"
+      ></button>
+
+      <div class="hydro-moment-poster__dialog" data-lenis-prevent>
+        <h2
+          id="hydro-post-poster-title"
+          class="hydro-visually-hidden"
+          th:text="${theme.config.content?.share?.title ?: '分享海报'}"
+        >
+          分享海报
+        </h2>
+        <p
+          id="hydro-post-poster-description"
+          class="hydro-visually-hidden"
+          th:text="${theme.config.content?.share?.post_description ?: '把文章整理成一张适合保存与转发的轻量海报。'}"
+        >
+          把文章整理成一张适合保存与转发的轻量海报。
+        </p>
+
+        <article
+          class="hydro-poster-card hydro-poster-card--post"
+          data-hydro-poster-card
+          th:attr="data-share-url=${post.status.permalink}"
+        >
+          <div class="hydro-poster-card__grain" aria-hidden="true"></div>
+          <div class="hydro-poster-card__mark" aria-hidden="true">
+            <span>HYDRO</span>
+            <span>POST</span>
+          </div>
+
+          <header class="hydro-poster-card__header">
+            <p class="hydro-poster-card__eyebrow" th:text="${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}">
+              Post
+            </p>
+            <time th:text="${#dates.format(post.spec.publishTime, 'yyyy.MM.dd / HH:mm')}">2024.01.15 / 12:00</time>
+          </header>
+
+          <div class="hydro-poster-card__body">
+            <div class="hydro-poster-card__hero">
+              <figure class="hydro-poster-card__media" th:if="${showCover and not #strings.isEmpty(postCover)}">
+                <img
+                  th:src="${postCover}"
+                  th:alt="${post.spec.title}"
+                  loading="eager"
+                  data-hydro-poster-image
+                  data-hydro-poster-export-image
+                />
+              </figure>
+              <div class="hydro-poster-card__no-media" aria-hidden="true">
+                <span>氢</span>
+                <span>MINIM</span>
+              </div>
+              <div class="hydro-poster-card__hero-shade" aria-hidden="true"></div>
+              <div class="hydro-poster-card__hero-caption">
+                <span
+                  data-hydro-poster-caption
+                  th:attr="data-hydro-poster-caption-fallback=${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}"
+                  th:text="${hasCategory ? primaryCategory.spec.displayName : (not #lists.isEmpty(post.tags) ? '#' + post.tags[0].spec.displayName : (theme.config.content?.share?.post_card_eyebrow ?: 'Post'))}"
+                  >Post</span
+                >
+              </div>
+            </div>
+
+            <div class="hydro-poster-card__copy">
+              <div class="hydro-poster-card__copy-source" data-hydro-poster-copy-source hidden>
+                <p th:text="${post.spec.title}">文章标题</p>
+                <p th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">文章摘要</p>
+              </div>
+              <p
+                class="hydro-poster-card__kicker"
+                th:text="${theme.config.content?.share?.post_card_eyebrow ?: 'Post'}"
+              >
+                Post
+              </p>
+              <div
+                class="hydro-poster-card__content"
+                data-hydro-poster-copy-content
+                th:attr="data-hydro-poster-copy-fallback=${post.owner != null ? '来自 ' + (post.owner.displayName ?: post.owner.name) + ' 的文章' : site.title}"
+              >
+                <p th:text="${post.spec.title}">文章标题</p>
+                <p th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}">文章摘要</p>
+              </div>
+            </div>
+
+            <div class="hydro-poster-card__tag-source" hidden>
+              <span data-hydro-poster-tag th:if="${hasCategory}" th:text="${primaryCategory.spec.displayName}"
+                >分类</span
+              >
+              <span data-hydro-poster-tag th:each="tag : ${post.tags}" th:text="|#${tag.spec.displayName}|">#tag</span>
+            </div>
+          </div>
+
+          <footer class="hydro-poster-card__footer">
+            <div class="hydro-poster-card__seal" aria-hidden="true">
+              <img
+                th:if="${post.owner != null and not #strings.isEmpty(post.owner.avatar)}"
+                th:src="${post.owner.avatar}"
+                alt=""
+                loading="eager"
+                data-hydro-poster-avatar
+                data-hydro-poster-export-image
+              />
+              <span
+                class="hydro-poster-card__seal-fallback"
+                th:text="${post.owner != null and not #strings.isEmpty(post.owner.displayName ?: post.owner.name) ? #strings.substring(post.owner.displayName ?: post.owner.name, 0, 1) : 'H'}"
+                >H</span
+              >
+            </div>
+            <div class="hydro-poster-site">
+              <strong
+                th:text="${post.owner != null and not #strings.isEmpty(post.owner.displayName ?: post.owner.name) ? (post.owner.displayName ?: post.owner.name) : site.title}"
+                >Hydro</strong
+              >
+              <span th:text="${site.title}">Hydro-Minim</span>
+              <em th:text="${theme.config.content?.share?.qr_hint ?: '扫码阅读完整内容'}">扫码阅读完整内容</em>
+            </div>
+            <div
+              class="hydro-poster-qr"
+              data-hydro-poster-qr
+              th:attr="data-url=${post.status.permalink},aria-label=|扫码阅读：${post.spec.title}|"
+              role="img"
+            >
+              <span class="hydro-poster-qr__fallback" aria-hidden="true">QR</span>
+            </div>
+          </footer>
+        </article>
+
+        <div class="hydro-moment-poster__tools" aria-label="海报操作">
+          <button
+            class="hydro-moment-poster__tool"
+            type="button"
+            data-hydro-poster-download
+            th:attr="data-filename=|hydro-post-${post.metadata.name}.png|,aria-label=${theme.config.content?.share?.download_label ?: '下载海报'},title=${theme.config.content?.share?.download_label ?: '下载海报'}"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"></path>
+            </svg>
+          </button>
+          <button
+            class="hydro-moment-poster__tool"
+            type="button"
+            data-hydro-poster-close
+            aria-label="关闭分享海报"
+            title="关闭分享海报"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="hydro-post-reward"
+      class="hydro-post-reward-dialog"
+      data-hydro-reward-dialog
+      aria-hidden="true"
+      aria-labelledby="hydro-post-reward-title"
+      th:if="${enableReward}"
+    >
+      <button
+        class="hydro-post-reward-dialog__scrim"
+        type="button"
+        data-hydro-reward-close
+        aria-label="关闭打赏"
+      ></button>
+      <div class="hydro-post-reward-dialog__panel" role="dialog" aria-modal="true">
+        <button class="hydro-post-reward-dialog__close" type="button" data-hydro-reward-close aria-label="关闭打赏">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <div class="hydro-post-reward-dialog__copy">
+          <p th:text="${postConfig?.reward_eyebrow ?: 'Reward'}">Reward</p>
+          <h2 id="hydro-post-reward-title" th:text="${postConfig?.reward_title ?: '打赏作者'}">打赏作者</h2>
+          <span th:text="${postConfig?.reward_description ?: '如果这篇文章帮到了你，可以请作者喝杯咖啡。'}"
+            >如果这篇文章帮到了你，可以请作者喝杯咖啡。</span
+          >
+        </div>
+        <figure class="hydro-post-reward-dialog__qr">
+          <img th:src="${postConfig.reward_qr}" th:alt="${postConfig?.reward_title ?: '打赏二维码'}" loading="lazy" />
+          <figcaption th:text="${postConfig?.reward_qr_hint ?: '扫码打赏'}">扫码打赏</figcaption>
+        </figure>
+      </div>
+    </section>
+  </article>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+

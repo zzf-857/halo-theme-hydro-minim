@@ -1,0 +1,16 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{gateway_fragments/layout :: layout(title = |#{auth.logout.title} - ${site.title}|, head = null, body = ~{::body})}"
+>
+  <th:block th:fragment="body">
+    <div class="gateway-wrapper logout-page-wrapper">
+      <div th:replace="~{gateway_fragments/common::haloLogo}"></div>
+      <div class="halo-form-wrapper">
+        <h1 class="form-title" th:text="#{auth.logout.title}">退出登录</h1>
+        <form th:replace="~{gateway_fragments/logout::form}"></form>
+      </div>
+      <div th:replace="~{gateway_fragments/common::languageSwitcher}"></div>
+    </div>
+  </th:block>
+</html>

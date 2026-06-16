@@ -1,0 +1,204 @@
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:style="|--hydro-light-bg:${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}; --hydro-dark-bg:${theme.config.presentation?.color?.dark_background_color ?: '#101112'}; --hydro-coral-light:${theme.config.presentation?.color?.accent_color ?: '#FF6B6B'}; --hydro-coral-dark:${theme.config.presentation?.color?.dark_accent_color ?: theme.config.presentation?.color?.accent_color ?: '#FF8A8A'};|"
+  th:attr="
+    data-theme-default=${theme.config.presentation?.color?.color_scheme ?: 'auto'},
+    data-hydro-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+    data-hydro-motion=${(theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false) ? 'on' : 'off'},
+    data-hydro-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+    data-hydro-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+    data-hydro-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+    data-hydro-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}
+  "
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  th:content="${theme.config.presentation?.color?.background_color ?: '#F3F3F3'}"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  th:content="${theme.config.presentation?.color?.dark_background_color ?: '#101112'}"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  th:with="faviconHref = ${site.favicon ?: (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo)}"
+  th:href="${faviconHref}"
+/>
+<th:block
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.head_html)}"
+  th:utext="${theme.config.advanced.inject.head_html}"
+/>
+<style
+  th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_css)}"
+  th:utext="${theme.config.advanced.inject.code_css}"
+></style>
+<script th:inline="javascript">
+  (() => {
+    const root = document.documentElement;
+    const defaultMode =
+      root.dataset.themeDefault || /*[[${theme.config.presentation?.color?.color_scheme ?: 'auto'}]]*/ "auto";
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem("hydro-color-scheme");
+    } catch {
+      storedMode = null;
+    }
+    const requestedMode = storedMode || defaultMode || "auto";
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const resolvedMode = requestedMode === "dark" || (requestedMode === "auto" && prefersDark) ? "dark" : "light";
+
+    root.dataset.hydroTheme = resolvedMode;
+    root.dataset.colorScheme = requestedMode;
+    root.classList.toggle("dark", requestedMode === "dark");
+    root.classList.toggle("light", requestedMode === "light");
+    root.classList.toggle("color-scheme-dark", requestedMode === "dark");
+    root.classList.toggle("color-scheme-light", requestedMode === "light");
+    root.classList.toggle("color-scheme-auto", requestedMode === "auto");
+  })();
+</script>
+
+    
+    <title th:text="|${theme.config.content?.taxonomy?.category_title ?: '分类'} - ${site.title}|">分类</title>
+  
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-BBmNbXl1.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~j952rvmq-QqzAlrCV.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CQIFEsM-.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Ctc2UkO2.css">
+  </head>
+  <body
+    class="hydro-page"
+    th:attr="
+      data-smooth-scroll=${theme.config.presentation?.motion == null or theme.config.presentation.motion.smooth_scroll != false},
+      data-enable-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_motion != false},
+      data-theme-transition=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_theme_transition != false},
+      data-enable-hero-motion=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_hero_motion != false},
+      data-enable-card-hover=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_card_hover != false},
+      data-enable-lightbox=${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false},
+      data-theme-to-light-label=${theme.config.presentation?.theme_toggle?.to_light_label ?: '切换为浅色模式'},
+      data-theme-to-dark-label=${theme.config.presentation?.theme_toggle?.to_dark_label ?: '切换为深色模式'},
+      data-allow-color-switch=${theme.config.navigation?.header == null or theme.config.navigation.header.allow_color_switch != false},
+      data-member-plugin-available=${pluginFinder.available('PluginMember')},
+      data-member-authenticated=${#authorization.expression('isAuthenticated()')},
+      data-back-to-top-threshold=${theme.config.navigation?.floating?.back_to_top_threshold ?: 100},
+      data-post-share-copied-text=${theme.config.content?.post?.share_copied_text ?: '已复制'},
+      data-post-share-copy-prompt-title=${theme.config.content?.post?.copy_prompt_title ?: '复制链接'},
+      data-post-upvote-error-text=${theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试'},
+      data-moment-upvote-error-text=${theme.config.plugins?.moments?.upvote_error_text ?: (theme.config.content?.post?.upvote_error_text ?: '点赞失败，请稍后再试')},
+      data-doc-toc-empty-text=${theme.config.plugins?.docs?.toc_empty_text ?: '无目录'}
+    "
+  >
+    <div
+      th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.show_grain != false}"
+      class="grain-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <th:block th:replace="~{modules/header}" />
+
+    <main>
+      
+  
+
+  <section class="hydro-categories-page" th:with="categories = ${categoryFinder.listAsTree()}">
+    <div class="hydro-container">
+      <header class="hydro-categories-hero">
+        <div class="hydro-categories-hero__copy">
+          <p th:text="${theme.config.content?.taxonomy?.category_eyebrow ?: 'Hydro-Minim / Categories'}">
+            Hydro-Minim / Categories
+          </p>
+          <h1 th:text="${theme.config.content?.taxonomy?.category_title ?: '分类'}">分类</h1>
+          <span
+            th:text="${theme.config.content?.taxonomy?.category_description ?: '按主题收束文章，从一个分类进入一组连续的阅读线索。'}"
+          >
+            按主题收束文章，从一个分类进入一组连续的阅读线索。
+          </span>
+        </div>
+        <dl
+          class="hydro-categories-hero__meta"
+          th:if="${(theme.config.content?.taxonomy == null or theme.config.content.taxonomy.category_show_meta != false) and not #lists.isEmpty(categories)}"
+        >
+          <div>
+            <dt th:text="${theme.config.content?.taxonomy?.category_groups_metric_label ?: 'Groups'}">Groups</dt>
+            <dd th:text="${#lists.size(categories)}">0</dd>
+          </div>
+          <div>
+            <dt th:text="${theme.config.content?.taxonomy?.category_mode_metric_label ?: 'Mode'}">Mode</dt>
+            <dd th:text="${theme.config.content?.taxonomy?.category_mode_value ?: 'Index'}">Index</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="hydro-category-index" th:if="${not #lists.isEmpty(categories)}">
+        <div class="hydro-category-directory">
+          <a
+            th:each="category,stat : ${categories}"
+            th:href="@{${category.status.permalink}}"
+            th:style="|--category-order: ${stat.index};|"
+            class="hydro-category-row"
+          >
+            <span class="hydro-category-row__index" th:text="${#numbers.formatInteger(stat.count, 2)}">01</span>
+            <span class="hydro-category-row__body">
+              <span class="hydro-category-row__top">
+                <strong th:text="${category.spec.displayName}">分类</strong>
+              </span>
+              <span
+                class="hydro-category-row__desc"
+                th:text="${category.spec.description ?: (theme.config.content?.taxonomy?.category_item_fallback_description ?: '这个分类下收纳了一组相近主题的文章。')}"
+              >
+                分类描述
+              </span>
+              <span class="hydro-category-row__children" th:if="${not #lists.isEmpty(category.children)}">
+                <b th:text="${theme.config.content?.taxonomy?.category_child_label ?: 'Sub'}">Sub</b>
+                <span th:each="child : ${category.children}" th:text="${child.spec.displayName}">子分类</span>
+              </span>
+            </span>
+            <span class="hydro-category-row__count">
+              <strong th:text="${category.postCount ?: 0}">0</strong>
+              <em th:text="${theme.config.content?.taxonomy?.category_post_unit ?: '篇'}">篇</em>
+            </span>
+            <span class="hydro-category-row__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 17 17 7M9 7h8v8"></path>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div
+        th:if="${#lists.isEmpty(categories)}"
+        class="hydro-empty"
+        th:text="${theme.config.content?.taxonomy?.category_empty_text ?: '还没有创建分类。'}"
+      >
+        还没有创建分类。
+      </div>
+    </div>
+  </section>
+
+    </main>
+
+    <th:block th:replace="~{modules/footer}" />
+
+    <!-- FAB + 返回顶部 -->
+    <th:block th:replace="~{modules/fab}" />
+
+    <halo:footer />
+    <th:block
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.footer_html)}"
+      th:utext="${theme.config.advanced.inject.footer_html}"
+    />
+    <script
+      th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
+      th:utext="${theme.config.advanced.inject.code_js}"
+    ></script>
+  </body>
+</html>
+
