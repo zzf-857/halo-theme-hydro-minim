@@ -1381,7 +1381,14 @@ function initTiltCards() {
   const invalidateCardRects: Array<() => void> = [];
 
   cards.forEach((card) => {
-    let cardRect: DOMRect | null = null;
+    interface CardRectCache {
+      absoluteLeft: number;
+      absoluteTop: number;
+      width: number;
+      height: number;
+    }
+
+    let rectCache: CardRectCache | null = null;
 
     // Inject card sheen element if it doesn't exist
     if (!card.querySelector(".card-sheen")) {
@@ -1402,34 +1409,42 @@ function initTiltCards() {
       transformStyle: "preserve-3d",
     });
 
-    const readCardRect = () => {
-      const prevTransform = card.style.transform;
-      card.style.transform = "none";
-      cardRect = card.getBoundingClientRect();
-      card.style.transform = prevTransform;
-      return cardRect;
+    const getCardCache = (): CardRectCache => {
+      if (!rectCache) {
+        const prevTransform = card.style.transform;
+        card.style.transform = "none";
+        const rect = card.getBoundingClientRect();
+        card.style.transform = prevTransform;
+        rectCache = {
+          absoluteLeft: rect.left + window.scrollX,
+          absoluteTop: rect.top + window.scrollY,
+          width: rect.width,
+          height: rect.height,
+        };
+      }
+      return rectCache;
     };
 
     const handleMove = (event: PointerEvent) => {
-      const rect = cardRect ?? readCardRect();
-      if (rect.width <= 0 || rect.height <= 0) {
+      const info = getCardCache();
+      if (info.width <= 0 || info.height <= 0) {
         return;
       }
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const x = event.pageX - info.absoluteLeft;
+      const y = event.pageY - info.absoluteTop;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+      const centerX = info.width / 2;
+      const centerY = info.height / 2;
 
       // 四个角都呈现下压效果：鼠标靠近哪个角，哪个角就下沉
-      const rotateX = -((y - centerY) / centerY) * 6.5;
+      const rotateX = ((y - centerY) / centerY) * 6.5;
       const rotateY = -((x - centerX) / centerX) * 6.5;
 
       gsap.to(card, {
         "--hydro-card-tilt-x": `${rotateX}deg`,
         "--hydro-card-tilt-y": `${rotateY}deg`,
-        "--sheen-x": `${(x / rect.width) * 100}%`,
-        "--sheen-y": `${(y / rect.height) * 100}%`,
+        "--sheen-x": `${(x / info.width) * 100}%`,
+        "--sheen-y": `${(y / info.height) * 100}%`,
         duration: 0.15, // VibeTracker duration
         ease: "power2.out", // VibeTracker ease
         overwrite: "auto",
@@ -1437,7 +1452,7 @@ function initTiltCards() {
     };
 
     card.addEventListener("pointerenter", (event) => {
-      readCardRect();
+      getCardCache();
       card.classList.add("is-hydro-card-hovered");
       gsap.to(card, {
         "--hydro-card-lift": "-10px",
@@ -1452,7 +1467,6 @@ function initTiltCards() {
     card.addEventListener("pointermove", handleMove, { passive: true });
 
     card.addEventListener("pointerleave", () => {
-      cardRect = null;
       card.classList.remove("is-hydro-card-hovered");
       gsap.to(card, {
         "--hydro-card-lift": "0px",
@@ -1468,7 +1482,7 @@ function initTiltCards() {
     });
 
     invalidateCardRects.push(() => {
-      cardRect = null;
+      rectCache = null;
     });
   });
 
