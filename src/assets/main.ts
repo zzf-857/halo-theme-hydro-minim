@@ -1419,7 +1419,7 @@ function initTiltCards() {
       const centerY = rect.height / 2;
 
       // VibeTracker calculation (max 6.5 degrees tilt)
-      const rotateX = ((centerY - y) / centerY) * 6.5;
+      const rotateX = ((y - centerY) / centerY) * 6.5;
       const rotateY = ((x - centerX) / centerX) * 6.5;
       
       gsap.to(card, {
