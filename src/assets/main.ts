@@ -1403,7 +1403,10 @@ function initTiltCards() {
     });
 
     const readCardRect = () => {
+      const prevTransform = card.style.transform;
+      card.style.transform = "none";
       cardRect = card.getBoundingClientRect();
+      card.style.transform = prevTransform;
       return cardRect;
     };
 
@@ -1418,9 +1421,9 @@ function initTiltCards() {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
-      // VibeTracker calculation (max 6.5 degrees tilt)
-      const rotateX = ((y - centerY) / centerY) * 6.5;
-      const rotateY = ((x - centerX) / centerX) * 6.5;
+      // 四个角都呈现下压效果：鼠标靠近哪个角，哪个角就下沉
+      const rotateX = -((y - centerY) / centerY) * 6.5;
+      const rotateY = -((x - centerX) / centerX) * 6.5;
 
       gsap.to(card, {
         "--hydro-card-tilt-x": `${rotateX}deg`,
