@@ -11,6 +11,7 @@
       portfolioPlatformLabels=${platformLabels != null ? platformLabels : (hasPortfolioPlugin and projectFinder != null ? projectFinder.platformLabels() : null)},
       portfolioTypeLabels=${typeLabels != null ? typeLabels : (hasPortfolioPlugin and projectFinder != null ? projectFinder.typeLabels() : null)},
       projectContent=${projectContentHtml != null ? projectContentHtml : (hasProjectPayload and hasPortfolioPlugin and projectFinder != null ? projectFinder.renderContent(project) : '')},
+      projectDate=${hasProjectPayload ? (#strings.isEmpty(project.updateTime) ? project.createTime : project.updateTime) : ''},
       platformText=${hasProjectPayload ? (#strings.isEmpty(project.platform) ? 'other' : (portfolioPlatformLabels != null and portfolioPlatformLabels[project.platform] != null ? portfolioPlatformLabels[project.platform] : project.platform)) : ''},
       typeText=${hasProjectPayload ? (#strings.isEmpty(project.type) ? 'other' : (portfolioTypeLabels != null and portfolioTypeLabels[project.type] != null ? portfolioTypeLabels[project.type] : project.type)) : ''}"
   >
@@ -41,23 +42,42 @@
         </figure>
 
         <header class="hydro-portfolio-detail-header">
-          <div class="hydro-portfolio-card__meta">
-            <span class="hydro-portfolio-chip" th:text="${platformText}">GitHub</span>
-            <span class="hydro-portfolio-chip" th:text="${typeText}">插件</span>
-            <span
-              class="hydro-portfolio-chip hydro-portfolio-chip--accent"
-              th:if="${project.featured == true}"
-              th:text="${theme.config.plugins?.portfolio?.featured_label ?: '推荐'}"
-              >推荐</span
-            >
-          </div>
           <p th:text="${theme.config.plugins?.portfolio?.detail_eyebrow ?: 'Project'}">Project</p>
           <h1 th:text="${project.title}">项目标题</h1>
           <span th:if="${not #strings.isEmpty(project.summary)}" th:text="${project.summary}">项目摘要</span>
         </header>
 
-        <div class="hydro-portfolio-detail-tags" th:if="${not #lists.isEmpty(project.techStacks)}">
-          <span th:each="stack : ${project.techStacks}" th:text="${stack}">Java</span>
+        <div class="hydro-portfolio-detail-meta-grid">
+          <div>
+            <span th:text="${theme.config.plugins?.portfolio?.platform_label ?: '平台'}">平台</span>
+            <strong th:text="${platformText}">GitHub</strong>
+          </div>
+          <div>
+            <span th:text="${theme.config.plugins?.portfolio?.type_label ?: '类型'}">类型</span>
+            <strong th:text="${typeText}">插件</strong>
+          </div>
+          <div th:if="${project.status != null}">
+            <span th:text="${theme.config.plugins?.portfolio?.status_label ?: '状态'}">状态</span>
+            <strong th:text="${project.status}">published</strong>
+          </div>
+          <div th:if="${not #strings.isEmpty(projectDate)}">
+            <span th:text="${theme.config.plugins?.portfolio?.updated_label ?: '更新'}">更新</span>
+            <strong th:text="${projectDate}">2026-06-16</strong>
+          </div>
+        </div>
+
+        <div class="hydro-portfolio-detail-terminal">
+          <span th:text="${theme.config.plugins?.portfolio?.terminal_label ?: 'project dossier'}">project dossier</span>
+          <code th:if="${not #strings.isEmpty(project.slug)}" th:text="|slug: ${project.slug}|">slug: demo</code>
+          <code th:if="${not #strings.isEmpty(project.sourceProvider)}" th:text="|source: ${project.sourceProvider}|">
+            source: manual
+          </code>
+          <code th:if="${not #strings.isEmpty(project.repoOwner)}" th:text="|owner: ${project.repoOwner}|"
+            >owner: muyin</code
+          >
+          <code th:if="${not #strings.isEmpty(project.repoName)}" th:text="|repo: ${project.repoName}|"
+            >repo: portfolio</code
+          >
         </div>
 
         <article
@@ -119,6 +139,13 @@
           >
             这个项目暂时没有外部链接。
           </p>
+        </div>
+
+        <div class="hydro-portfolio-detail-panel" th:if="${not #lists.isEmpty(project.techStacks)}">
+          <span th:text="${theme.config.plugins?.portfolio?.tech_stack_panel_label ?: 'Stack'}">Stack</span>
+          <div class="hydro-portfolio-detail-tags hydro-portfolio-detail-tags--compact">
+            <span th:each="stack : ${project.techStacks}" th:text="${stack}">Java</span>
+          </div>
         </div>
 
         <div class="hydro-portfolio-detail-panel" th:if="${not #lists.isEmpty(project.tags)}">
