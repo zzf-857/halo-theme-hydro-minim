@@ -1382,12 +1382,23 @@ function initTiltCards() {
 
   cards.forEach((card) => {
     let cardRect: DOMRect | null = null;
+    
+    // Inject card sheen element if it doesn't exist
+    if (!card.querySelector(".card-sheen")) {
+      const sheen = document.createElement("span");
+      sheen.className = "card-sheen";
+      sheen.setAttribute("aria-hidden", "true");
+      card.appendChild(sheen);
+    }
+
     gsap.set(card, {
       "--hydro-card-lift": "0px",
       "--hydro-card-scale": "1",
       "--hydro-card-tilt-x": "0deg",
       "--hydro-card-tilt-y": "0deg",
-      transformPerspective: 1100,
+      "--sheen-x": "50%",
+      "--sheen-y": "50%",
+      transformPerspective: 1000,
       transformStyle: "preserve-3d",
     });
 
@@ -1403,14 +1414,21 @@ function initTiltCards() {
       }
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const rotateX = gsap.utils.clamp(-9, 9, (rect.height / 2 - y) / 14);
-      const rotateY = gsap.utils.clamp(-9, 9, (x - rect.width / 2) / 14);
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // VibeTracker calculation (max 6.5 degrees tilt)
+      const rotateX = ((centerY - y) / centerY) * 6.5;
+      const rotateY = ((x - centerX) / centerX) * 6.5;
       
       gsap.to(card, {
         "--hydro-card-tilt-x": `${rotateX}deg`,
         "--hydro-card-tilt-y": `${rotateY}deg`,
-        duration: 0.25,
-        ease: "power1.out",
+        "--sheen-x": `${(x / rect.width) * 100}%`,
+        "--sheen-y": `${(y / rect.height) * 100}%`,
+        duration: 0.15, // VibeTracker duration
+        ease: "power2.out", // VibeTracker ease
         overwrite: "auto",
       });
     };
@@ -1421,7 +1439,7 @@ function initTiltCards() {
       gsap.to(card, {
         "--hydro-card-lift": "-10px",
         "--hydro-card-scale": "1.024",
-        duration: 0.4,
+        duration: 0.15, // VibeTracker duration
         ease: "power2.out",
         overwrite: "auto",
       });
@@ -1438,8 +1456,10 @@ function initTiltCards() {
         "--hydro-card-scale": "1",
         "--hydro-card-tilt-x": "0deg",
         "--hydro-card-tilt-y": "0deg",
-        duration: 0.5,
-        ease: "power2.out",
+        "--sheen-x": "50%",
+        "--sheen-y": "50%",
+        duration: 0.45, // VibeTracker leave duration
+        ease: "power3.out", // VibeTracker leave ease
         overwrite: "auto",
       });
     });

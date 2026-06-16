@@ -18878,3 +18878,48 @@ a.hydro-moment-detail-navitem:focus-visible .hydro-moment-detail-navitem__mark {
     transform: none;
   }
 }
+
+/* Card Sheen effect inspired by VibeTracker */
+.card-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 240px at var(--sheen-x, 50%) var(--sheen-y, 50%),
+    var(--hydro-sheen-color, rgba(255, 255, 255, 0.09)) 0%,
+    var(--hydro-sheen-color-fade, rgba(255, 255, 255, 0.02)) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.is-hydro-card-hovered .card-sheen {
+  opacity: 1;
+}
+
+:root {
+  --hydro-sheen-color: rgba(255, 255, 255, 0.09);
+  --hydro-sheen-color-fade: rgba(255, 255, 255, 0.02);
+}
+
+html[data-color-mode="light"] {
+  --hydro-sheen-color: rgba(0, 0, 0, 0.04);
+  --hydro-sheen-color-fade: rgba(0, 0, 0, 0.01);
+}
+
+@media (prefers-color-scheme: light) {
+  html[data-color-mode="auto"] {
+    --hydro-sheen-color: rgba(0, 0, 0, 0.04);
+    --hydro-sheen-color-fade: rgba(0, 0, 0, 0.01);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-color-mode="auto"] {
+    --hydro-sheen-color: rgba(255, 255, 255, 0.09);
+    --hydro-sheen-color-fade: rgba(255, 255, 255, 0.02);
+  }
+}
