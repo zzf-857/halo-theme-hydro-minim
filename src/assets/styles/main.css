@@ -19017,10 +19017,10 @@ html[data-color-mode="light"] {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff);
+  background: conic-gradient(from 0deg, #ff007f, #7f00ff, #00f0ff, #ff007f);
   z-index: 1;
-  animation: rotateAurora 6s linear infinite;
-  filter: blur(1px);
+  animation: rotateAurora var(--aurora-speed, 6s) linear infinite;
+  filter: blur(1.5px);
 }
 
 @keyframes rotateAurora {
@@ -19078,6 +19078,13 @@ html[data-color-mode="light"] {
   padding: 0.25rem;
   background: #fff;
   box-shadow: 0 4px 20px rgb(0 0 0 / 3%);
+  cursor: zoom-in;
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s ease;
+}
+
+.qr-image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 6%);
 }
 
 .qr-tip {

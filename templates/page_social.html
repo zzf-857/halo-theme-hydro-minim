@@ -71,8 +71,8 @@
   
     <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-ChbB40kX.js"></script>
     <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cc8q22x5-CN2a1FAu.js"></script>
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-Cj5Zo8dZ.js"></script>
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-NzOSkbbf.css">
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-BYY9PAZM.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-BHdzlOhE.css">
   </head>
   <body
     class="hydro-page"
@@ -127,7 +127,7 @@
           <div class="hydro-bento-card card-profile" data-tilt-card>
             <div class="avatar-wrapper">
               <img th:src="${not #strings.isEmpty(site.logo) ? site.logo : (theme.config.identity?.brand?.logo ?: #theme.assets('/brand/hydro-minim-mark.svg'))}" class="profile-avatar" alt="Avatar" />
-              <div class="aurora-ring"></div>
+              <div class="aurora-ring" style="--aurora-speed: 6s;"></div>
             </div>
             <h2 class="profile-name" th:text="${site.title}">站长</h2>
             <p class="profile-bio">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
@@ -143,7 +143,7 @@
             </div>
             <div class="qr-container">
               <!-- 读取博客的 logo.png 作为默认图，支持前台扫码 -->
-              <img src="/upload/324b813903317b9d2a880a3335197cee.jpg" class="qr-image" alt="Wechat QR" />
+              <img src="/upload/324b813903317b9d2a880a3335197cee.jpg" class="qr-image" alt="Wechat QR" data-lightbox-trigger data-src="/upload/324b813903317b9d2a880a3335197cee.jpg" />
               <p class="qr-tip">长按或扫码添加好友</p>
             </div>
           </div>
@@ -192,6 +192,21 @@
       </div>
     </section>
   </article>
+
+  <!-- Lightbox 图片灯箱骨架 -->
+  <div class="hydro-lightbox" data-lightbox aria-hidden="true" th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}">
+    <button class="hydro-lightbox__close" data-lightbox-close aria-label="关闭">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+    </button>
+    <button class="hydro-lightbox__prev" data-lightbox-prev aria-label="上一张" style="display: none;">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"></path></svg>
+    </button>
+    <img class="hydro-lightbox__img" data-lightbox-img src="" alt="" />
+    <button class="hydro-lightbox__next" data-lightbox-next aria-label="下一张" style="display: none;">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
+    </button>
+    <div class="hydro-lightbox__counter" data-lightbox-counter style="display: none;"></div>
+  </div>
 
   <!-- 原生复制脚本 -->
   <script>
