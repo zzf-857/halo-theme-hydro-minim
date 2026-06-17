@@ -21,6 +21,9 @@ spec:
       - name: Hydro 关于页
         description: 氢风格关于页，展示站点统计、正文和社交链接
         file: page_about.html
+      - name: Hydro 社交聚合页
+        description: 个人多链接社交聚合名片页，支持一键复制与二维码长按扫码
+        file: page_social.html
       - name: Hydro 追番页
         description: 追番插件页面模板；未安装插件时显示安装提示
         file: bangumis.html

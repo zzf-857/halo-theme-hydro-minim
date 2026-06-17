@@ -67,7 +67,7 @@
 </script>
 
     
-    <title th:text="|${theme.config.home?.about?.title ?: singlePage.spec.title} - ${site.title}|">关于</title>
+    <title th:text="|社交聚合名片 - ${site.title}|">社交聚合名片</title>
   
     <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-ChbB40kX.js"></script>
     <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cc8q22x5-CN2a1FAu.js"></script>
@@ -108,90 +108,118 @@
       
   
 
-  <article class="hydro-about-page">
-    <section class="hydro-list-hero hydro-about-page__hero">
+  <article class="hydro-social-page">
+    <!-- 顶部英雄栏 -->
+    <section class="hydro-list-hero hydro-social-hero">
       <div class="hydro-container">
-        <p th:text="${theme.config.content?.page?.about_eyebrow ?: 'About'}">About</p>
-        <h1 th:text="${theme.config.home?.about?.title ?: singlePage.spec.title}">关于</h1>
-        <span th:text="${theme.config.home?.about?.subtitle ?: '艺术的生活家'}">艺术的生活家</span>
+        <p th:text="${theme.config.content?.page?.social_eyebrow ?: 'Link In Bio'}">Link In Bio</p>
+        <h1 th:text="${theme.config.content?.page?.social_title ?: '社交聚合名片'}">社交聚合名片</h1>
+        <span th:text="${theme.config.content?.page?.social_subtitle ?: '一键联系我，打破沟通边界'}">一键联系我，打破沟通边界</span>
       </div>
     </section>
 
-    <section class="hydro-about-page__body">
+    <!-- Bento 网格容器 -->
+    <section class="hydro-social-body">
       <div class="hydro-container">
-        <div class="hydro-about-page__intro">
-          <div class="hydro-about-page__statement">
-            <p th:text="${theme.config.home?.about?.paragraph_1}">氢风格博客诞生于对简约美学的追求。</p>
-            <p th:text="${theme.config.home?.about?.paragraph_2}">在这里，我们分享关于设计、科技与生活方式的思考。</p>
-            <p th:text="${theme.config.home?.about?.paragraph_3}">33% 的自由，66% 的内容。</p>
+        <div class="hydro-bento-grid">
+          
+          <!-- Card 1: 站长信息卡 (占 2x2 格) -->
+          <div class="hydro-bento-card card-profile">
+            <div class="avatar-wrapper">
+              <img th:src="${site.avatar}" class="profile-avatar" alt="Avatar" />
+              <div class="aurora-ring"></div>
+            </div>
+            <h2 class="profile-name" th:text="${site.title}">站长</h2>
+            <p class="profile-bio" th:text="${theme.config.home?.about?.subtitle ?: '热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。'}">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
           </div>
 
-          <dl
-            class="hydro-about-page__stats"
-            th:if="${theme.config.content?.page == null or theme.config.content.page.about_show_stats != false}"
-            th:with="siteStats=${siteStatsFinder.getStats()}"
-          >
-            <div>
-              <dt>Visits</dt>
-              <dd th:text="${siteStats?.visit ?: 0}">0</dd>
+          <!-- Card 2: 微信二维码卡 (占 1x2 高卡) -->
+          <div class="hydro-bento-card card-wechat">
+            <div class="card-head">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z" /><path d="M11.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z" /><path d="M18.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z" /><path d="M14.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z" /><path d="M12.218 5.104c-3.415 -.175 -6.218 2.051 -6.218 4.896c0 1.488 .77 2.809 2.008 3.7c.18 .13 .232 .382 .122 .583l-.712 1.721c-.11 .267 .165 .519 .406 .365l2.164 -1.378a.834 .834 0 0 1 .531 -.068a8.86 8.86 0 0 0 1.699 .173c4.418 0 8 -3.134 8 -7c0 -2.484 -1.439 -4.685 -3.834 -5.748c-.378 -.167 -.801 -.193 -1.168 -.044z" /><path d="M19 12.35c.174 -.017 .349 -.025 .525 -.025c3.272 0 6.075 2.115 6.075 4.792c0 1.4 -.833 2.656 -2.146 3.479a.59 .59 0 0 0 -.13 .618l.582 1.378c.088 .208 -.133 .405 -.315 .285l-1.745 -1.155a.686 .686 0 0 0 -.436 -.053a7.35 7.35 0 0 1 -1.41 .141c-3.15 0 -5.842 -1.979 -6.05 -4.542" /></svg>
+              </span>
+              <h3>微信 Wechat</h3>
             </div>
-            <div>
-              <dt>Articles</dt>
-              <dd th:text="${siteStats?.post ?: 0}">0</dd>
+            <div class="qr-container">
+              <!-- 读取博客根目录的 logo.png 作为微信二维码默认图，用户可以之后换成自己的二维码图片 -->
+              <img src="/themes/halo-theme-hydro-minim/assets/brand/logo.png" class="qr-image" alt="Wechat QR" />
+              <p class="qr-tip">长按或扫码添加好友</p>
             </div>
-            <div>
-              <dt>Comments</dt>
-              <dd th:text="${siteStats?.comment ?: 0}">0</dd>
+          </div>
+
+          <!-- Card 3: 一键复制 QQ 卡 (占 1x1 格) -->
+          <div class="hydro-bento-card card-qq clickable" onclick="copyValue('2996449004', this)">
+            <span class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 22c-4.418 0 -8 -3.582 -8 -8c0 -1.5 1.5 -2.5 3 -2.5c.5 -1.5 2 -3.5 5 -3.5s4.5 2 5 3.5c1.5 0 3 1 3 2.5c0 4.418 -3.582 8 -8 8z" /><path d="M8 12c-.5 1 -1 2.5 0 3.5" /><path d="M16 12c.5 1 1 2.5 0 3.5" /></svg>
+            </span>
+            <h3>QQ 联系</h3>
+            <span class="hover-tip">点击一键复制 QQ</span>
+            <div class="copy-bubble">Copied! 已复制</div>
+          </div>
+
+          <!-- Card 4: GitHub 跳转卡 (占 1x1 格) -->
+          <a href="https://github.com/zzf-857" target="_blank" rel="noopener noreferrer" class="hydro-bento-card card-github clickable">
+            <span class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
+            </span>
+            <h3>GitHub</h3>
+            <span class="hover-tip">前往我的开源宇宙</span>
+          </a>
+
+          <!-- Card 5: 邮箱卡 (占 2x1 宽卡) -->
+          <div class="hydro-bento-card card-email clickable" onclick="copyValue('admin@lk.com', this, true)">
+            <div class="email-content">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+              </span>
+              <div class="email-details">
+                <h3>电子邮箱 Email</h3>
+                <p>admin@lk.com</p>
+              </div>
             </div>
-            <div>
-              <dt>Upvotes</dt>
-              <dd th:text="${siteStats?.upvote ?: 0}">0</dd>
-            </div>
-            <div>
-              <dt>Categories</dt>
-              <dd th:text="${siteStats?.category ?: 0}">0</dd>
-            </div>
-          </dl>
+            <span class="hover-tip">点击复制邮箱并发送邮件</span>
+            <div class="copy-bubble">Copied! 邮箱已复制</div>
+          </div>
+
+          <!-- Card 6: 座右铭/状态卡 (占 2x1 宽卡) -->
+          <div class="hydro-bento-card card-status">
+            <span class="status-indicator"></span>
+            <p class="status-text" th:text="${theme.config.home?.about?.paragraph_3 ?: '“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”'}">“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”</p>
+          </div>
+
         </div>
-
-        <div class="hydro-about-page__content" th:if="${not #strings.isEmpty(singlePage.content.content)}">
-          <div class="hydro-prose" th:utext="${singlePage.content.content}"></div>
-        </div>
-
-        <section class="hydro-about-page__social">
-          <div class="hydro-plugin-section__head">
-            <span th:text="${theme.config.content?.page?.about_contact_eyebrow ?: 'Connect'}">Connect</span>
-            <h2 th:text="${theme.config.content?.page?.about_contact_title ?: '保持联系'}">保持联系</h2>
-          </div>
-          <div class="hydro-about-links">
-            <a
-              th:each="item : ${theme.config.identity?.social?.links}"
-              th:if="${not #strings.isEmpty(item.url) and item.url != '#'}"
-              th:href="${item.url}"
-              th:target="${item.new_tab == true ? '_blank' : '_self'}"
-              rel="noreferrer noopener"
-            >
-              <span th:text="${item.label}">Social</span>
-              <strong
-                th:text="${#strings.substringAfter(item.url, '//') ?: #strings.substringAfter(item.url, ':') ?: item.url}"
-              >
-                Social
-              </strong>
-            </a>
-          </div>
-        </section>
-
-        <section
-          id="comment"
-          class="hydro-comments"
-          th:if="${(theme.config.content?.page == null or theme.config.content.page.about_enable_comment != false) and haloCommentEnabled}"
-        >
-          <h2 th:text="${theme.config.content?.page?.comments_title ?: '评论'}">评论</h2>
-          <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
-        </section>
       </div>
     </section>
   </article>
+
+  <!-- 原生复制脚本 -->
+  <script>
+    function copyValue(text, element, isEmail = false) {
+      const tempInput = document.createElement("input");
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+
+      // 显示微动画复制成功气泡
+      const bubble = element.querySelector(".copy-bubble");
+      if (bubble) {
+        bubble.classList.add("show");
+        setTimeout(() => {
+          bubble.classList.remove("show");
+        }, 1800);
+      }
+
+      // 如果是邮箱，两秒后自动拉起发信
+      if (isEmail) {
+        setTimeout(() => {
+          window.location.href = "mailto:" + text;
+        }, 800);
+      }
+    }
+  </script>
 
     </main>
 
