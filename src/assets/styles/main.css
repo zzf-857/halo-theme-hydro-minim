@@ -19072,12 +19072,10 @@ html[data-color-mode="light"] {
 
 .qr-image {
   width: 100%;
-  max-width: 140px;
+  max-width: 180px;
   height: auto;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
   border-radius: 0.75rem;
-  padding: 0.5rem;
+  padding: 0.25rem;
   background: #fff;
   box-shadow: 0 4px 20px rgb(0 0 0 / 3%);
 }
@@ -19185,5 +19183,8 @@ html[data-color-mode="light"] {
   }
   .qr-container {
     align-items: flex-end;
+  }
+  .qr-image {
+    max-width: 120px;
   }
 }
