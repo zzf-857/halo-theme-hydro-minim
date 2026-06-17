@@ -1350,14 +1350,15 @@ body.hydro-auth-page .returntosite-content a:hover {
   color: rgb(var(--hydro-ink-rgb) / 70%);
   font-size: 0.875rem;
   font-weight: 700;
-  transform-origin: 50% 100%;
-  transition: color 0.2s ease;
+  transform-origin: 50% 50%;
+  transition: color 0.2s ease, transform 0.2s ease;
+  transform: scale(1);
 }
 
 .hydro-nav__links a:hover,
 .hydro-nav__links a:focus-visible {
   color: var(--hydro-solid);
-  animation: hydro-nav-hop 0.46s cubic-bezier(0.2, 0.9, 0.24, 1.25);
+  transform: scale(1.08);
 }
 
 .hydro-nav__actions {
@@ -1776,14 +1777,15 @@ body.hydro-auth-page .returntosite-content a:hover {
   color: rgb(var(--hydro-ink-rgb) / 70%);
   font-size: 0.875rem;
   font-weight: 700;
-  transform-origin: 50% 100%;
-  transition: color 0.2s ease;
+  transform-origin: 50% 50%;
+  transition: color 0.2s ease, transform 0.2s ease;
+  transform: scale(1);
 }
 
 .hydro-dropdown > a:hover,
 .hydro-dropdown > a:focus-visible {
   color: var(--hydro-solid);
-  animation: hydro-nav-hop 0.46s cubic-bezier(0.2, 0.9, 0.24, 1.25);
+  transform: scale(1.08);
 }
 
 .hydro-dropdown__menu {
