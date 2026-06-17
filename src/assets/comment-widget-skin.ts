@@ -20,8 +20,17 @@ const hydroCommentSkinElementNames = [
   "user-avatar",
 ];
 const hydroCommentSkinSelector = hydroCommentSkinElementNames.join(",");
+const hydroCommentLenisPreventWheelSelector = [
+  ".comment-next-emote-tabs",
+  ".comment-next-emote-grid",
+  ".comment-emote-tabs",
+  ".comment-emote-grid",
+  ".emote-tabs",
+  ".emote-grid",
+].join(",");
 const hydroCommentObservedRoots = new WeakSet<ShadowRoot>();
 const hydroCommentUpdateQueued = new WeakSet<HydroCommentWidgetElement>();
+const hydroScrollableOverflowPattern = /\b(auto|scroll|overlay)\b/;
 
 function getHydroCommentShadowCss(localName: string) {
   switch (localName) {
@@ -41,6 +50,14 @@ function getHydroCommentShadowCss(localName: string) {
 
         comment-list {
           display: block !important;
+        }
+
+        :where([data-lenis-prevent], [data-lenis-prevent-wheel], [data-lenis-prevent-touch]) {
+          overscroll-behavior: contain !important;
+        }
+
+        :where(.comment-next-emote-tabs, .comment-next-emote-grid, .comment-emote-tabs, .comment-emote-grid, .emote-tabs, .emote-grid) {
+          overscroll-behavior: contain !important;
         }
       `;
     case "comment-form":
@@ -523,6 +540,39 @@ function getHydroCommentShadowCss(localName: string) {
   }
 }
 
+function isHydroCommentScrollableArea(element: HTMLElement) {
+  const styles = window.getComputedStyle(element);
+  const canScrollY =
+    element.scrollHeight > element.clientHeight + 1 && hydroScrollableOverflowPattern.test(styles.overflowY);
+  const canScrollX =
+    element.scrollWidth > element.clientWidth + 1 && hydroScrollableOverflowPattern.test(styles.overflowX);
+
+  return canScrollY || canScrollX;
+}
+
+function shouldPreventLenisWheel(element: HTMLElement) {
+  return element.matches(hydroCommentLenisPreventWheelSelector) || isHydroCommentScrollableArea(element);
+}
+
+function markHydroCommentLenisScrollAreas(root: ParentNode) {
+  root.querySelectorAll<HTMLElement>("*").forEach((element) => {
+    if (!shouldPreventLenisWheel(element)) {
+      return;
+    }
+
+    if (!element.hasAttribute("data-lenis-prevent") && !element.hasAttribute("data-lenis-prevent-wheel")) {
+      element.setAttribute("data-lenis-prevent-wheel", "");
+    }
+  });
+}
+
+function refreshHydroCommentLenisScrollAreas(root: ParentNode) {
+  markHydroCommentLenisScrollAreas(root);
+  window.requestAnimationFrame(() => {
+    markHydroCommentLenisScrollAreas(root);
+  });
+}
+
 function ensureHydroCommentDevice(element: HydroCommentWidgetElement) {
   if (element.localName !== "base-comment-item") {
     return;
@@ -556,9 +606,10 @@ function observeHydroCommentShadowRoot(element: HydroCommentWidgetElement) {
     records.forEach((record) => {
       record.addedNodes.forEach(scanHydroCommentNode);
     });
+    refreshHydroCommentLenisScrollAreas(root);
     ensureHydroCommentDevice(element);
   });
-  observer.observe(root, { childList: true, subtree: true });
+  observer.observe(root, { attributeFilter: ["class", "style"], attributes: true, childList: true, subtree: true });
 }
 
 function injectHydroCommentShadowStyle(element: HydroCommentWidgetElement) {
@@ -577,6 +628,7 @@ function injectHydroCommentShadowStyle(element: HydroCommentWidgetElement) {
 
   observeHydroCommentShadowRoot(element);
   scanHydroCommentTree(root);
+  refreshHydroCommentLenisScrollAreas(root);
 }
 
 function queueHydroCommentUpdate(element: HydroCommentWidgetElement) {
