@@ -2,6 +2,10 @@
   <title id="title">LKUniverse Logo</title>
   <desc id="desc">Horizontal logo lockup for LKUniverse.</desc>
   <style>
+    :root {
+      color: #101112;
+    }
+
     .soft {
       stroke: currentColor;
       opacity: 0.14;

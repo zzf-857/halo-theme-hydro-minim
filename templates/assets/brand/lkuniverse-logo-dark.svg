@@ -1,14 +1,14 @@
 <svg width="520" height="160" viewBox="0 0 520 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">LKUniverse Logo</title>
-  <desc id="desc">Horizontal logo lockup for LKUniverse.</desc>
+  <title id="title">LKUniverse Logo Dark</title>
+  <desc id="desc">Horizontal logo lockup for LKUniverse in dark mode.</desc>
   <style>
     :root {
-      color: #101112;
+      color: #f5f3ef;
     }
 
     .soft {
       stroke: currentColor;
-      opacity: 0.14;
+      opacity: 0.2;
     }
 
     .ink {
@@ -16,7 +16,7 @@
     }
 
     .accent {
-      fill: #a855f7; /* 极光紫，点缀小行星 */
+      fill: #c084fc; /* 在深色背景下更亮、更通透的极光紫 */
     }
 
     .brand-title {
@@ -33,7 +33,7 @@
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.28em;
-      opacity: 0.58;
+      opacity: 0.64;
       text-transform: uppercase;
     }
   </style>
@@ -54,7 +54,7 @@
     
     <!-- 点缀的紫色小行星和引力环 (Accent) -->
     <circle class="accent" cx="80" cy="28" r="5" />
-    <circle class="ink" cx="80" cy="28" r="9" stroke-width="2" opacity="0.22" />
+    <circle class="ink" cx="80" cy="28" r="9" stroke-width="2" opacity="0.28" />
   </g>
   <!-- 中间的分隔细线 -->
   <path class="soft" d="M160 80H194" stroke-width="2" stroke-linecap="round" />
