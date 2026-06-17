@@ -1,0 +1,61 @@
+<svg width="520" height="160" viewBox="0 0 520 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">LKUniverse Logo</title>
+  <desc id="desc">Horizontal logo lockup for LKUniverse.</desc>
+  <style>
+    .soft {
+      stroke: currentColor;
+      opacity: 0.14;
+    }
+
+    .ink {
+      stroke: currentColor;
+    }
+
+    .accent {
+      fill: #a855f7; /* 极光紫，点缀小行星 */
+    }
+
+    .brand-title {
+      fill: currentColor;
+      font-family: "Space Mono", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-subtitle {
+      fill: currentColor;
+      font-family: "Space Mono", "Inter", ui-monospace, monospace;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      opacity: 0.58;
+      text-transform: uppercase;
+    }
+  </style>
+  <g transform="translate(24 24)">
+    <!-- 外侧轨道圆 -->
+    <circle class="soft" cx="56" cy="56" r="46" stroke-width="2" />
+    
+    <!-- 宇宙星环弧线 (土星环视觉，体现 Universe 宇宙主题) -->
+    <path class="soft" d="M20 72C30 88 75 84 92 60" stroke-width="6" stroke-linecap="round" />
+    
+    <!-- 字母 L (竖和底横) -->
+    <path class="ink" d="M40 32V80" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <path class="ink" d="M40 80H56" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- 字母 K 的分叉 (与 L 融为一体) -->
+    <path class="ink" d="M72 32L46 56" stroke-width="8" stroke-linecap="round" />
+    <path class="ink" d="M48 54L72 80" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- 点缀的紫色小行星和引力环 (Accent) -->
+    <circle class="accent" cx="80" cy="28" r="5" />
+    <circle class="ink" cx="80" cy="28" r="9" stroke-width="2" opacity="0.22" />
+  </g>
+  <!-- 中间的分隔细线 -->
+  <path class="soft" d="M160 80H194" stroke-width="2" stroke-linecap="round" />
+  
+  <!-- 右侧品牌文本 -->
+  <text class="brand-title" x="218" y="75">LKUniverse</text>
+  <text class="brand-subtitle" x="220" y="108">DIGITAL UNIVERSE</text>
+</svg>
