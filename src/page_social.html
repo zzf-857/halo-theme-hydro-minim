@@ -7,9 +7,9 @@
     <!-- 顶部英雄栏 -->
     <section class="hydro-list-hero hydro-social-hero">
       <div class="hydro-container">
-        <p th:text="${theme.config.content?.page?.social_eyebrow ?: 'Link In Bio'}">Link In Bio</p>
-        <h1 th:text="${theme.config.content?.page?.social_title ?: '社交聚合名片'}">社交聚合名片</h1>
-        <span th:text="${theme.config.content?.page?.social_subtitle ?: '一键联系我，打破沟通边界'}">一键联系我，打破沟通边界</span>
+        <p>Link In Bio</p>
+        <h1>社交聚合名片</h1>
+        <span>一键联系我，打破沟通边界</span>
       </div>
     </section>
 
@@ -25,7 +25,7 @@
               <div class="aurora-ring"></div>
             </div>
             <h2 class="profile-name" th:text="${site.title}">站长</h2>
-            <p class="profile-bio" th:text="${theme.config.home?.about?.subtitle ?: '热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。'}">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
+            <p class="profile-bio">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
           </div>
 
           <!-- Card 2: 微信二维码卡 (占 1x2 高卡) -->
@@ -37,7 +37,7 @@
               <h3>微信 Wechat</h3>
             </div>
             <div class="qr-container">
-              <!-- 读取博客根目录的 logo.png 作为微信二维码默认图，用户可以之后换成自己的二维码图片 -->
+              <!-- 读取博客的 logo.png 作为默认图，支持前台扫码 -->
               <img src="/themes/halo-theme-hydro-minim/assets/brand/logo.png" class="qr-image" alt="Wechat QR" />
               <p class="qr-tip">长按或扫码添加好友</p>
             </div>
@@ -80,7 +80,7 @@
           <!-- Card 6: 座右铭/状态卡 (占 2x1 宽卡) -->
           <div class="hydro-bento-card card-status">
             <span class="status-indicator"></span>
-            <p class="status-text" th:text="${theme.config.home?.about?.paragraph_3 ?: '“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”'}">“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”</p>
+            <p class="status-text">“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”</p>
           </div>
 
         </div>
