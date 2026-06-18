@@ -59,7 +59,6 @@
         </div>
 
         <div class="resume-actions">
-          <a href="#resume-works">查看作品</a>
           <a href="#resume-contact">联系我</a>
           <a href="/about/">关于我</a>
           <a
@@ -145,81 +144,6 @@
           <h3 th:text="${theme.config.resume?.skills?.s8_title ?: '页面审美'}">页面审美</h3>
           <p th:text="${theme.config.resume?.skills?.s8_desc ?: '个人站点 / Portfolio'}">个人站点 / Portfolio</p>
           <span th:text="${theme.config.resume?.skills?.s8_stars ?: '★★★☆☆'}">★★★☆☆</span>
-        </article>
-      </div>
-    </section>
-
-    <!-- 3. 作品展示 -->
-    <section class="resume-section resume-works resume-reveal" id="resume-works">
-      <div class="resume-section__heading resume-section__heading--split">
-        <div>
-          <p class="resume-eyebrow">Portfolio Showcase</p>
-          <h2>作品展示</h2>
-        </div>
-        <p>把真实项目、线上排障和后续规划整理成可以被快速理解的展示入口。</p>
-      </div>
-
-      <div class="resume-work-grid">
-        <article
-          class="resume-work-card resume-work-card--large"
-          th:data-title="${theme.config.resume?.works?.w1_title ?: 'LK Universe 个人内容发布平台'}"
-          th:data-desc="${theme.config.resume?.works?.w1_desc ?: '基于 Hexo、Express、Nginx、PM2 的个人内容发布平台，包含博客前台、后台管理、构建触发和生产部署链路。'}"
-          th:data-tags="${theme.config.resume?.works?.w1_tags ?: 'Hexo,Express,Nginx,PM2,Markdown'}"
-          th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w1_gallery) ? theme.config.resume.works.w1_gallery : (#theme.assets('/images/resume/lk-universe-preview.png') + ',' + #theme.assets('/images/resume/ai-thoughts-cover.png') + ',' + #theme.assets('/images/resume/hello-world-cover.png'))}"
-          th:data-points="${theme.config.resume?.works?.w1_points ?: '静态前台访问速度快，内容可以版本管理|Express 后台负责文章、媒体和构建接口|Nginx 与 PM2 支撑线上部署和服务守护'}"
-        >
-          <img
-            th:src="${theme.config.resume?.works?.w1_cover ?: #theme.assets('/images/resume/lk-universe-preview.png')}"
-            alt="项目展示封面"
-          />
-          <div>
-            <span th:text="${theme.config.resume?.works?.w1_tech ?: 'Hexo / Express / Nginx'}"
-              >Hexo / Express / Nginx</span
-            >
-            <h3 th:text="${theme.config.resume?.works?.w1_title ?: 'LK Universe 个人内容发布平台'}">
-              LK Universe 个人内容发布平台
-            </h3>
-          </div>
-        </article>
-
-        <article
-          class="resume-work-card"
-          th:data-title="${theme.config.resume?.works?.w2_title ?: '星域控制塔 CMS 后台'}"
-          th:data-desc="${theme.config.resume?.works?.w2_desc ?: '围绕 Markdown 文章、微语、媒体上传和构建控制设计的轻量后台，让个人站点逐步具备内容管理能力。'}"
-          th:data-tags="${theme.config.resume?.works?.w2_tags ?: 'Admin,API,Markdown,Upload'}"
-          th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w2_gallery) ? theme.config.resume.works.w2_gallery : (#theme.assets('/images/resume/admin-console-preview.png') + ',' + #theme.assets('/images/resume/mcp-skills-cover.png') + ',' + #theme.assets('/images/resume/api-article-cover.png'))}"
-          th:data-points="${theme.config.resume?.works?.w2_points ?: '支持文章发布、微语管理和媒体上传|提供构建触发与终端反馈入口|为后续简历模块可视化编辑打基础'}"
-        >
-          <img
-            th:src="${theme.config.resume?.works?.w2_cover ?: #theme.assets('/images/resume/admin-console-preview.png')}"
-            alt="项目展示封面"
-          />
-          <div>
-            <span th:text="${theme.config.resume?.works?.w2_tech ?: 'Admin / Markdown / API'}"
-              >Admin / Markdown / API</span
-            >
-            <h3 th:text="${theme.config.resume?.works?.w2_title ?: '星域控制塔 CMS 后台'}">星域控制塔 CMS 后台</h3>
-          </div>
-        </article>
-
-        <article
-          class="resume-work-card"
-          th:data-title="${theme.config.resume?.works?.w3_title ?: '线上问题排查复盘'}"
-          th:data-desc="${theme.config.resume?.works?.w3_desc ?: '记录文章详情页 404、文件权限 EACCES、Windows/Linux 中文文件名编码不一致等真实生产问题。'}"
-          th:data-tags="${theme.config.resume?.works?.w3_tags ?: 'Debugging,Linux,Nginx,Encoding'}"
-          th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w3_gallery) ? theme.config.resume.works.w3_gallery : (#theme.assets('/images/resume/debug-deploy-preview.png') + ',' + #theme.assets('/images/resume/ai-thoughts-cover.png') + ',' + #theme.assets('/images/resume/butterfly-cover.png'))}"
-          th:data-points="${theme.config.resume?.works?.w3_points ?: '按域名、Nginx、静态产物和文件目录分层排查|统一服务运行用户与文件属主解决权限问题|通过英文 slug 降低跨平台编码风险'}"
-        >
-          <img
-            th:src="${theme.config.resume?.works?.w3_cover ?: #theme.assets('/images/resume/debug-deploy-preview.png')}"
-            alt="项目展示封面"
-          />
-          <div>
-            <span th:text="${theme.config.resume?.works?.w3_tech ?: 'Debugging / Production'}"
-              >Debugging / Production</span
-            >
-            <h3 th:text="${theme.config.resume?.works?.w3_title ?: '线上问题排查复盘'}">线上问题排查复盘</h3>
-          </div>
         </article>
       </div>
     </section>
@@ -336,39 +260,5 @@
       </div>
     </section>
 
-    <!-- 6. 作品展示大图弹窗 -->
-    <div class="resume-modal" id="resume-work-modal" aria-hidden="true">
-      <button class="resume-modal__backdrop" type="button" data-close-modal></button>
-      <div class="resume-modal__panel">
-        <button class="resume-modal__close" type="button" data-close-modal>×</button>
-        <div class="resume-modal__gallery">
-          <div class="resume-modal__image-wrap">
-            <img
-              id="resume-modal-image"
-              src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-              alt="作品展示图"
-            />
-            <button class="resume-modal__nav resume-modal__nav--prev" type="button" data-slide-prev aria-label="上一张">
-              ‹
-            </button>
-            <button class="resume-modal__nav resume-modal__nav--next" type="button" data-slide-next aria-label="下一张">
-              ›
-            </button>
-          </div>
-          <div class="resume-modal__thumbs" id="resume-modal-thumbs"></div>
-        </div>
-        <div class="resume-modal__content">
-          <p class="resume-eyebrow">Project Detail</p>
-          <h3 id="resume-modal-title">项目标题</h3>
-          <p id="resume-modal-desc">项目说明</p>
-          <div class="resume-modal__tags" id="resume-modal-tags"></div>
-          <ul class="resume-modal__points" id="resume-modal-points"></ul>
-          <div class="resume-modal__meta">
-            <span id="resume-modal-count">01 / 01</span>
-            <span>自动轮播 / 支持手动与键盘切换</span>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </include>
