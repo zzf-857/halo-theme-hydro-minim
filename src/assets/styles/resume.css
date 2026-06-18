@@ -933,26 +933,22 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
 
 /* 入场动画机制 */
 .resume-reveal {
-  opacity: 1;
-}
-
-.resume-js-ready .resume-reveal {
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
-.resume-js-ready .resume-reveal.is-visible {
+.resume-reveal.is-visible {
   opacity: 1;
 }
 
 /* --- 1. 首屏 (Hero) 渐进交错入场 --- */
-.resume-js-ready .resume-hero .resume-portrait,
-.resume-js-ready .resume-hero .resume-eyebrow,
-.resume-js-ready .resume-hero h1,
-.resume-js-ready .resume-hero .resume-role,
-.resume-js-ready .resume-hero .resume-quote,
-.resume-js-ready .resume-hero .resume-profile-facts,
-.resume-js-ready .resume-hero .resume-actions {
+.resume-hero .resume-portrait,
+.resume-hero .resume-eyebrow,
+.resume-hero h1,
+.resume-hero .resume-role,
+.resume-hero .resume-quote,
+.resume-hero .resume-profile-facts,
+.resume-hero .resume-actions {
   opacity: 0;
   transform: translateY(48px);
   transition:
@@ -960,57 +956,57 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-hero .resume-portrait {
+.resume-hero .resume-portrait {
   transform: scale(0.82) translateY(24px);
   transition:
     opacity 1.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-portrait {
+.resume-hero.is-visible .resume-portrait {
   opacity: 1;
   transform: scale(1) translateY(0);
   transition-delay: 0.15s;
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-eyebrow {
+.resume-hero.is-visible .resume-eyebrow {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.3s;
 }
 
-.resume-js-ready .resume-hero.is-visible h1 {
+.resume-hero.is-visible h1 {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.42s;
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-role {
+.resume-hero.is-visible .resume-role {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.54s;
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-quote {
+.resume-hero.is-visible .resume-quote {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.66s;
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-profile-facts {
+.resume-hero.is-visible .resume-profile-facts {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.78s;
 }
 
-.resume-js-ready .resume-hero.is-visible .resume-actions {
+.resume-hero.is-visible .resume-actions {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.9s;
 }
 
 /* --- 2. 专业技能 (Skills) 3D交错入场 --- */
-.resume-js-ready .resume-skills .resume-section__heading {
+.resume-skills .resume-section__heading {
   opacity: 0;
   transform: translateY(45px);
   transition:
@@ -1018,7 +1014,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-skills .resume-skill-group {
+.resume-skills .resume-skill-group {
   opacity: 0;
   transform: perspective(1000px) rotateX(12deg) scale(0.95) translateY(64px);
   transform-origin: 50% 70%;
@@ -1028,7 +1024,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-skills .resume-skill-grid article {
+.resume-skills .resume-skill-grid article {
   opacity: 0;
   transform: perspective(1000px) rotateX(12deg) scale(0.95) translateY(64px);
   transform-origin: 50% 70%;
@@ -1038,40 +1034,40 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-skills.is-visible .resume-section__heading {
+.resume-skills.is-visible .resume-section__heading {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.1s;
 }
 
-.resume-js-ready .resume-skills.is-visible .resume-skill-group {
+.resume-skills.is-visible .resume-skill-group {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
 }
 
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(1) { transition-delay: 0.25s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(2) { transition-delay: 0.45s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(3) { transition-delay: 0.65s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(4) { transition-delay: 0.85s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(5) { transition-delay: 1.05s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-group:nth-child(6) { transition-delay: 1.25s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(1) { transition-delay: 0.25s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(2) { transition-delay: 0.45s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(3) { transition-delay: 0.65s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(4) { transition-delay: 0.85s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(5) { transition-delay: 1.05s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(6) { transition-delay: 1.25s; }
 
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article {
+.resume-skills.is-visible .resume-skill-grid article {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
 }
 
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(1) { transition-delay: 0.25s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(2) { transition-delay: 0.38s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(3) { transition-delay: 0.51s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(4) { transition-delay: 0.64s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(5) { transition-delay: 0.77s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(6) { transition-delay: 0.9s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(7) { transition-delay: 1.03s; }
-.resume-js-ready .resume-skills.is-visible .resume-skill-grid article:nth-child(8) { transition-delay: 1.16s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(1) { transition-delay: 0.25s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(2) { transition-delay: 0.38s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(3) { transition-delay: 0.51s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(4) { transition-delay: 0.64s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(5) { transition-delay: 0.77s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(6) { transition-delay: 0.9s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(7) { transition-delay: 1.03s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(8) { transition-delay: 1.16s; }
 
 /* --- 3. 成长经历 (Career) 3D交错入场 --- */
-.resume-js-ready .resume-career .resume-section__heading {
+.resume-career .resume-section__heading {
   opacity: 0;
   transform: translateY(45px);
   transition:
@@ -1079,7 +1075,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-career .resume-timeline article {
+.resume-career .resume-timeline article {
   opacity: 0;
   transform: perspective(1000px) rotateX(10deg) scale(0.96) translateY(56px);
   transform-origin: 50% 70%;
@@ -1089,25 +1085,25 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-career.is-visible .resume-section__heading {
+.resume-career.is-visible .resume-section__heading {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.1s;
 }
 
-.resume-js-ready .resume-career.is-visible .resume-timeline article {
+.resume-career.is-visible .resume-timeline article {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
 }
 
-.resume-js-ready .resume-career.is-visible .resume-timeline article:nth-child(1) { transition-delay: 0.25s; }
-.resume-js-ready .resume-career.is-visible .resume-timeline article:nth-child(2) { transition-delay: 0.48s; }
-.resume-js-ready .resume-career.is-visible .resume-timeline article:nth-child(3) { transition-delay: 0.71s; }
-.resume-js-ready .resume-career.is-visible .resume-timeline article:nth-child(4) { transition-delay: 0.94s; }
-.resume-js-ready .resume-career.is-visible .resume-timeline article:nth-child(5) { transition-delay: 1.17s; }
+.resume-career.is-visible .resume-timeline article:nth-child(1) { transition-delay: 0.25s; }
+.resume-career.is-visible .resume-timeline article:nth-child(2) { transition-delay: 0.48s; }
+.resume-career.is-visible .resume-timeline article:nth-child(3) { transition-delay: 0.71s; }
+.resume-career.is-visible .resume-timeline article:nth-child(4) { transition-delay: 0.94s; }
+.resume-career.is-visible .resume-timeline article:nth-child(5) { transition-delay: 1.17s; }
 
 /* --- 4. 诚邀交流 (Contact) 3D交错入场 --- */
-.resume-js-ready .resume-contact > div:first-child {
+.resume-contact > div:first-child {
   opacity: 0;
   transform: translateY(45px);
   transition:
@@ -1115,7 +1111,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-contact .resume-contact__actions {
+.resume-contact .resume-contact__actions {
   opacity: 0;
   transform: perspective(1000px) rotateX(10deg) scale(0.96) translateY(56px);
   transform-origin: 50% 70%;
@@ -1125,13 +1121,13 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.resume-js-ready .resume-contact.is-visible > div:first-child {
+.resume-contact.is-visible > div:first-child {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.15s;
 }
 
-.resume-js-ready .resume-contact.is-visible .resume-contact__actions {
+.resume-contact.is-visible .resume-contact__actions {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
   transition-delay: 0.4s;
