@@ -1544,21 +1544,33 @@ spec:
               key: resume_info_quote
               label: 个人引言
               value: "“我正在把前端基础、AI 工具链 and 个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”"
-            - $formkit: text
-              name: location
-              key: resume_info_location
-              label: 所在地
-              value: "重庆"
-            - $formkit: text
-              name: direction
-              key: resume_info_direction
-              label: 关注方向
-              value: "前端 / AI 工具 / 内容平台"
-            - $formkit: text
-              name: featured_project
-              key: resume_info_featured_project
-              label: 代表项目
-              value: "LK Universe"
+            - $formkit: array
+              name: facts
+              key: resume_info_facts
+              label: "个人要点配置"
+              help: "支持添加、修改、删除或拖动修改顺序的个人简历头部要件信息（例如所在地、关注方向、代表项目等）"
+              addLabel: "添加要件"
+              itemLabels:
+                - type: text
+                  label: $value.label
+              value:
+                - label: "所在地"
+                  value: "长沙"
+                - label: "关注方向"
+                  value: "Unity开发 / AI Coding / 数字艺术相关"
+                - label: "代表项目"
+                  value: "LK Universe"
+              children:
+                - $formkit: text
+                  name: label
+                  label: "要件名称"
+                  placeholder: "例如: 所在地"
+                  validation: "required"
+                - $formkit: text
+                  name: value
+                  label: "要件内容"
+                  placeholder: "例如: 长沙"
+                  validation: "required"
             - $formkit: attachment
               name: pdf_url
               key: resume_info_pdf_url
@@ -1582,6 +1594,16 @@ spec:
           name: skills
           label: "专业技能与工具"
           children:
+            - $formkit: text
+              name: title
+              key: resume_skills_title
+              label: "栏目标题"
+              value: "专业技能与工具"
+            - $formkit: text
+              name: subtitle
+              key: resume_skills_subtitle
+              label: "栏目英文角标"
+              value: "Competencies & Stack"
             - $formkit: array
               name: categories
               id: resume_skills_categories
@@ -1705,55 +1727,73 @@ spec:
 
         - $formkit: group
           name: career
-          label: 成长经历 (3个)
+          label: "成长经历"
           children:
             - $formkit: text
-              name: c1_year
-              key: resume_career_c1_year
-              label: 经历 1 年份/时间
-              value: "2026"
+              name: title
+              key: resume_career_title
+              label: "栏目标题"
+              value: "成长经历"
             - $formkit: text
-              name: c1_title
-              key: resume_career_c1_title
-              label: 经历 1 标题
-              value: "搭建 LK Universe 个人内容平台"
-            - $formkit: textarea
-              name: c1_desc
-              key: resume_career_c1_desc
-              label: 经历 1 描述
-              value: "完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。"
+              name: subtitle
+              key: resume_career_subtitle
+              label: "栏目英文角标"
+              value: "Career Journey"
+            - $formkit: array
+              name: list
+              key: resume_career_list
+              label: "经历时间线列表"
+              help: "支持自由增加、删除或拖拽修改顺序的项目列表 (时间轴从上到下展示)"
+              addLabel: "添加经历"
+              itemLabels:
+                - type: text
+                  label: $value.title
+              value:
+                - year: "2026"
+                  title: "搭建 LK Universe 个人内容平台"
+                  desc: "完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。"
+                - year: "2026"
+                  title: "扩展内容管理和自动化流程"
+                  desc: "围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。"
+                - year: "Next"
+                  title: "继续升级个人展示系统"
+                  desc: "计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。"
+              children:
+                - $formkit: text
+                  name: year
+                  label: "年份/时间"
+                  placeholder: "例如: 2026 或 Next"
+                  validation: "required"
+                - $formkit: text
+                  name: title
+                  label: "经历标题"
+                  placeholder: "例如: 搭建 LK Universe 个人内容平台"
+                  validation: "required"
+                - $formkit: textarea
+                  name: desc
+                  label: "经历描述"
+                  placeholder: "例如: 完成 Hexo 博客等..."
+                  validation: "required"
 
+        - $formkit: group
+          name: contact
+          label: "诚邀交流 (联系区)"
+          children:
             - $formkit: text
-              name: c2_year
-              key: resume_career_c2_year
-              label: 经历 2 年份/时间
-              value: "2026"
+              name: title
+              key: resume_contact_title
+              label: "栏目标题"
+              value: "诚邀交流"
             - $formkit: text
-              name: c2_title
-              key: resume_career_c2_title
-              label: 经历 2 标题
-              value: "扩展内容管理和自动化流程"
+              name: subtitle
+              key: resume_contact_subtitle
+              label: "栏目英文角标"
+              value: "Contact"
             - $formkit: textarea
-              name: c2_desc
-              key: resume_career_c2_desc
-              label: 经历 2 描述
-              value: "围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。"
-
-            - $formkit: text
-              name: c3_year
-              key: resume_career_c3_year
-              label: 经历 3 年份/时间
-              value: "Next"
-            - $formkit: text
-              name: c3_title
-              key: resume_career_c3_title
-              label: 经历 3 标题
-              value: "继续升级个人展示系统"
-            - $formkit: textarea
-              name: c3_desc
-              key: resume_career_c3_desc
-              label: 经历 3 描述
-              value: "计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。"
+              name: description
+              key: resume_contact_description
+              label: "联系区描述文案"
+              value: "如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接："
 
     - group: advanced
       label: 高级设置

@@ -41,21 +41,29 @@
           “我正在把前端基础、AI 工具链和个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”
         </blockquote>
 
-        <div class="resume-profile-facts" aria-label="个人信息">
-          <div>
-            <span>所在地</span>
-            <strong th:text="${theme.config.resume?.info?.location ?: '重庆'}">重庆</strong>
-          </div>
-          <div>
-            <span>方向</span>
-            <strong th:text="${theme.config.resume?.info?.direction ?: '前端 / AI 工具 / 内容平台'}"
-              >前端 / AI 工具 / 内容平台</strong
-            >
-          </div>
-          <div>
-            <span>代表项目</span>
-            <strong th:text="${theme.config.resume?.info?.featured_project ?: 'LK Universe'}">LK Universe</strong>
-          </div>
+        <div class="resume-profile-facts" aria-label="个人信息" th:if="${(theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)) or (theme.config.resume?.info?.location != null or theme.config.resume?.info?.direction != null or theme.config.resume?.info?.featured_project != null)}">
+          <!-- 动态个人要件 -->
+          <th:block th:if="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}">
+            <div th:each="fact : ${theme.config.resume.info.facts}">
+              <span th:text="${fact.label}">要点名称</span>
+              <strong th:text="${fact.value}">要点内容</strong>
+            </div>
+          </th:block>
+          <!-- 向下兼容 Fallback -->
+          <th:block th:unless="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}">
+            <div th:if="${theme.config.resume?.info?.location != null}">
+              <span>所在地</span>
+              <strong th:text="${theme.config.resume.info.location ?: '重庆'}">重庆</strong>
+            </div>
+            <div th:if="${theme.config.resume?.info?.direction != null}">
+              <span>方向</span>
+              <strong th:text="${theme.config.resume.info.direction ?: '前端 / AI 工具 / 内容平台'}">前端 / AI 工具 / 内容平台</strong>
+            </div>
+            <div th:if="${theme.config.resume?.info?.featured_project != null}">
+              <span>代表项目</span>
+              <strong th:text="${theme.config.resume.info.featured_project ?: 'LK Universe'}">LK Universe</strong>
+            </div>
+          </th:block>
         </div>
 
         <div class="resume-actions">
@@ -89,9 +97,9 @@
 
     <!-- 2. 专业技能与工具 -->
     <section class="resume-section resume-skills resume-reveal" id="resume-skills">
-      <div class="resume-section__heading">
-        <p class="resume-eyebrow">Competencies & Stack</p>
-        <h2>专业技能与工具</h2>
+      <div class="resume-section__heading" th:with="sTitle=${theme.config.resume?.skills?.title ?: '专业技能与工具'}, sSubtitle=${theme.config.resume?.skills?.subtitle ?: 'Competencies & Stack'}" th:if="${not #strings.isEmpty(sTitle) or not #strings.isEmpty(sSubtitle)}">
+        <p class="resume-eyebrow" th:if="${not #strings.isEmpty(sSubtitle)}" th:text="${sSubtitle}">Competencies & Stack</p>
+        <h2 th:if="${not #strings.isEmpty(sTitle)}" th:text="${sTitle}">专业技能与工具</h2>
       </div>
 
       <th:block th:if="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}">
@@ -267,60 +275,57 @@
     </section>
 
     <!-- 4. 成长经历 -->
-    <section class="resume-section resume-career resume-reveal" id="resume-career">
-      <div class="resume-section__heading">
-        <p class="resume-eyebrow">Career Journey</p>
-        <h2>成长经历</h2>
+    <section class="resume-section resume-reveal" id="resume-career" th:if="${(theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)) or (theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c3_title != null)}">
+      <div class="resume-section__heading" th:with="cTitle=${theme.config.resume?.career?.title ?: '成长经历'}, cSubtitle=${theme.config.resume?.career?.subtitle ?: 'Career Journey'}" th:if="${not #strings.isEmpty(cTitle) or not #strings.isEmpty(cSubtitle)}">
+        <p class="resume-eyebrow" th:if="${not #strings.isEmpty(cSubtitle)}" th:text="${cSubtitle}">Career Journey</p>
+        <h2 th:if="${not #strings.isEmpty(cTitle)}" th:text="${cTitle}">成长经历</h2>
       </div>
 
       <div class="resume-timeline">
-        <article>
-          <time th:text="${theme.config.resume?.career?.c1_year ?: '2026'}">2026</time>
-          <div>
-            <h3 th:text="${theme.config.resume?.career?.c1_title ?: '搭建 LK Universe 个人内容平台'}">
-              搭建 LK Universe 个人内容平台
-            </h3>
-            <p
-              th:text="${theme.config.resume?.career?.c1_desc ?: '完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。'}"
-            >
-              完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。
-            </p>
-          </div>
-        </article>
-        <article>
-          <time th:text="${theme.config.resume?.career?.c2_year ?: '2026'}">2026</time>
-          <div>
-            <h3 th:text="${theme.config.resume?.career?.c2_title ?: '扩展内容管理和自动化流程'}">
-              扩展内容管理和自动化流程
-            </h3>
-            <p
-              th:text="${theme.config.resume?.career?.c2_desc ?: '围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。'}"
-            >
-              围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。
-            </p>
-          </div>
-        </article>
-        <article>
-          <time th:text="${theme.config.resume?.career?.c3_year ?: 'Next'}">Next</time>
-          <div>
-            <h3 th:text="${theme.config.resume?.career?.c3_title ?: '继续升级个人展示系统'}">继续升级个人展示系统</h3>
-            <p
-              th:text="${theme.config.resume?.career?.c3_desc ?: '计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。'}"
-            >
-              计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。
-            </p>
-          </div>
-        </article>
+        <!-- 动态成长经历 -->
+        <th:block th:if="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}">
+          <article th:each="item : ${theme.config.resume.career.list}">
+            <time th:text="${item.year}">年份/时间</time>
+            <div>
+              <h3 th:text="${item.title}">经历标题</h3>
+              <p th:text="${item.desc}">经历描述</p>
+            </div>
+          </article>
+        </th:block>
+        <!-- 向下兼容 Fallback -->
+        <th:block th:unless="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}">
+          <article th:if="${theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c1_year != null}">
+            <time th:text="${theme.config.resume?.career?.c1_year ?: '2026'}">2026</time>
+            <div>
+              <h3 th:text="${theme.config.resume?.career?.c1_title ?: '搭建 LK Universe 个人内容平台'}">搭建 LK Universe 个人内容平台</h3>
+              <p th:text="${theme.config.resume?.career?.c1_desc ?: '完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。'}">完成 Hexo 博客等...</p>
+            </div>
+          </article>
+          <article th:if="${theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c2_year != null}">
+            <time th:text="${theme.config.resume?.career?.c2_year ?: '2026'}">2026</time>
+            <div>
+              <h3 th:text="${theme.config.resume?.career?.c2_title ?: '扩展内容管理和自动化流程'}">扩展内容管理和自动化流程</h3>
+              <p th:text="${theme.config.resume?.career?.c2_desc ?: '围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。'}">围绕文章等...</p>
+            </div>
+          </article>
+          <article th:if="${theme.config.resume?.career?.c3_title != null or theme.config.resume?.career?.c3_year != null}">
+            <time th:text="${theme.config.resume?.career?.c3_year ?: 'Next'}">Next</time>
+            <div>
+              <h3 th:text="${theme.config.resume?.career?.c3_title ?: '继续升级个人展示系统'}">继续升级个人展示系统</h3>
+              <p th:text="${theme.config.resume?.career?.c3_desc ?: '计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。'}">计划加入等...</p>
+            </div>
+          </article>
+        </th:block>
       </div>
     </section>
 
     <!-- 5. 诚邀交流 -->
-    <section class="resume-contact resume-reveal" id="resume-contact">
+    <section class="resume-contact resume-reveal" id="resume-contact" th:with="conTitle=${theme.config.resume?.contact?.title ?: '诚邀交流'}, conSubtitle=${theme.config.resume?.contact?.subtitle ?: 'Contact'}, conDesc=${theme.config.resume?.contact?.description ?: '如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：'}">
       <div>
-        <p class="resume-eyebrow">Contact</p>
-        <h2>诚邀交流</h2>
-        <p>如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：</p>
-        <p style="margin-top: 10px; opacity: 0.85">
+        <p class="resume-eyebrow" th:if="${not #strings.isEmpty(conSubtitle)}" th:text="${conSubtitle}">Contact</p>
+        <h2 th:if="${not #strings.isEmpty(conTitle)}" th:text="${conTitle}">诚邀交流</h2>
+        <p th:if="${not #strings.isEmpty(conDesc)}" th:text="${conDesc}">如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：</p>
+        <p style="margin-top: 10px; opacity: 0.85" th:if="${theme.config.resume?.info?.email != null or theme.config.resume?.info?.pdf_url != null}">
           📧 邮箱:
           <a
             th:href="|mailto:${theme.config.resume?.info?.email ?: 'lk-universe@zengxiansheng.top'}|"
