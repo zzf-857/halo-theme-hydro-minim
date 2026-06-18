@@ -1881,6 +1881,22 @@ spec:
               key: resume_contact_description
               label: "联系区描述文案"
               value: "如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接："
+            - $formkit: switch
+              name: show_social_button
+              key: resume_contact_show_social_button
+              label: "显示社交跳转按钮"
+              help: "是否在左侧文字下方显示跳转到社交/连接页面的按钮"
+              value: true
+            - $formkit: text
+              name: social_button_text
+              key: resume_contact_social_button_text
+              label: "社交跳转按钮文字"
+              value: "🔗 建立连接 (社交网络)"
+            - $formkit: text
+              name: social_button_url
+              key: resume_contact_social_button_url
+              label: "社交跳转链接 (URL)"
+              value: "/social"
             - $formkit: array
               name: buttons
               key: resume_contact_buttons

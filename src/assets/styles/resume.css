@@ -663,6 +663,35 @@ html[data-hydro-theme="dark"] .resume-work-card {
   font-size: 15px;
 }
 
+.resume-contact__social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 22px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  color: #ffffff !important;
+  background: transparent;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13.5px;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.resume-contact__social-btn:hover {
+  transform: translateY(-2px);
+  color: var(--resume-accent) !important;
+  background: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
 .resume-contact__actions {
   justify-content: flex-end;
 }

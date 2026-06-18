@@ -79,12 +79,12 @@
       }
     </style>
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-dNRBBVx5.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-rG_NZuus.js"></script>
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js">
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js">
-    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CcuuoFar.js">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CDfqauIG.css">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-G6-YInU2.css">
+    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-BLoWtvkL.js">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-C3f4t_v2.css">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-B7Z1Ka14.css">
   </head>
   <body
     class="hydro-page"
@@ -476,15 +476,13 @@
         <p class="resume-eyebrow" th:if="${not #strings.isEmpty(conSubtitle)}" th:text="${conSubtitle}">Contact</p>
         <h2 th:if="${not #strings.isEmpty(conTitle)}" th:text="${conTitle}">诚邀交流</h2>
         <p th:if="${not #strings.isEmpty(conDesc)}" th:text="${conDesc}">如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：</p>
-        <p style="margin-top: 10px; opacity: 0.85" th:if="${theme.config.resume?.info?.email != null or theme.config.resume?.info?.pdf_url != null}">
-          📧 邮箱:
-          <a
-            th:href="|mailto:${theme.config.resume?.info?.email ?: 'lk-universe@zengxiansheng.top'}|"
-            th:text="${theme.config.resume?.info?.email ?: 'lk-universe@zengxiansheng.top'}"
-            style="color: #ffffff; text-decoration: underline"
-            >lk-universe@zengxiansheng.top</a
-          >
-        </p>
+        <div class="resume-contact__social-btn-wrap" th:if="${theme.config.resume?.contact?.show_social_button ?: true}" style="margin-top: 16px;">
+          <a class="resume-contact__social-btn" 
+             th:href="${theme.config.resume?.contact?.social_button_url ?: '/social'}" 
+             th:text="${theme.config.resume?.contact?.social_button_text ?: '🔗 建立连接 (社交网络)'}">
+             🔗 建立连接 (社交网络)
+          </a>
+        </div>
       </div>
       <div class="resume-contact__actions" th:with="buttons=${theme.config.resume?.contact?.buttons}">
         <!-- 如果配置了自定义按钮，则遍历渲染 -->
