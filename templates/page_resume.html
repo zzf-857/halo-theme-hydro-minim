@@ -204,9 +204,9 @@
         <!-- 动态配置分类渲染 -->
         <th:block th:if="${theme.config.resume?.skills?.categories != null and not #lists.isEmpty(theme.config.resume.skills.categories)}">
           <th:block th:each="cat : ${theme.config.resume.skills.categories}">
-            <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == #ctx.getVariable('cat').id]}">
+            <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == #ctx.getVariable('cat').value]}">
               <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
-                <h3 class="resume-skill-group__title" th:text="${cat.name}">分类显示名称</h3>
+                <h3 class="resume-skill-group__title" th:text="${cat.label}">分类显示名称</h3>
                 <div class="resume-skill-grid">
                   <article th:each="item : ${groupSkills}">
                     <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
