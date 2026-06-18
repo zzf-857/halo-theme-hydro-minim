@@ -7,14 +7,14 @@
   --resume-black: #f3f3f3;
   --resume-panel: #ffffff;
   --resume-panel-soft: #fcfcfc;
-  --resume-accent: #f0b429;         /* 鲜明淡黄 */
+  --resume-accent: #f0b429; /* 鲜明淡黄 */
   --resume-accent-soft: #f7c948;
   --resume-text: #1d1d1f;
   --resume-text-rgb: 29, 29, 31;
   --resume-muted: #6e6e73;
-  --resume-line: rgba(240, 180, 41, 0.20);
+  --resume-line: rgba(240, 180, 41, 0.2);
   --resume-border: rgba(0, 0, 0, 0.08);
-  
+
   position: relative;
   width: 100%;
   margin: 0;
@@ -24,9 +24,13 @@
     radial-gradient(circle at 50% 8%, rgba(240, 180, 41, 0.06), transparent 22rem),
     radial-gradient(circle at 82% 70%, rgba(240, 180, 41, 0.04), transparent 28rem),
     linear-gradient(180deg, #f5f5f7 0%, #fafafa 58%, #f0f0f2 100%);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC",
+    sans-serif;
   isolation: isolate;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 /* 深色模式变量适配 */
@@ -39,9 +43,9 @@ html[data-hydro-theme="dark"] .resume-showcase {
   --resume-text: #e8e8ed;
   --resume-text-rgb: 232, 232, 237;
   --resume-muted: #86868b;
-  --resume-line: rgba(247, 201, 72, 0.20);
+  --resume-line: rgba(247, 201, 72, 0.2);
   --resume-border: rgba(255, 255, 255, 0.08);
-  
+
   background:
     radial-gradient(circle at 50% 8%, rgba(247, 201, 72, 0.08), transparent 18rem),
     radial-gradient(circle at 82% 70%, rgba(247, 201, 72, 0.05), transparent 28rem),
@@ -146,12 +150,16 @@ html[data-hydro-theme="dark"] .resume-showcase {
   border: 2px solid var(--resume-accent);
   border-radius: 999px;
   padding: 4px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 0 6px rgba(240, 180, 41, 0.06);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    0 0 0 6px rgba(240, 180, 41, 0.06);
   background: var(--resume-panel);
 }
 
 html[data-hydro-theme="dark"] .resume-portrait {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 6px rgba(247, 201, 72, 0.06);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 6px rgba(247, 201, 72, 0.06);
 }
 
 .resume-portrait img {
@@ -269,7 +277,12 @@ html[data-hydro-theme="dark"] .resume-quote {
   text-decoration: none;
   font-weight: 700;
   font-size: 14px;
-  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .resume-actions a:first-child,
@@ -349,18 +362,25 @@ html[data-hydro-theme="dark"] .resume-quote {
   border-radius: 12px;
   background: var(--resume-panel);
   text-align: center;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.015);
 }
 
 .resume-skill-grid article:hover {
   transform: translateY(-6px);
   border-color: var(--resume-accent-soft);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05), 0 0 20px rgba(240, 180, 41, 0.06);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.05),
+    0 0 20px rgba(240, 180, 41, 0.06);
 }
 
 html[data-hydro-theme="dark"] .resume-skill-grid article:hover {
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(247, 201, 72, 0.06);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(247, 201, 72, 0.06);
 }
 
 .resume-skill-icon {
@@ -375,24 +395,72 @@ html[data-hydro-theme="dark"] .resume-skill-grid article:hover {
 }
 
 /* 亮色模式技能徽章 */
-.resume-skill-icon--blue { background: #e0f2fe; color: #0284c7; }
-.resume-skill-icon--purple { background: #f3e8ff; color: #7c3aed; }
-.resume-skill-icon--gold { background: #fef3c7; color: #d97706; }
-.resume-skill-icon--dark { background: #f3f4f6; color: #374151; }
-.resume-skill-icon--cyan { background: #ecfeff; color: #0891b2; }
-.resume-skill-icon--green { background: #dcfce7; color: #16a34a; }
-.resume-skill-icon--red { background: #fee2e2; color: #dc2626; }
-.resume-skill-icon--teal { background: #ccfbf1; color: #0d9488; }
+.resume-skill-icon--blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.resume-skill-icon--purple {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+.resume-skill-icon--gold {
+  background: #fef3c7;
+  color: #d97706;
+}
+.resume-skill-icon--dark {
+  background: #f3f4f6;
+  color: #374151;
+}
+.resume-skill-icon--cyan {
+  background: #ecfeff;
+  color: #0891b2;
+}
+.resume-skill-icon--green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.resume-skill-icon--red {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.resume-skill-icon--teal {
+  background: #ccfbf1;
+  color: #0d9488;
+}
 
 /* 暗色模式技能徽章 */
-html[data-hydro-theme="dark"] .resume-skill-icon--blue { background: #002e54; color: #38bdf8; }
-html[data-hydro-theme="dark"] .resume-skill-icon--purple { background: #1e134b; color: #c084fc; }
-html[data-hydro-theme="dark"] .resume-skill-icon--gold { background: #452a00; color: #fbbf24; }
-html[data-hydro-theme="dark"] .resume-skill-icon--dark { background: #0b0b0c; color: #f3f4f6; }
-html[data-hydro-theme="dark"] .resume-skill-icon--cyan { background: #083344; color: #22d3ee; }
-html[data-hydro-theme="dark"] .resume-skill-icon--green { background: #064e3b; color: #34d399; }
-html[data-hydro-theme="dark"] .resume-skill-icon--red { background: #450a0a; color: #f87171; }
-html[data-hydro-theme="dark"] .resume-skill-icon--teal { background: #042f2e; color: #2dd4bf; }
+html[data-hydro-theme="dark"] .resume-skill-icon--blue {
+  background: #002e54;
+  color: #38bdf8;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--purple {
+  background: #1e134b;
+  color: #c084fc;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--gold {
+  background: #452a00;
+  color: #fbbf24;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--dark {
+  background: #0b0b0c;
+  color: #f3f4f6;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--cyan {
+  background: #083344;
+  color: #22d3ee;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--green {
+  background: #064e3b;
+  color: #34d399;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--red {
+  background: #450a0a;
+  color: #f87171;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--teal {
+  background: #042f2e;
+  color: #2dd4bf;
+}
 
 .resume-skill-grid h3,
 .resume-work-card h3,
@@ -449,7 +517,9 @@ html[data-hydro-theme="dark"] .resume-work-card {
   display: block;
   object-fit: cover;
   opacity: 0.82;
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+  transition:
+    transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.3s ease;
 }
 
 .resume-work-card::after {
@@ -683,7 +753,10 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   align-items: center;
   justify-content: center;
   transform: translateY(-50%);
-  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s,
+    border-color 0.2s;
 }
 
 .resume-modal__nav:hover {
@@ -721,7 +794,9 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   background: #111111;
   cursor: pointer;
   opacity: 0.5;
-  transition: opacity 0.2s, border-color 0.2s;
+  transition:
+    opacity 0.2s,
+    border-color 0.2s;
 }
 
 .resume-modal__thumbs button.is-active {
@@ -831,7 +906,10 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .resume-modal__close:hover {
@@ -849,7 +927,9 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
 .resume-js-ready .resume-reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.65s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.65s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition:
+    opacity 0.65s cubic-bezier(0.215, 0.61, 0.355, 1),
+    transform 0.65s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .resume-js-ready .resume-reveal.is-visible {
@@ -858,7 +938,8 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
 }
 
 @keyframes resumePulseRing {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(0.97);
   }
@@ -905,7 +986,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   .resume-contact__actions {
     justify-content: flex-start;
   }
-  
+
   .resume-modal__panel {
     grid-template-columns: 1fr;
     max-height: 85vh;

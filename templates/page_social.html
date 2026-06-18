@@ -122,12 +122,15 @@
     <section class="hydro-social-body">
       <div class="hydro-container">
         <div class="hydro-bento-grid">
-          
           <!-- Card 1: 站长信息卡 (占 2x2 格) -->
           <div class="hydro-bento-card card-profile" data-tilt-card>
             <div class="avatar-wrapper">
-              <img th:src="${not #strings.isEmpty(site.logo) ? site.logo : (theme.config.identity?.brand?.logo ?: #theme.assets('/brand/hydro-minim-mark.svg'))}" class="profile-avatar" alt="Avatar" />
-              <div class="aurora-ring" style="--aurora-speed: 6s;"></div>
+              <img
+                th:src="${not #strings.isEmpty(site.logo) ? site.logo : (theme.config.identity?.brand?.logo ?: #theme.assets('/brand/hydro-minim-mark.svg'))}"
+                class="profile-avatar"
+                alt="Avatar"
+              />
+              <div class="aurora-ring" style="--aurora-speed: 6s"></div>
             </div>
             <h2 class="profile-name" th:text="LilKing">站长</h2>
             <p class="profile-bio">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
@@ -137,13 +140,47 @@
           <div class="hydro-bento-card card-wechat" data-tilt-card>
             <div class="card-head">
               <span class="card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z" /><path d="M11.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z" /><path d="M18.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z" /><path d="M14.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z" /><path d="M12.218 5.104c-3.415 -.175 -6.218 2.051 -6.218 4.896c0 1.488 .77 2.809 2.008 3.7c.18 .13 .232 .382 .122 .583l-.712 1.721c-.11 .267 .165 .519 .406 .365l2.164 -1.378a.834 .834 0 0 1 .531 -.068a8.86 8.86 0 0 0 1.699 .173c4.418 0 8 -3.134 8 -7c0 -2.484 -1.439 -4.685 -3.834 -5.748c-.378 -.167 -.801 -.193 -1.168 -.044z" /><path d="M19 12.35c.174 -.017 .349 -.025 .525 -.025c3.272 0 6.075 2.115 6.075 4.792c0 1.4 -.833 2.656 -2.146 3.479a.59 .59 0 0 0 -.13 .618l.582 1.378c.088 .208 -.133 .405 -.315 .285l-1.745 -1.155a.686 .686 0 0 0 -.436 -.053a7.35 7.35 0 0 1 -1.41 .141c-3.15 0 -5.842 -1.979 -6.05 -4.542" /></svg>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-6 w-6"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M16.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z"
+                  />
+                  <path
+                    d="M11.5 10c.828 0 1.5 -.672 1.5 -1.5s-.672 -1.5 -1.5 -1.5s-1.5 .672 -1.5 1.5s.672 1.5 1.5 1.5z"
+                  />
+                  <path
+                    d="M18.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z"
+                  />
+                  <path
+                    d="M14.5 16c.414 0 .75 -.336 .75 -.75s-.336 -.75 -.75 -.75s-.75 .336 -.75 .75s.336 .75 .75 .75z"
+                  />
+                  <path
+                    d="M12.218 5.104c-3.415 -.175 -6.218 2.051 -6.218 4.896c0 1.488 .77 2.809 2.008 3.7c.18 .13 .232 .382 .122 .583l-.712 1.721c-.11 .267 .165 .519 .406 .365l2.164 -1.378a.834 .834 0 0 1 .531 -.068a8.86 8.86 0 0 0 1.699 .173c4.418 0 8 -3.134 8 -7c0 -2.484 -1.439 -4.685 -3.834 -5.748c-.378 -.167 -.801 -.193 -1.168 -.044z"
+                  />
+                  <path
+                    d="M19 12.35c.174 -.017 .349 -.025 .525 -.025c3.272 0 6.075 2.115 6.075 4.792c0 1.4 -.833 2.656 -2.146 3.479a.59 .59 0 0 0 -.13 .618l.582 1.378c.088 .208 -.133 .405 -.315 .285l-1.745 -1.155a.686 .686 0 0 0 -.436 -.053a7.35 7.35 0 0 1 -1.41 .141c-3.15 0 -5.842 -1.979 -6.05 -4.542"
+                  />
+                </svg>
               </span>
               <h3>微信 Wechat</h3>
             </div>
             <div class="qr-container">
               <!-- 读取博客的 logo.png 作为默认图，支持前台扫码 -->
-              <img src="/upload/324b813903317b9d2a880a3335197cee.jpg" class="qr-image" alt="Wechat QR" data-lightbox-trigger data-src="/upload/324b813903317b9d2a880a3335197cee.jpg" />
+              <img
+                src="/upload/324b813903317b9d2a880a3335197cee.jpg"
+                class="qr-image"
+                alt="Wechat QR"
+                data-lightbox-trigger
+                data-src="/upload/324b813903317b9d2a880a3335197cee.jpg"
+              />
               <p class="qr-tip">长按或扫码添加好友</p>
             </div>
           </div>
@@ -151,7 +188,22 @@
           <!-- Card 3: 一键复制 QQ 卡 (占 1x1 格) -->
           <div class="hydro-bento-card card-qq clickable" data-tilt-card onclick="copyValue('2996449004', this)">
             <span class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 22c-4.418 0 -8 -3.582 -8 -8c0 -1.5 1.5 -2.5 3 -2.5c.5 -1.5 2 -3.5 5 -3.5s4.5 2 5 3.5c1.5 0 3 1 3 2.5c0 4.418 -3.582 8 -8 8z" /><path d="M8 12c-.5 1 -1 2.5 0 3.5" /><path d="M16 12c.5 1 1 2.5 0 3.5" /></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M12 22c-4.418 0 -8 -3.582 -8 -8c0 -1.5 1.5 -2.5 3 -2.5c.5 -1.5 2 -3.5 5 -3.5s4.5 2 5 3.5c1.5 0 3 1 3 2.5c0 4.418 -3.582 8 -8 8z"
+                />
+                <path d="M8 12c-.5 1 -1 2.5 0 3.5" />
+                <path d="M16 12c.5 1 1 2.5 0 3.5" />
+              </svg>
             </span>
             <h3>QQ 联系</h3>
             <span class="hover-tip">点击一键复制 QQ</span>
@@ -159,19 +211,54 @@
           </div>
 
           <!-- Card 4: GitHub 跳转卡 (占 1x1 格) -->
-          <a href="https://github.com/zzf-857" target="_blank" rel="noopener noreferrer" class="hydro-bento-card card-github clickable" data-tilt-card>
+          <a
+            href="https://github.com/zzf-857"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hydro-bento-card card-github clickable"
+            data-tilt-card
+          >
             <span class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+                />
+              </svg>
             </span>
             <h3>GitHub</h3>
             <span class="hover-tip">前往我的开源宇宙</span>
           </a>
 
           <!-- Card 5: 邮箱卡 (占 2x1 宽卡) -->
-          <div class="hydro-bento-card card-email clickable" data-tilt-card onclick="copyValue('2996449004@qq.com', this, true)">
+          <div
+            class="hydro-bento-card card-email clickable"
+            data-tilt-card
+            onclick="copyValue('2996449004@qq.com', this, true)"
+          >
             <div class="email-content">
               <span class="card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-6 w-6"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+                  <path d="M3 7l9 6l9 -6" />
+                </svg>
               </span>
               <div class="email-details">
                 <h3>电子邮箱 Email</h3>
@@ -187,25 +274,29 @@
             <span class="status-indicator"></span>
             <p class="status-text">“ 要么忙着去活，要么忙着去死 ”</p>
           </div>
-
         </div>
       </div>
     </section>
   </article>
 
   <!-- Lightbox 图片灯箱骨架 -->
-  <div class="hydro-lightbox" data-lightbox aria-hidden="true" th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}">
+  <div
+    class="hydro-lightbox"
+    data-lightbox
+    aria-hidden="true"
+    th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}"
+  >
     <button class="hydro-lightbox__close" data-lightbox-close aria-label="关闭">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
     </button>
-    <button class="hydro-lightbox__prev" data-lightbox-prev aria-label="上一张" style="display: none;">
+    <button class="hydro-lightbox__prev" data-lightbox-prev aria-label="上一张" style="display: none">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"></path></svg>
     </button>
     <img class="hydro-lightbox__img" data-lightbox-img src="" alt="" />
-    <button class="hydro-lightbox__next" data-lightbox-next aria-label="下一张" style="display: none;">
+    <button class="hydro-lightbox__next" data-lightbox-next aria-label="下一张" style="display: none">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
     </button>
-    <div class="hydro-lightbox__counter" data-lightbox-counter style="display: none;"></div>
+    <div class="hydro-lightbox__counter" data-lightbox-counter style="display: none"></div>
   </div>
 
   <!-- 原生复制脚本 -->
