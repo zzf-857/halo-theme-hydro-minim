@@ -69,12 +69,12 @@
     
     <title th:text="|个人简历 - ${site.title}|">个人简历</title>
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-DtNY0WBq.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-B5bWsWvv.js"></script>
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js">
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js">
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CcuuoFar.js">
     <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CDfqauIG.css">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-BPSl1iRV.css">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-DCmOOh3x.css">
   </head>
   <body
     class="hydro-page"
@@ -193,65 +193,158 @@
       </div>
     </section>
 
-    <!-- 2. 专业技能 -->
+    <!-- 2. 专业技能与工具 -->
     <section class="resume-section resume-skills resume-reveal" id="resume-skills">
       <div class="resume-section__heading">
-        <p class="resume-eyebrow">Competencies</p>
-        <h2>专业技能</h2>
+        <p class="resume-eyebrow">Competencies & Stack</p>
+        <h2>专业技能与工具</h2>
       </div>
 
-      <div class="resume-skill-grid">
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--blue">FE</div>
-          <h3 th:text="${theme.config.resume?.skills?.s1_title ?: '前端基础'}">前端基础</h3>
-          <p th:text="${theme.config.resume?.skills?.s1_desc ?: 'HTML / CSS / JavaScript'}">HTML / CSS / JavaScript</p>
-          <span th:text="${theme.config.resume?.skills?.s1_stars ?: '★★★★☆'}">★★★★☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--purple">AI</div>
-          <h3 th:text="${theme.config.resume?.skills?.s2_title ?: 'AI 工具链'}">AI 工具链</h3>
-          <p th:text="${theme.config.resume?.skills?.s2_desc ?: 'Codex / MCP / Skills'}">Codex / MCP / Skills</p>
-          <span th:text="${theme.config.resume?.skills?.s2_stars ?: '★★★★☆'}">★★★★☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--gold">CMS</div>
-          <h3 th:text="${theme.config.resume?.skills?.s3_title ?: '内容平台'}">内容平台</h3>
-          <p th:text="${theme.config.resume?.skills?.s3_desc ?: 'Hexo / Markdown / 管理后台'}">
-            Hexo / Markdown / 管理后台
-          </p>
-          <span th:text="${theme.config.resume?.skills?.s3_stars ?: '★★★★☆'}">★★★★☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--dark">API</div>
-          <h3 th:text="${theme.config.resume?.skills?.s4_title ?: '后端接口'}">后端接口</h3>
-          <p th:text="${theme.config.resume?.skills?.s4_desc ?: 'Node.js / Express'}">Node.js / Express</p>
-          <span th:text="${theme.config.resume?.skills?.s4_stars ?: '★★★☆☆'}">★★★☆☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--cyan">OPS</div>
-          <h3 th:text="${theme.config.resume?.skills?.s5_title ?: '部署运维'}">部署运维</h3>
-          <p th:text="${theme.config.resume?.skills?.s5_desc ?: 'Nginx / PM2 / Linux'}">Nginx / PM2 / Linux</p>
-          <span th:text="${theme.config.resume?.skills?.s5_stars ?: '★★★☆☆'}">★★★☆☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--green">DOC</div>
-          <h3 th:text="${theme.config.resume?.skills?.s6_title ?: '技术表达'}">技术表达</h3>
-          <p th:text="${theme.config.resume?.skills?.s6_desc ?: '博客写作 / 项目复盘'}">博客写作 / 项目复盘</p>
-          <span th:text="${theme.config.resume?.skills?.s6_stars ?: '★★★★☆'}">★★★★☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--red">DBG</div>
-          <h3 th:text="${theme.config.resume?.skills?.s7_title ?: '问题排查'}">问题排查</h3>
-          <p th:text="${theme.config.resume?.skills?.s7_desc ?: '404 / 权限 / 编码'}">404 / 权限 / 编码</p>
-          <span th:text="${theme.config.resume?.skills?.s7_stars ?: '★★★★☆'}">★★★★☆</span>
-        </article>
-        <article>
-          <div class="resume-skill-icon resume-skill-icon--teal">UX</div>
-          <h3 th:text="${theme.config.resume?.skills?.s8_title ?: '页面审美'}">页面审美</h3>
-          <p th:text="${theme.config.resume?.skills?.s8_desc ?: '个人站点 / Portfolio'}">个人站点 / Portfolio</p>
-          <span th:text="${theme.config.resume?.skills?.s8_stars ?: '★★★☆☆'}">★★★☆☆</span>
-        </article>
-      </div>
+      <th:block th:if="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}">
+        <!-- 🎨 前端开发 -->
+        <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'frontend']}">
+          <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
+            <h3 class="resume-skill-group__title">🎨 前端开发</h3>
+            <div class="resume-skill-grid">
+              <article th:each="item : ${groupSkills}">
+                <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
+                  <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+                  <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                </div>
+                <h4 th:text="${item.name}">技能名称</h4>
+                <p th:text="${item.keywords}">技术关键字</p>
+                <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+              </article>
+            </div>
+          </div>
+        </th:block>
+
+        <!-- ⚙️ 后端开发 -->
+        <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'backend']}">
+          <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
+            <h3 class="resume-skill-group__title">⚙️ 后端开发</h3>
+            <div class="resume-skill-grid">
+              <article th:each="item : ${groupSkills}">
+                <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
+                  <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+                  <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                </div>
+                <h4 th:text="${item.name}">技能名称</h4>
+                <p th:text="${item.keywords}">技术关键字</p>
+                <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+              </article>
+            </div>
+          </div>
+        </th:block>
+
+        <!-- 🚀 部署运维 -->
+        <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'devops']}">
+          <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
+            <h3 class="resume-skill-group__title">🚀 部署运维</h3>
+            <div class="resume-skill-grid">
+              <article th:each="item : ${groupSkills}">
+                <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
+                  <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+                  <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                </div>
+                <h4 th:text="${item.name}">技能名称</h4>
+                <p th:text="${item.keywords}">技术关键字</p>
+                <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+              </article>
+            </div>
+          </div>
+        </th:block>
+
+        <!-- 🧠 AI 与工具 -->
+        <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'aitools']}">
+          <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
+            <h3 class="resume-skill-group__title">🧠 AI 与工具</h3>
+            <div class="resume-skill-grid">
+              <article th:each="item : ${groupSkills}">
+                <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
+                  <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+                  <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                </div>
+                <h4 th:text="${item.name}">技能名称</h4>
+                <p th:text="${item.keywords}">技术关键字</p>
+                <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+              </article>
+            </div>
+          </div>
+        </th:block>
+
+        <!-- 💼 职业软实力 -->
+        <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'softskills']}">
+          <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
+            <h3 class="resume-skill-group__title">💼 职业软实力</h3>
+            <div class="resume-skill-grid">
+              <article th:each="item : ${groupSkills}">
+                <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
+                  <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
+                  <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                </div>
+                <h4 th:text="${item.name}">技能名称</h4>
+                <p th:text="${item.keywords}">技术关键字</p>
+                <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+              </article>
+            </div>
+          </div>
+        </th:block>
+      </th:block>
+
+      <!-- 兜底Fallback -->
+      <th:block th:unless="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}">
+        <div class="resume-skill-grid">
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--frontend">FE</div>
+            <h4>前端基础</h4>
+            <p>HTML / CSS / JavaScript</p>
+            <span>★★★★☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--aitools">AI</div>
+            <h4>AI 工具链</h4>
+            <p>Codex / MCP / Skills</p>
+            <span>★★★★☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--aitools">CMS</div>
+            <h4>内容平台</h4>
+            <p>Hexo / Markdown / 管理后台</p>
+            <span>★★★★☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--backend">API</div>
+            <h4>后端接口</h4>
+            <p>Node.js / Express</p>
+            <span>★★★☆☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--devops">OPS</div>
+            <h4>部署运维</h4>
+            <p>Nginx / PM2 / Linux</p>
+            <span>★★★☆☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--softskills">DOC</div>
+            <h4>技术表达</h4>
+            <p>博客写作 / 项目复盘</p>
+            <span>★★★★☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--softskills">DBG</div>
+            <h4>问题排查</h4>
+            <p>404 / 权限 / 编码</p>
+            <span>★★★★☆</span>
+          </article>
+          <article>
+            <div class="resume-skill-icon resume-skill-icon--softskills">UX</div>
+            <h4>页面审美</h4>
+            <p>个人站点 / Portfolio</p>
+            <span>★★★☆☆</span>
+          </article>
+        </div>
+      </th:block>
     </section>
 
     <!-- 4. 成长经历 -->

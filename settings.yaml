@@ -1580,135 +1580,104 @@ spec:
               value: "https://github.com/zengxiansheng"
         - $formkit: group
           name: skills
-          label: 专业技能 (8个)
+          label: "专业技能与工具"
           children:
-            - $formkit: text
-              name: s1_title
-              key: resume_skills_s1_title
-              label: 技能 1 标题
-              value: "前端基础"
-            - $formkit: text
-              name: s1_desc
-              key: resume_skills_s1_desc
-              label: 技能 1 描述
-              value: "HTML / CSS / JavaScript"
-            - $formkit: text
-              name: s1_stars
-              key: resume_skills_s1_stars
-              label: 技能 1 掌握度 (星星)
-              value: "★★★★☆"
-
-            - $formkit: text
-              name: s2_title
-              key: resume_skills_s2_title
-              label: 技能 2 标题
-              value: "AI 工具链"
-            - $formkit: text
-              name: s2_desc
-              key: resume_skills_s2_desc
-              label: 技能 2 描述
-              value: "Codex / MCP / Skills"
-            - $formkit: text
-              name: s2_stars
-              key: resume_skills_s2_stars
-              label: 技能 2 掌握度 (星星)
-              value: "★★★★☆"
-
-            - $formkit: text
-              name: s3_title
-              key: resume_skills_s3_title
-              label: 技能 3 标题
-              value: "内容平台"
-            - $formkit: text
-              name: s3_desc
-              key: resume_skills_s3_desc
-              label: 技能 3 描述
-              value: "Hexo / Markdown / 管理后台"
-            - $formkit: text
-              name: s3_stars
-              key: resume_skills_s3_stars
-              label: 技能 3 掌握度 (星星)
-              value: "★★★★☆"
-
-            - $formkit: text
-              name: s4_title
-              key: resume_skills_s4_title
-              label: 技能 4 标题
-              value: "后端接口"
-            - $formkit: text
-              name: s4_desc
-              key: resume_skills_s4_desc
-              label: 技能 4 描述
-              value: "Node.js / Express"
-            - $formkit: text
-              name: s4_stars
-              key: resume_skills_s4_stars
-              label: 技能 4 掌握度 (星星)
-              value: "★★★☆☆"
-
-            - $formkit: text
-              name: s5_title
-              key: resume_skills_s5_title
-              label: 技能 5 标题
-              value: "部署运维"
-            - $formkit: text
-              name: s5_desc
-              key: resume_skills_s5_desc
-              label: 技能 5 描述
-              value: "Nginx / PM2 / Linux"
-            - $formkit: text
-              name: s5_stars
-              key: resume_skills_s5_stars
-              label: 技能 5 掌握度 (星星)
-              value: "★★★☆☆"
-
-            - $formkit: text
-              name: s6_title
-              key: resume_skills_s6_title
-              label: 技能 6 标题
-              value: "技术表达"
-            - $formkit: text
-              name: s6_desc
-              key: resume_skills_s6_desc
-              label: 技能 6 描述
-              value: "博客写作 / 项目复盘"
-            - $formkit: text
-              name: s6_stars
-              key: resume_skills_s6_stars
-              label: 技能 6 掌握度 (星星)
-              value: "★★★★☆"
-
-            - $formkit: text
-              name: s7_title
-              key: resume_skills_s7_title
-              label: 技能 7 标题
-              value: "问题排查"
-            - $formkit: text
-              name: s7_desc
-              key: resume_skills_s7_desc
-              label: 技能 7 描述
-              value: "404 / 权限 / 编码"
-            - $formkit: text
-              name: s7_stars
-              key: resume_skills_s7_stars
-              label: 技能 7 掌握度 (星星)
-              value: "★★★★☆"
-
-            - $formkit: text
-              name: s8_title
-              key: resume_skills_s8_title
-              label: 技能 8 标题
-              value: "页面审美"
-            - $formkit: text
-              name: s8_desc
-              key: resume_skills_s8_desc
-              label: 技能 8 描述
-              value: "个人站点 / Portfolio"
-            - $formkit: text
-              name: s8_stars
-              key: resume_skills_s8_stars
-              label: 技能 8 掌握度 (星星)
-              value: "★★★☆☆"
+            - $formkit: array
+              name: list
+              key: resume_skills_list
+              label: "技能与工具列表"
+              help: "支持自由增加、删除或拖拽修改顺序的项目列表 (类 Unity Inspector 列表)"
+              addLabel: "添加技能/工具"
+              itemLabels:
+                - type: text
+                  label: $value.name
+              value:
+                - name: "前端基础"
+                  category: "frontend"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M16 18H8m8-6H8m8-6H8"/></svg>'
+                  keywords: "HTML5, CSS3, ES6"
+                  stars: "4"
+                - name: "React / Vue"
+                  category: "frontend"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
+                  keywords: "Next.js, Vite, Tailwind CSS"
+                  stars: "4"
+                - name: "AI 工具链"
+                  category: "aitools"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>'
+                  keywords: "Codex, MCP, LLM Prompting"
+                  stars: "4"
+                - name: "内容平台"
+                  category: "aitools"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z"/></svg>'
+                  keywords: "Hexo, Markdown, 管理后台"
+                  stars: "4"
+                - name: "后端开发"
+                  category: "backend"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg>'
+                  keywords: "Node.js, Express, RESTful API"
+                  stars: "3"
+                - name: "部署运维"
+                  category: "devops"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>'
+                  keywords: "Nginx, PM2, Linux"
+                  stars: "3"
+                - name: "技术表达"
+                  category: "softskills"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+                  keywords: "技术写作, 架构图, 踩坑复盘"
+                  stars: "4"
+                - name: "问题排查"
+                  category: "softskills"
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'
+                  keywords: "DevTools, 权限, 编码调试"
+                  stars: "4"
+              children:
+                - $formkit: text
+                  name: name
+                  label: "技能/工具名称"
+                  placeholder: "例如: React"
+                  validation: "required"
+                - $formkit: select
+                  name: category
+                  label: "技能类别"
+                  value: "frontend"
+                  options:
+                    - label: "🎨 前端开发"
+                      value: "frontend"
+                    - label: "⚙️ 后端开发"
+                      value: "backend"
+                    - label: "🚀 部署运维"
+                      value: "devops"
+                    - label: "🧠 AI 与工具"
+                      value: "aitools"
+                    - label: "💼 职业软实力"
+                      value: "softskills"
+                - $formkit: iconify
+                  name: icon
+                  label: "图标 (选填)"
+                  help: "选择一个 Iconify 图标，或者留空使用文字首字母"
+                  format: "svg"
+                  value-only: true
+                - $formkit: text
+                  name: keywords
+                  label: "关键词/技术关键字"
+                  placeholder: "用逗号分隔，例如: HTML5, CSS3, ES6"
+                - $formkit: select
+                  name: stars
+                  label: "掌握程度"
+                  value: "4"
+                  options:
+                    - label: "★★★★★ (精通)"
+                      value: "5"
+                    - label: "★★★★☆ (熟练)"
+                      value: "4"
+                    - label: "★★★☆☆ (掌握)"
+                      value: "3"
+                    - label: "★★☆☆☆ (入门)"
+                      value: "2"
+                    - label: "★☆☆☆☆ (了解)"
+                      value: "1"
 
         - $formkit: group
           name: career

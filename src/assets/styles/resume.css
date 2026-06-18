@@ -1054,3 +1054,69 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
     padding: 50px 24px;
   }
 }
+
+
+/* Grouped Skill & Toolbox styles */
+.resume-skill-group {
+  margin-bottom: 48px;
+}
+
+.resume-skill-group__title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 36px 0 20px;
+  color: var(--resume-text);
+  border-bottom: 1px solid var(--resume-border);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+
+.resume-skill-icon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.resume-skill-icon--frontend {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.resume-skill-icon--backend {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.resume-skill-icon--devops {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+.resume-skill-icon--aitools {
+  background: #fef3c7;
+  color: #d97706;
+}
+.resume-skill-icon--softskills {
+  background: #ccfbf1;
+  color: #0d9488;
+}
+
+html[data-hydro-theme="dark"] .resume-skill-icon--frontend {
+  background: #002e54;
+  color: #38bdf8;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--backend {
+  background: #064e3b;
+  color: #34d399;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--devops {
+  background: #1e134b;
+  color: #c084fc;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--aitools {
+  background: #452a00;
+  color: #fbbf24;
+}
+html[data-hydro-theme="dark"] .resume-skill-icon--softskills {
+  background: #042f2e;
+  color: #2dd4bf;
+}
