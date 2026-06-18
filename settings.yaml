@@ -1596,6 +1596,30 @@ spec:
               key: resume_info_github
               label: GitHub 链接
               value: "https://github.com/zengxiansheng"
+            - $formkit: color
+              name: accent_color
+              key: resume_info_accent_color
+              label: 简历高亮配色
+              help: "浅色模式下的高亮配色（默认 #f0b429）"
+              value: "#f0b429"
+            - $formkit: color
+              name: accent_color_soft
+              key: resume_info_accent_color_soft
+              label: 简历浅色辅助配色
+              help: "浅色模式下的辅助配色或悬停色（默认 #f7c948）"
+              value: "#f7c948"
+            - $formkit: color
+              name: dark_accent_color
+              key: resume_info_dark_accent_color
+              label: 简历深色高亮配色
+              help: "深色模式下的高亮配色（默认 #f7c948）"
+              value: "#f7c948"
+            - $formkit: color
+              name: dark_accent_color_soft
+              key: resume_info_dark_accent_color_soft
+              label: 简历深色辅助配色
+              help: "深色模式下的辅助配色或悬停色（默认 #fad96a）"
+              value: "#fad96a"
             - $formkit: array
               name: buttons
               key: resume_info_buttons

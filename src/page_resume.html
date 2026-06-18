@@ -2,6 +2,16 @@
   <template name="head">
     <title th:text="|个人简历 - ${site.title}|">个人简历</title>
     <script type="module" src="@/assets/resume.ts"></script>
+    <style>
+      .resume-showcase {
+        --resume-accent: [(${theme.config.resume?.info?.accent_color ?: '#f0b429'})];
+        --resume-accent-soft: [(${theme.config.resume?.info?.accent_color_soft ?: '#f7c948'})];
+      }
+      html[data-hydro-theme="dark"] .resume-showcase {
+        --resume-accent: [(${theme.config.resume?.info?.dark_accent_color ?: '#f7c948'})];
+        --resume-accent-soft: [(${theme.config.resume?.info?.dark_accent_color_soft ?: '#fad96a'})];
+      }
+    </style>
   </template>
 
   <div class="resume-showcase">

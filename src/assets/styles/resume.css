@@ -12,7 +12,7 @@
   --resume-text: #1d1d1f;
   --resume-text-rgb: 29, 29, 31;
   --resume-muted: #6e6e73;
-  --resume-line: rgba(240, 180, 41, 0.2);
+  --resume-line: color-mix(in srgb, var(--resume-accent) 20%, transparent);
   --resume-border: rgba(0, 0, 0, 0.08);
 
   position: relative;
@@ -21,8 +21,8 @@
   overflow: hidden;
   color: var(--resume-text);
   background:
-    radial-gradient(circle at 50% 8%, rgba(240, 180, 41, 0.06), transparent 22rem),
-    radial-gradient(circle at 82% 70%, rgba(240, 180, 41, 0.04), transparent 28rem),
+    radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--resume-accent) 6%, transparent), transparent 22rem),
+    radial-gradient(circle at 82% 70%, color-mix(in srgb, var(--resume-accent) 4%, transparent), transparent 28rem),
     linear-gradient(180deg, #f5f5f7 0%, #fafafa 58%, #f0f0f2 100%);
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC",
@@ -43,12 +43,12 @@ html[data-hydro-theme="dark"] .resume-showcase {
   --resume-text: #e8e8ed;
   --resume-text-rgb: 232, 232, 237;
   --resume-muted: #86868b;
-  --resume-line: rgba(247, 201, 72, 0.2);
+  --resume-line: color-mix(in srgb, var(--resume-accent) 20%, transparent);
   --resume-border: rgba(255, 255, 255, 0.08);
 
   background:
-    radial-gradient(circle at 50% 8%, rgba(247, 201, 72, 0.08), transparent 18rem),
-    radial-gradient(circle at 82% 70%, rgba(247, 201, 72, 0.05), transparent 28rem),
+    radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--resume-accent) 8%, transparent), transparent 18rem),
+    radial-gradient(circle at 82% 70%, color-mix(in srgb, var(--resume-accent) 5%, transparent), transparent 28rem),
     linear-gradient(180deg, #101112 0%, #151618 58%, #0d0e0f 100%);
 }
 
@@ -156,14 +156,14 @@ html[data-hydro-theme="dark"] .resume-showcase {
   padding: 4px;
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.12),
-    0 0 0 6px rgba(240, 180, 41, 0.06);
+    0 0 0 6px color-mix(in srgb, var(--resume-accent) 6%, transparent);
   background: var(--resume-panel);
 }
 
 html[data-hydro-theme="dark"] .resume-portrait {
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.35),
-    0 0 0 6px rgba(247, 201, 72, 0.06);
+    0 0 0 6px color-mix(in srgb, var(--resume-accent) 6%, transparent);
 }
 
 .resume-portrait img {
@@ -298,7 +298,7 @@ html[data-hydro-theme="dark"] .resume-quote {
 .resume-actions a:first-child:hover,
 .resume-contact__actions a:first-child:hover {
   background: var(--resume-accent-soft);
-  box-shadow: 0 12px 24px rgba(240, 180, 41, 0.28);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--resume-accent) 28%, transparent);
 }
 
 .resume-actions a:hover,
@@ -380,13 +380,13 @@ html[data-hydro-theme="dark"] .resume-quote {
   border-color: var(--resume-accent-soft);
   box-shadow:
     0 16px 36px rgba(0, 0, 0, 0.05),
-    0 0 20px rgba(240, 180, 41, 0.06);
+    0 0 20px color-mix(in srgb, var(--resume-accent) 6%, transparent);
 }
 
 html[data-hydro-theme="dark"] .resume-skill-grid article:hover {
   box-shadow:
     0 16px 36px rgba(0, 0, 0, 0.35),
-    0 0 20px rgba(247, 201, 72, 0.06);
+    0 0 20px color-mix(in srgb, var(--resume-accent) 6%, transparent);
 }
 
 .resume-skill-icon {
@@ -591,6 +591,11 @@ html[data-hydro-theme="dark"] .resume-work-card {
   bottom: 12px;
   width: 2px;
   background: linear-gradient(to bottom, var(--resume-accent), var(--resume-border));
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.5s ease;
+  transition-delay: 0.15s;
 }
 
 .resume-timeline article {
@@ -859,7 +864,7 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   border: 1px solid var(--resume-line);
   border-radius: 999px;
   color: var(--resume-accent-soft);
-  background: rgba(240, 180, 41, 0.07);
+  background: color-mix(in srgb, var(--resume-accent) 7%, transparent);
   font-size: 11px;
   font-weight: 700;
 }
@@ -1094,6 +1099,11 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
 .resume-career.is-visible .resume-timeline article {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
+}
+
+.resume-career.is-visible .resume-timeline::before {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 .resume-career.is-visible .resume-timeline article:nth-child(1) { transition-delay: 0.25s; }
