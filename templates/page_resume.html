@@ -122,31 +122,30 @@
     <section class="resume-hero resume-reveal" id="resume-top">
       <div class="resume-hero__inner">
         <div class="resume-portrait">
-          <!-- 简化并自闭合头像标签 -->
           <img th:src="${theme.config.identity?.avatar ?: (site.logo ?: #theme.assets('/brand/hydro-minim-mark.svg'))}" alt="Avatar" />
           <span></span>
         </div>
 
         <p class="resume-eyebrow" th:text="${theme.config.identity?.nickname != null ? theme.config.identity.nickname + ' Portfolio' : 'LK Universe Portfolio'}">LK Universe Portfolio</p>
         <h1 th:text="${theme.config.identity?.nickname ?: 'LK'}">LK</h1>
-        <p class="resume-role">IT Design & Technology Learner</p>
+        <p class="resume-role" th:text="${theme.config.resume?.info?.role ?: 'IT Design & Technology Learner'}">IT Design & Technology Learner</p>
 
-        <blockquote class="resume-quote">
+        <blockquote class="resume-quote" th:text="${theme.config.resume?.info?.quote ?: '“我正在把前端基础、AI 工具链和个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”'}">
           “我正在把前端基础、AI 工具链和个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”
         </blockquote>
 
         <div class="resume-profile-facts" aria-label="个人信息">
           <div>
             <span>所在地</span>
-            <strong>重庆</strong>
+            <strong th:text="${theme.config.resume?.info?.location ?: '重庆'}">重庆</strong>
           </div>
           <div>
             <span>方向</span>
-            <strong>前端 / AI 工具 / 内容平台</strong>
+            <strong th:text="${theme.config.resume?.info?.direction ?: '前端 / AI 工具 / 内容平台'}">前端 / AI 工具 / 内容平台</strong>
           </div>
           <div>
             <span>代表项目</span>
-            <strong>LK Universe</strong>
+            <strong th:text="${theme.config.resume?.info?.featured_project ?: 'LK Universe'}">LK Universe</strong>
           </div>
         </div>
 
@@ -154,8 +153,7 @@
           <a href="#resume-works">查看作品</a>
           <a href="#resume-contact">联系我</a>
           <a href="/about/">关于我</a>
-          <a th:href="${#theme.assets('/images/resume/LK_Resume.pdf')}" class="resume-pdf-btn" download>
-            <!-- inline SVG 代替 FontAwesome PDF 图标 -->
+          <a th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}" class="resume-pdf-btn" download th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -179,51 +177,51 @@
       <div class="resume-skill-grid">
         <article>
           <div class="resume-skill-icon resume-skill-icon--blue">FE</div>
-          <h3>前端基础</h3>
-          <p>HTML / CSS / JavaScript</p>
-          <span>★★★★☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s1_title ?: '前端基础'}">前端基础</h3>
+          <p th:text="${theme.config.resume?.skills?.s1_desc ?: 'HTML / CSS / JavaScript'}">HTML / CSS / JavaScript</p>
+          <span th:text="${theme.config.resume?.skills?.s1_stars ?: '★★★★☆'}">★★★★☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--purple">AI</div>
-          <h3>AI 工具链</h3>
-          <p>Codex / MCP / Skills</p>
-          <span>★★★★☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s2_title ?: 'AI 工具链'}">AI 工具链</h3>
+          <p th:text="${theme.config.resume?.skills?.s2_desc ?: 'Codex / MCP / Skills'}">Codex / MCP / Skills</p>
+          <span th:text="${theme.config.resume?.skills?.s2_stars ?: '★★★★☆'}">★★★★☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--gold">CMS</div>
-          <h3>内容平台</h3>
-          <p>Hexo / Markdown / 管理后台</p>
-          <span>★★★★☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s3_title ?: '内容平台'}">内容平台</h3>
+          <p th:text="${theme.config.resume?.skills?.s3_desc ?: 'Hexo / Markdown / 管理后台'}">Hexo / Markdown / 管理后台</p>
+          <span th:text="${theme.config.resume?.skills?.s3_stars ?: '★★★★☆'}">★★★★☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--dark">API</div>
-          <h3>后端接口</h3>
-          <p>Node.js / Express</p>
-          <span>★★★☆☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s4_title ?: '后端接口'}">后端接口</h3>
+          <p th:text="${theme.config.resume?.skills?.s4_desc ?: 'Node.js / Express'}">Node.js / Express</p>
+          <span th:text="${theme.config.resume?.skills?.s4_stars ?: '★★★☆☆'}">★★★☆☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--cyan">OPS</div>
-          <h3>部署运维</h3>
-          <p>Nginx / PM2 / Linux</p>
-          <span>★★★☆☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s5_title ?: '部署运维'}">部署运维</h3>
+          <p th:text="${theme.config.resume?.skills?.s5_desc ?: 'Nginx / PM2 / Linux'}">Nginx / PM2 / Linux</p>
+          <span th:text="${theme.config.resume?.skills?.s5_stars ?: '★★★☆☆'}">★★★☆☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--green">DOC</div>
-          <h3>技术表达</h3>
-          <p>博客写作 / 项目复盘</p>
-          <span>★★★★☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s6_title ?: '技术表达'}">技术表达</h3>
+          <p th:text="${theme.config.resume?.skills?.s6_desc ?: '博客写作 / 项目复盘'}">博客写作 / 项目复盘</p>
+          <span th:text="${theme.config.resume?.skills?.s6_stars ?: '★★★★☆'}">★★★★☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--red">DBG</div>
-          <h3>问题排查</h3>
-          <p>404 / 权限 / 编码</p>
-          <span>★★★★☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s7_title ?: '问题排查'}">问题排查</h3>
+          <p th:text="${theme.config.resume?.skills?.s7_desc ?: '404 / 权限 / 编码'}">404 / 权限 / 编码</p>
+          <span th:text="${theme.config.resume?.skills?.s7_stars ?: '★★★★☆'}">★★★★☆</span>
         </article>
         <article>
           <div class="resume-skill-icon resume-skill-icon--teal">UX</div>
-          <h3>页面审美</h3>
-          <p>个人站点 / Portfolio</p>
-          <span>★★★☆☆</span>
+          <h3 th:text="${theme.config.resume?.skills?.s8_title ?: '页面审美'}">页面审美</h3>
+          <p th:text="${theme.config.resume?.skills?.s8_desc ?: '个人站点 / Portfolio'}">个人站点 / Portfolio</p>
+          <span th:text="${theme.config.resume?.skills?.s8_stars ?: '★★★☆☆'}">★★★☆☆</span>
         </article>
       </div>
     </section>
@@ -240,41 +238,41 @@
 
       <div class="resume-work-grid">
         <article class="resume-work-card resume-work-card--large" 
-                 th:data-title="'LK Universe 个人内容发布平台'" 
-                 th:data-desc="'基于 Hexo、Express、Nginx、PM2 的个人内容发布平台，包含博客前台、后台管理、构建触发和生产部署链路。'" 
-                 th:data-tags="'Hexo,Express,Nginx,PM2,Markdown'" 
-                 th:data-images="|${#theme.assets('/images/resume/lk-universe-preview.png')},${#theme.assets('/images/resume/ai-thoughts-cover.png')},${#theme.assets('/images/resume/hello-world-cover.png')}|" 
-                 th:data-points="'静态前台访问速度快，内容可以版本管理|Express 后台负责文章、媒体和构建接口|Nginx 与 PM2 支撑线上部署和服务守护'">
-          <img th:src="${#theme.assets('/images/resume/lk-universe-preview.png')}" alt="LK Universe 项目展示" />
+                 th:data-title="${theme.config.resume?.works?.w1_title ?: 'LK Universe 个人内容发布平台'}" 
+                 th:data-desc="${theme.config.resume?.works?.w1_desc ?: '基于 Hexo、Express、Nginx、PM2 的个人内容发布平台，包含博客前台、后台管理、构建触发和生产部署链路。'}" 
+                 th:data-tags="${theme.config.resume?.works?.w1_tags ?: 'Hexo,Express,Nginx,PM2,Markdown'}" 
+                 th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w1_gallery) ? theme.config.resume.works.w1_gallery : (#theme.assets('/images/resume/lk-universe-preview.png') + ',' + #theme.assets('/images/resume/ai-thoughts-cover.png') + ',' + #theme.assets('/images/resume/hello-world-cover.png'))}" 
+                 th:data-points="${theme.config.resume?.works?.w1_points ?: '静态前台访问速度快，内容可以版本管理|Express 后台负责文章、媒体和构建接口|Nginx 与 PM2 支撑线上部署和服务守护'}">
+          <img th:src="${theme.config.resume?.works?.w1_cover ?: #theme.assets('/images/resume/lk-universe-preview.png')}" alt="项目展示封面" />
           <div>
-            <span>Hexo / Express / Nginx</span>
-            <h3>LK Universe 个人内容发布平台</h3>
+            <span th:text="${theme.config.resume?.works?.w1_tech ?: 'Hexo / Express / Nginx'}">Hexo / Express / Nginx</span>
+            <h3 th:text="${theme.config.resume?.works?.w1_title ?: 'LK Universe 个人内容发布平台'}">LK Universe 个人内容发布平台</h3>
           </div>
         </article>
         
         <article class="resume-work-card" 
-                 th:data-title="'星域控制塔 CMS 后台'" 
-                 th:data-desc="'围绕 Markdown 文章、微语、媒体上传和构建控制设计的轻量后台，让个人站点逐步具备内容管理能力。'" 
-                 th:data-tags="'Admin,API,Markdown,Upload'" 
-                 th:data-images="|${#theme.assets('/images/resume/admin-console-preview.png')},${#theme.assets('/images/resume/mcp-skills-cover.png')},${#theme.assets('/images/resume/api-article-cover.png')}|" 
-                 th:data-points="'支持文章发布、微语管理和媒体上传|提供构建触发与终端反馈入口|为后续简历模块可视化编辑打基础'">
-          <img th:src="${#theme.assets('/images/resume/admin-console-preview.png')}" alt="后台管理项目展示" />
+                 th:data-title="${theme.config.resume?.works?.w2_title ?: '星域控制塔 CMS 后台'}" 
+                 th:data-desc="${theme.config.resume?.works?.w2_desc ?: '围绕 Markdown 文章、微语、媒体上传和构建控制设计的轻量后台，让个人站点逐步具备内容管理能力。'}" 
+                 th:data-tags="${theme.config.resume?.works?.w2_tags ?: 'Admin,API,Markdown,Upload'}" 
+                 th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w2_gallery) ? theme.config.resume.works.w2_gallery : (#theme.assets('/images/resume/admin-console-preview.png') + ',' + #theme.assets('/images/resume/mcp-skills-cover.png') + ',' + #theme.assets('/images/resume/api-article-cover.png'))}" 
+                 th:data-points="${theme.config.resume?.works?.w2_points ?: '支持文章发布、微语管理和媒体上传|提供构建触发与终端反馈入口|为后续简历模块可视化编辑打基础'}">
+          <img th:src="${theme.config.resume?.works?.w2_cover ?: #theme.assets('/images/resume/admin-console-preview.png')}" alt="项目展示封面" />
           <div>
-            <span>Admin / Markdown / API</span>
-            <h3>星域控制塔 CMS 后台</h3>
+            <span th:text="${theme.config.resume?.works?.w2_tech ?: 'Admin / Markdown / API'}">Admin / Markdown / API</span>
+            <h3 th:text="${theme.config.resume?.works?.w2_title ?: '星域控制塔 CMS 后台'}">星域控制塔 CMS 后台</h3>
           </div>
         </article>
         
         <article class="resume-work-card" 
-                 th:data-title="'线上问题排查复盘'" 
-                 th:data-desc="'记录文章详情页 404、文件权限 EACCES、Windows/Linux 中文文件名编码不一致等真实生产问题。'" 
-                 th:data-tags="'Debugging,Linux,Nginx,Encoding'" 
-                 th:data-images="|${#theme.assets('/images/resume/debug-deploy-preview.png')},${#theme.assets('/images/resume/ai-thoughts-cover.png')},${#theme.assets('/images/resume/butterfly-cover.png')}|" 
-                 th:data-points="'按域名、Nginx、静态产物和文件目录分层排查|统一服务运行用户与文件属主解决权限问题|通过英文 slug 降低跨平台编码风险'">
-          <img th:src="${#theme.assets('/images/resume/debug-deploy-preview.png')}" alt="问题排查复盘展示" />
+                 th:data-title="${theme.config.resume?.works?.w3_title ?: '线上问题排查复盘'}" 
+                 th:data-desc="${theme.config.resume?.works?.w3_desc ?: '记录文章详情页 404、文件权限 EACCES、Windows/Linux 中文文件名编码不一致等真实生产问题。'}" 
+                 th:data-tags="${theme.config.resume?.works?.w3_tags ?: 'Debugging,Linux,Nginx,Encoding'}" 
+                 th:data-images="${not #strings.isEmpty(theme.config.resume?.works?.w3_gallery) ? theme.config.resume.works.w3_gallery : (#theme.assets('/images/resume/debug-deploy-preview.png') + ',' + #theme.assets('/images/resume/ai-thoughts-cover.png') + ',' + #theme.assets('/images/resume/butterfly-cover.png'))}" 
+                 th:data-points="${theme.config.resume?.works?.w3_points ?: '按域名、Nginx、静态产物和文件目录分层排查|统一服务运行用户与文件属主解决权限问题|通过英文 slug 降低跨平台编码风险'}">
+          <img th:src="${theme.config.resume?.works?.w3_cover ?: #theme.assets('/images/resume/debug-deploy-preview.png')}" alt="项目展示封面" />
           <div>
-            <span>Debugging / Production</span>
-            <h3>线上问题排查复盘</h3>
+            <span th:text="${theme.config.resume?.works?.w3_tech ?: 'Debugging / Production'}">Debugging / Production</span>
+            <h3 th:text="${theme.config.resume?.works?.w3_title ?: '线上问题排查复盘'}">线上问题排查复盘</h3>
           </div>
         </article>
       </div>
@@ -289,24 +287,24 @@
 
       <div class="resume-timeline">
         <article>
-          <time>2026</time>
+          <time th:text="${theme.config.resume?.career?.c1_year ?: '2026'}">2026</time>
           <div>
-            <h3>搭建 LK Universe 个人内容平台</h3>
-            <p>完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。</p>
+            <h3 th:text="${theme.config.resume?.career?.c1_title ?: '搭建 LK Universe 个人内容平台'}">搭建 LK Universe 个人内容平台</h3>
+            <p th:text="${theme.config.resume?.career?.c1_desc ?: '完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。'}">完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。</p>
           </div>
         </article>
         <article>
-          <time>2026</time>
+          <time th:text="${theme.config.resume?.career?.c2_year ?: '2026'}">2026</time>
           <div>
-            <h3>扩展内容管理和自动化流程</h3>
-            <p>围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。</p>
+            <h3 th:text="${theme.config.resume?.career?.c2_title ?: '扩展内容管理和自动化流程'}">扩展内容管理和自动化流程</h3>
+            <p th:text="${theme.config.resume?.career?.c2_desc ?: '围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。'}">围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。</p>
           </div>
         </article>
         <article>
-          <time>Next</time>
+          <time th:text="${theme.config.resume?.career?.c3_year ?: 'Next'}">Next</time>
           <div>
-            <h3>继续升级个人展示系统</h3>
-            <p>计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。</p>
+            <h3 th:text="${theme.config.resume?.career?.c3_title ?: '继续升级个人展示系统'}">继续升级个人展示系统</h3>
+            <p th:text="${theme.config.resume?.career?.c3_desc ?: '计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。'}">计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。</p>
           </div>
         </article>
       </div>
@@ -319,19 +317,19 @@
         <h2>诚邀交流</h2>
         <p>如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：</p>
         <p style="margin-top: 10px; opacity: 0.85;">
-          📧 邮箱: <a href="mailto:lk-universe@zengxiansheng.top" style="color: #ffffff; text-decoration: underline;">lk-universe@zengxiansheng.top</a>
+          📧 邮箱: <a th:href="|mailto:${theme.config.resume?.info?.email ?: 'lk-universe@zengxiansheng.top'}|" th:text="${theme.config.resume?.info?.email ?: 'lk-universe@zengxiansheng.top'}" style="color: #ffffff; text-decoration: underline;">lk-universe@zengxiansheng.top</a>
         </p>
       </div>
       <div class="resume-contact__actions">
         <a href="/">返回首页</a>
         <a href="/about/">关于我</a>
-        <a href="https://github.com/zengxiansheng" target="_blank" rel="noopener">
+        <a th:href="${theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng'}" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;margin-right:6px;display:inline-block;vertical-align:middle;">
             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
           </svg>
           GitHub
         </a>
-        <a th:href="${#theme.assets('/images/resume/LK_Resume.pdf')}" download>
+        <a th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}" download th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;margin-right:6px;display:inline-block;vertical-align:middle;">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>

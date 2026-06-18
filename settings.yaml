@@ -1527,6 +1527,350 @@ spec:
               help: 开启后项目列表页和详情页底部渲染评论区；仍需站点或评论插件支持。
               value: true
 
+    - group: resume
+      label: 个人简历
+      formSchema:
+        - $formkit: group
+          name: info
+          label: 基础信息
+          children:
+            - $formkit: text
+              name: role
+              key: resume_info_role
+              label: 职业定位
+              value: IT Design & Technology Learner
+            - $formkit: textarea
+              name: quote
+              key: resume_info_quote
+              label: 个人引言
+              value: “我正在把前端基础、AI 工具链和个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”
+            - $formkit: text
+              name: location
+              key: resume_info_location
+              label: 所在地
+              value: 重庆
+            - $formkit: text
+              name: direction
+              key: resume_info_direction
+              label: 关注方向
+              value: 前端 / AI 工具 / 内容平台
+            - $formkit: text
+              name: featured_project
+              key: resume_info_featured_project
+              label: 代表项目
+              value: LK Universe
+            - $formkit: attachment
+              name: pdf_url
+              key: resume_info_pdf_url
+              label: PDF 简历文件
+              help: 上传你的 PDF 简历，以便在前台提供下载
+              value: /themes/halo-theme-hydro-minim/assets/images/resume/LK_Resume.pdf
+            - $formkit: text
+              name: email
+              key: resume_info_email
+              label: 联系邮箱
+              value: lk-universe@zengxiansheng.top
+            - $formkit: text
+              name: github
+              key: resume_info_github
+              label: GitHub 链接
+              value: https://github.com/zengxiansheng
+        - $formkit: group
+          name: skills
+          label: 专业技能 (8个)
+          children:
+            - $formkit: text
+              name: s1_title
+              key: resume_skills_s1_title
+              label: 技能 1 标题
+              value: 前端基础
+            - $formkit: text
+              name: s1_desc
+              key: resume_skills_s1_desc
+              label: 技能 1 描述
+              value: HTML / CSS / JavaScript
+            - $formkit: text
+              name: s1_stars
+              key: resume_skills_s1_stars
+              label: 技能 1 掌握度 (星星)
+              value: ★★★★☆
+            
+            - $formkit: text
+              name: s2_title
+              key: resume_skills_s2_title
+              label: 技能 2 标题
+              value: AI 工具链
+            - $formkit: text
+              name: s2_desc
+              key: resume_skills_s2_desc
+              label: 技能 2 描述
+              value: Codex / MCP / Skills
+            - $formkit: text
+              name: s2_stars
+              key: resume_skills_s2_stars
+              label: 技能 2 掌握度 (星星)
+              value: ★★★★☆
+            
+            - $formkit: text
+              name: s3_title
+              key: resume_skills_s3_title
+              label: 技能 3 标题
+              value: 内容平台
+            - $formkit: text
+              name: s3_desc
+              key: resume_skills_s3_desc
+              label: 技能 3 描述
+              value: Hexo / Markdown / 管理后台
+            - $formkit: text
+              name: s3_stars
+              key: resume_skills_s3_stars
+              label: 技能 3 掌握度 (星星)
+              value: ★★★★☆
+
+            - $formkit: text
+              name: s4_title
+              key: resume_skills_s4_title
+              label: 技能 4 标题
+              value: 后端接口
+            - $formkit: text
+              name: s4_desc
+              key: resume_skills_s4_desc
+              label: 技能 4 描述
+              value: Node.js / Express
+            - $formkit: text
+              name: s4_stars
+              key: resume_skills_s4_stars
+              label: 技能 4 掌握度 (星星)
+              value: ★★★☆☆
+
+            - $formkit: text
+              name: s5_title
+              key: resume_skills_s5_title
+              label: 技能 5 标题
+              value: 部署运维
+            - $formkit: text
+              name: s5_desc
+              key: resume_skills_s5_desc
+              label: 技能 5 描述
+              value: Nginx / PM2 / Linux
+            - $formkit: text
+              name: s5_stars
+              key: resume_skills_s5_stars
+              label: 技能 5 掌握度 (星星)
+              value: ★★★☆☆
+
+            - $formkit: text
+              name: s6_title
+              key: resume_skills_s6_title
+              label: 技能 6 标题
+              value: 技术表达
+            - $formkit: text
+              name: s6_desc
+              key: resume_skills_s6_desc
+              label: 技能 6 描述
+              value: 博客写作 / 项目复盘
+            - $formkit: text
+              name: s6_stars
+              key: resume_skills_s6_stars
+              label: 技能 6 掌握度 (星星)
+              value: ★★★★☆
+
+            - $formkit: text
+              name: s7_title
+              key: resume_skills_s7_title
+              label: 技能 7 标题
+              value: 问题排查
+            - $formkit: text
+              name: s7_desc
+              key: resume_skills_s7_desc
+              label: 技能 7 描述
+              value: 404 / 权限 / 编码
+            - $formkit: text
+              name: s7_stars
+              key: resume_skills_s7_stars
+              label: 技能 7 掌握度 (星星)
+              value: ★★★★☆
+
+            - $formkit: text
+              name: s8_title
+              key: resume_skills_s8_title
+              label: 技能 8 标题
+              value: 页面审美
+            - $formkit: text
+              name: s8_desc
+              key: resume_skills_s8_desc
+              label: 技能 8 描述
+              value: 个人站点 / Portfolio
+            - $formkit: text
+              name: s8_stars
+              key: resume_skills_s8_stars
+              label: 技能 8 掌握度 (星星)
+              value: ★★★☆☆
+
+        - $formkit: group
+          name: works
+          label: 作品展示 (3个)
+          children:
+            - $formkit: text
+              name: w1_title
+              key: resume_works_w1_title
+              label: 项目 1 标题
+              value: LK Universe 个人内容发布平台
+            - $formkit: text
+              name: w1_tags
+              key: resume_works_w1_tags
+              label: 项目 1 标签 (逗号分隔)
+              value: Hexo,Express,Nginx,PM2,Markdown
+            - $formkit: text
+              name: w1_tech
+              key: resume_works_w1_tech
+              label: 项目 1 技术栈展示名称
+              value: Hexo / Express / Nginx
+            - $formkit: attachment
+              name: w1_cover
+              key: resume_works_w1_cover
+              label: 项目 1 封面图
+              value: /themes/halo-theme-hydro-minim/assets/images/resume/lk-universe-preview.png
+            - $formkit: textarea
+              name: w1_desc
+              key: resume_works_w1_desc
+              label: 项目 1 简短描述
+              value: 基于 Hexo、Express、Nginx、PM2 的个人内容发布平台，包含博客前台、后台管理、构建触发和生产部署链路。
+            - $formkit: textarea
+              name: w1_points
+              key: resume_works_w1_points
+              label: 项目 1 亮点 (竖线 | 分隔多行)
+              value: 静态前台访问速度快，内容可以版本管理|Express 后台负责文章、媒体和构建接口|Nginx 与 PM2 支撑线上部署和服务守护
+            - $formkit: text
+              name: w1_gallery
+              key: resume_works_w1_gallery
+              label: 项目 1 画廊多图 (逗号分隔)
+              value: ""
+
+            - $formkit: text
+              name: w2_title
+              key: resume_works_w2_title
+              label: 项目 2 标题
+              value: 星域控制塔 CMS 后台
+            - $formkit: text
+              name: w2_tags
+              key: resume_works_w2_tags
+              label: 项目 2 标签 (逗号分隔)
+              value: Admin,API,Markdown,Upload
+            - $formkit: text
+              name: w2_tech
+              key: resume_works_w2_tech
+              label: 项目 2 技术栈展示名称
+              value: Admin / Markdown / API
+            - $formkit: attachment
+              name: w2_cover
+              key: resume_works_w2_cover
+              label: 项目 2 封面图
+              value: /themes/halo-theme-hydro-minim/assets/images/resume/admin-console-preview.png
+            - $formkit: textarea
+              name: w2_desc
+              key: resume_works_w2_desc
+              label: 项目 2 简短描述
+              value: 围绕 Markdown 文章、微语、媒体上传和构建控制设计的轻量后台，让个人站点逐步具备内容管理能力。
+            - $formkit: textarea
+              name: w2_points
+              key: resume_works_w2_points
+              label: 项目 2 亮点 (竖线 | 分隔多行)
+              value: 支持文章发布、微语管理和媒体上传|提供构建触发与终端反馈入口|为后续简历模块可视化编辑打基础
+            - $formkit: text
+              name: w2_gallery
+              key: resume_works_w2_gallery
+              label: 项目 2 画廊多图 (逗号分隔)
+              value: ""
+
+            - $formkit: text
+              name: w3_title
+              key: resume_works_w3_title
+              label: 项目 3 标题
+              value: 线上问题排查复盘
+            - $formkit: text
+              name: w3_tags
+              key: resume_works_w3_tags
+              label: 项目 3 标签 (逗号分隔)
+              value: Debugging,Linux,Nginx,Encoding
+            - $formkit: text
+              name: w3_tech
+              key: resume_works_w3_tech
+              label: 项目 3 技术栈展示名称
+              value: Debugging / Production
+            - $formkit: attachment
+              name: w3_cover
+              key: resume_works_w3_cover
+              label: 项目 3 封面图
+              value: /themes/halo-theme-hydro-minim/assets/images/resume/debug-deploy-preview.png
+            - $formkit: textarea
+              name: w3_desc
+              key: resume_works_w3_desc
+              label: 项目 3 简短描述
+              value: 记录文章详情页 404、文件权限 EACCES、Windows/Linux 中文文件名编码不一致等真实生产问题。
+            - $formkit: textarea
+              name: w3_points
+              key: resume_works_w3_points
+              label: 项目 3 亮点 (竖线 | 分隔多行)
+              value: 按域名、Nginx、静态产物和文件目录分层排查|统一服务运行用户与文件属主解决权限问题|通过英文 slug 降低跨平台编码风险
+            - $formkit: text
+              name: w3_gallery
+              key: resume_works_w3_gallery
+              label: 项目 3 画廊多图 (逗号分隔)
+              value: ""
+
+        - $formkit: group
+          name: career
+          label: 成长经历 (3个)
+          children:
+            - $formkit: text
+              name: c1_year
+              key: resume_career_c1_year
+              label: 经历 1 年份/时间
+              value: "2026"
+            - $formkit: text
+              name: c1_title
+              key: resume_career_c1_title
+              label: 经历 1 标题
+              value: 搭建 LK Universe 个人内容平台
+            - $formkit: textarea
+              name: c1_desc
+              key: resume_career_c1_desc
+              label: 经历 1 描述
+              value: 完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。
+
+            - $formkit: text
+              name: c2_year
+              key: resume_career_c2_year
+              label: 经历 2 年份/时间
+              value: "2026"
+            - $formkit: text
+              name: c2_title
+              key: resume_career_c2_title
+              label: 经历 2 标题
+              value: 扩展内容管理和自动化流程
+            - $formkit: textarea
+              name: c2_desc
+              key: resume_career_c2_desc
+              label: 经历 2 描述
+              value: 围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。
+
+            - $formkit: text
+              name: c3_year
+              key: resume_career_c3_year
+              label: 经历 3 年份/时间
+              value: Next
+            - $formkit: text
+              name: c3_title
+              key: resume_career_c3_title
+              label: 经历 3 标题
+              value: 继续升级个人展示系统
+            - $formkit: textarea
+              name: c3_desc
+              key: resume_career_c3_desc
+              label: 经历 3 描述
+              value: 计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。
+
     - group: advanced
       label: 高级设置
       formSchema:
