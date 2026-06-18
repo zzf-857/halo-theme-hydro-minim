@@ -1772,6 +1772,8 @@ body.hydro-auth-page .returntosite-content a:hover {
 
 .hydro-dropdown {
   position: relative;
+  display: inline-flex;
+  align-items: center;
 }
 
 .hydro-dropdown > a {
