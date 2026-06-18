@@ -1581,6 +1581,12 @@ spec:
                 - ".pdf"
               value: "/themes/halo-theme-hydro-minim/assets/images/resume/LK_Resume.pdf"
             - $formkit: text
+              name: pdf_title
+              key: resume_info_pdf_title
+              label: PDF 简历下载文件名
+              help: "下载时保存的文件名（不需要写 .pdf 后缀，留空则默认使用“姓名_Resume.pdf”或“LK_Resume.pdf”）"
+              value: ""
+            - $formkit: text
               name: email
               key: resume_info_email
               label: 联系邮箱
@@ -1590,6 +1596,63 @@ spec:
               key: resume_info_github
               label: GitHub 链接
               value: "https://github.com/zengxiansheng"
+            - $formkit: array
+              name: buttons
+              key: resume_info_buttons
+              label: "栏目动作按钮配置"
+              help: "自定义简历头部（首屏）的操作按钮。支持自由添加、修改、删除及拖动修改顺序。"
+              addLabel: "添加按钮"
+              itemLabels:
+                - type: text
+                  label: $value.text
+              value:
+                - text: "联系我"
+                  url: "#resume-contact"
+                  icon_type: "none"
+                  new_tab: false
+                  is_download: false
+                - text: "关于我"
+                  url: "/about/"
+                  icon_type: "none"
+                  new_tab: false
+                  is_download: false
+                - text: "下载 PDF"
+                  url: "pdf_url"
+                  icon_type: "pdf"
+                  new_tab: false
+                  is_download: true
+              children:
+                - $formkit: text
+                  name: text
+                  label: "按钮文本"
+                  placeholder: "例如: 联系我"
+                  validation: "required"
+                - $formkit: text
+                  name: url
+                  label: "链接地址 (URL)"
+                  placeholder: "支持一般链接，或特殊占位符: pdf_url (个人简历文件)、github_url (GitHub链接)"
+                  validation: "required"
+                - $formkit: select
+                  name: icon_type
+                  label: "按钮图标"
+                  value: "none"
+                  options:
+                    - label: "无图标"
+                      value: "none"
+                    - label: "PDF 简历图标"
+                      value: "pdf"
+                    - label: "GitHub 图标"
+                      value: "github"
+                    - label: "外部链接图标"
+                      value: "link"
+                - $formkit: switch
+                  name: new_tab
+                  label: "新标签页打开"
+                  value: false
+                - $formkit: switch
+                  name: is_download
+                  label: "触发下载"
+                  value: false
         - $formkit: group
           name: skills
           label: "专业技能与工具"
@@ -1794,6 +1857,68 @@ spec:
               key: resume_contact_description
               label: "联系区描述文案"
               value: "如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接："
+            - $formkit: array
+              name: buttons
+              key: resume_contact_buttons
+              label: "联系区动作按钮配置"
+              help: "自定义联系区右侧的操作按钮。支持自由添加、修改、删除及拖动修改顺序。"
+              addLabel: "添加按钮"
+              itemLabels:
+                - type: text
+                  label: $value.text
+              value:
+                - text: "返回首页"
+                  url: "/"
+                  icon_type: "none"
+                  new_tab: false
+                  is_download: false
+                - text: "关于我"
+                  url: "/about/"
+                  icon_type: "none"
+                  new_tab: false
+                  is_download: false
+                - text: "GitHub"
+                  url: "github_url"
+                  icon_type: "github"
+                  new_tab: true
+                  is_download: false
+                - text: "下载 PDF 简历"
+                  url: "pdf_url"
+                  icon_type: "pdf"
+                  new_tab: false
+                  is_download: true
+              children:
+                - $formkit: text
+                  name: text
+                  label: "按钮文本"
+                  placeholder: "例如: 返回首页"
+                  validation: "required"
+                - $formkit: text
+                  name: url
+                  label: "链接地址 (URL)"
+                  placeholder: "支持一般链接，或特殊占位符: pdf_url (个人简历文件)、github_url (GitHub链接)"
+                  validation: "required"
+                - $formkit: select
+                  name: icon_type
+                  label: "按钮图标"
+                  value: "none"
+                  options:
+                    - label: "无图标"
+                      value: "none"
+                    - label: "PDF 简历图标"
+                      value: "pdf"
+                    - label: "GitHub 图标"
+                      value: "github"
+                    - label: "外部链接图标"
+                      value: "link"
+                - $formkit: switch
+                  name: new_tab
+                  label: "新标签页打开"
+                  value: false
+                - $formkit: switch
+                  name: is_download
+                  label: "触发下载"
+                  value: false
 
     - group: advanced
       label: 高级设置

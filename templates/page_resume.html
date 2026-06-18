@@ -69,12 +69,12 @@
     
     <title th:text="|个人简历 - ${site.title}|">个人简历</title>
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-zO9yRkgt.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-WS9R_OAJ.js"></script>
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js">
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js">
     <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CcuuoFar.js">
     <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CDfqauIG.css">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-N6bu8BtY.css">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-BFos3mJv.css">
   </head>
   <body
     class="hydro-page"
@@ -172,31 +172,66 @@
           </th:block>
         </div>
 
-        <div class="resume-actions">
-          <a href="#resume-contact">联系我</a>
-          <a href="/about/">关于我</a>
-          <a
-            th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
-            class="resume-pdf-btn"
-            download
-            th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+        <div class="resume-actions" th:with="buttons=${theme.config.resume?.info?.buttons}">
+          <!-- 如果配置了自定义按钮，则遍历渲染 -->
+          <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
+            <a th:each="btn : ${buttons}"
+               th:href="${btn.url == 'pdf_url' ? (theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')) : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+               th:target="${btn.new_tab ? '_blank' : '_self'}"
+               th:rel="${btn.new_tab ? 'noopener' : null}"
+               th:download="${btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null}">
+              <th:block th:if="${btn.icon_type == 'pdf'}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </th:block>
+              <th:block th:if="${btn.icon_type == 'github'}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+              </th:block>
+              <th:block th:if="${btn.icon_type == 'link'}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </th:block>
+              <span th:text="${btn.text}">按钮文字</span>
+            </a>
+          </th:block>
+          
+          <!-- 向下兼容 Fallback -->
+          <th:block th:unless="${buttons != null and not #lists.isEmpty(buttons)}">
+            <a href="#resume-contact">联系我</a>
+            <a href="/about/">关于我</a>
+            <a
+              th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
+              class="resume-pdf-btn"
+              download
+              th:attr="download=${not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}"
             >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            下载 PDF
-          </a>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              下载 PDF
+            </a>
+          </th:block>
         </div>
       </div>
     </section>
@@ -441,51 +476,84 @@
           >
         </p>
       </div>
-      <div class="resume-contact__actions">
-        <a href="/">返回首页</a>
-        <a href="/about/">关于我</a>
-        <a
-          th:href="${theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng'}"
-          target="_blank"
-          rel="noopener"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="width: 15px; height: 15px; margin-right: 6px; display: inline-block; vertical-align: middle"
+      <div class="resume-contact__actions" th:with="buttons=${theme.config.resume?.contact?.buttons}">
+        <!-- 如果配置了自定义按钮，则遍历渲染 -->
+        <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
+          <a th:each="btn : ${buttons}"
+             th:href="${btn.url == 'pdf_url' ? (theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')) : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+             th:target="${btn.new_tab ? '_blank' : '_self'}"
+             th:rel="${btn.new_tab ? 'noopener' : null}"
+             th:download="${btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null}">
+            <th:block th:if="${btn.icon_type == 'pdf'}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </th:block>
+            <th:block th:if="${btn.icon_type == 'github'}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+            </th:block>
+            <th:block th:if="${btn.icon_type == 'link'}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </th:block>
+            <span th:text="${btn.text}">按钮文字</span>
+          </a>
+        </th:block>
+        
+        <!-- 向下兼容 Fallback -->
+        <th:block th:unless="${buttons != null and not #lists.isEmpty(buttons)}">
+          <a href="/">返回首页</a>
+          <a href="/about/">关于我</a>
+          <a
+            th:href="${theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng'}"
+            target="_blank"
+            rel="noopener"
           >
-            <path
-              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-            ></path>
-          </svg>
-          GitHub
-        </a>
-        <a
-          th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
-          download
-          th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="width: 14px; height: 14px; margin-right: 6px; display: inline-block; vertical-align: middle"
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              ></path>
+            </svg>
+            GitHub
+          </a>
+          <a
+            th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
+            download
+            th:attr="download=${not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}"
           >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-          下载 PDF 简历
-        </a>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            下载 PDF 简历
+          </a>
+        </th:block>
       </div>
     </section>
 

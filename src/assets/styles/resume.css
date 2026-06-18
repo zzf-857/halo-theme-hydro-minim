@@ -304,11 +304,13 @@ html[data-hydro-theme="dark"] .resume-quote {
   border-color: var(--resume-accent-soft);
 }
 
-.resume-actions .resume-pdf-btn svg {
+.resume-actions a svg,
+.resume-contact__actions a svg {
   margin-right: 6px;
-  fill: currentColor;
   width: 14px;
   height: 14px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* 技能与专业部分 */
