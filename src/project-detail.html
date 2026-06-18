@@ -1,0 +1,135 @@
+<include src="layout.html">
+  <template name="head">
+    <title th:text="|${project.title} - ${theme.config.plugins?.portfolio?.title ?: '项目作品'} - ${site.title}|">项目详情</title>
+  </template>
+
+  <div class="hydro-container hydro-project-detail-page pt-32 pb-12">
+    <!-- 返回按钮 -->
+    <a
+      th:href="@{/projects}"
+      class="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-600 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 transition-colors mb-8"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      返回项目列表
+    </a>
+
+    <article
+      class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm"
+      th:with="
+        hasPortfolioPlugin=${pluginFinder.available('plugin-portfolio') or pluginFinder.available('PluginPortfolio') or pluginFinder.available('portfolio')},
+        projectFinderBean=${#vars['projectFinder']},
+        platformLabels=${hasPortfolioPlugin and projectFinderBean != null ? projectFinderBean.platformLabels() : null},
+        typeLabels=${hasPortfolioPlugin and projectFinderBean != null ? projectFinderBean.typeLabels() : null}
+      "
+    >
+      <!-- 大封面图 -->
+      <div th:if="${not #strings.isEmpty(project.cover)}" class="w-full aspect-[21/9] overflow-hidden bg-neutral-100 dark:bg-neutral-800 relative">
+        <img
+          th:src="${project.cover}"
+          th:srcset="${project.cover}"
+          th:alt="${project.title}"
+          class="w-full h-full object-cover project-cover-img cursor-pointer"
+          data-lightbox-trigger=""
+          th:data-src="${project.cover}"
+          th:data-alt="${project.title}"
+        />
+      </div>
+
+      <div class="p-6 md:p-8">
+        <!-- 头部元数据 -->
+        <header class="border-b border-neutral-100 dark:border-neutral-800 pb-6 mb-6">
+          <div class="flex flex-wrap items-center gap-3 text-xs mb-3">
+            <span
+              th:if="${project.type}"
+              th:text="${typeLabels != null and typeLabels[project.type] != null ? typeLabels[project.type] : project.type}"
+              class="px-2.5 py-0.5 rounded font-semibold bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
+            >
+              类型
+            </span>
+            <span
+              th:if="${project.platform}"
+              th:text="${platformLabels != null and platformLabels[project.platform] != null ? platformLabels[project.platform] : project.platform}"
+              class="px-2.5 py-0.5 rounded font-semibold bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 uppercase"
+            >
+              平台
+            </span>
+            <span
+              th:if="${not #strings.isEmpty(project.repoUrl)}"
+              class="px-2.5 py-0.5 rounded font-semibold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900"
+            >
+              开源项目
+            </span>
+          </div>
+
+          <h1 class="text-2xl md:text-3.5xl font-bold text-neutral-900 dark:text-white leading-tight mb-4" th:text="${project.title}">
+            项目标题
+          </h1>
+
+          <p class="text-neutral-600 dark:text-neutral-400 text-base md:text-lg leading-relaxed" th:text="${project.summary}">
+            项目简介。
+          </p>
+
+          <!-- 技术栈 -->
+          <div class="mt-4 flex flex-wrap gap-2" th:if="${project.techStacks}">
+            <span
+              th:each="tech : ${project.techStacks}"
+              th:text="${tech}"
+              class="px-2.5 py-1 text-xs rounded bg-neutral-50 dark:bg-neutral-800/50 text-neutral-600 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
+            >
+              Vue
+            </span>
+          </div>
+
+          <!-- 外链区 -->
+          <div class="mt-6 flex flex-wrap gap-4" th:if="${not #strings.isEmpty(project.repoUrl)}">
+            <a
+              th:href="${project.repoUrl}"
+              target="_blank"
+              rel="noreferrer noopener"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors shadow-sm"
+            >
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.164 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+              开源代码
+            </a>
+          </div>
+        </header>
+
+        <!-- Markdown 内容排版主体 -->
+        <div
+          class="hydro-markdown prose prose-neutral dark:prose-invert max-w-none prose-pre:bg-neutral-50 dark:prose-pre:bg-neutral-800/50 prose-pre:border prose-pre:border-neutral-200 dark:prose-pre:border-neutral-800 prose-img:rounded-lg"
+          data-project-content=""
+          th:utext="${hasPortfolioPlugin and projectFinderBean != null ? projectFinderBean.renderContent(project) : project.content}"
+        >
+          项目详细内容。
+        </div>
+      </div>
+    </article>
+
+    <!-- 评论区 -->
+    <section
+      id="comment"
+      class="hydro-plugin-comments mt-12"
+      th:if="${(theme.config.plugins?.portfolio == null or theme.config.plugins.portfolio.enable_comment != false) and haloCommentEnabled and singlePage != null}"
+    >
+      <h2 th:text="${theme.config.plugins?.portfolio?.comments_title ?: '评论'}">评论</h2>
+      <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
+    </section>
+    
+    <div class="hydro-lightbox hydro-lightbox--post" data-lightbox aria-hidden="true" th:if="${theme.config.presentation?.motion == null or theme.config.presentation.motion.enable_lightbox != false}">
+      <button class="hydro-lightbox__close" data-lightbox-close aria-label="关闭图片灯箱">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <button class="hydro-lightbox__prev" data-lightbox-prev aria-label="上一张">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      </button>
+      <figure class="hydro-lightbox__figure">
+        <img class="hydro-lightbox__img" data-lightbox-img src="" alt="" />
+        <figcaption class="hydro-lightbox__caption" data-lightbox-caption></figcaption>
+      </figure>
+      <button class="hydro-lightbox__next" data-lightbox-next aria-label="下一张">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+      <div class="hydro-lightbox__counter" data-lightbox-counter></div>
+    </div>
+  </div>
+</include>

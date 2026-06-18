@@ -17902,30 +17902,30 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered h2 {
   margin-left: 0;
 }
 
+@keyframes origami-shadow-breath {
+  0%, 100% {
+    box-shadow: 
+      6px 6px 0px 0px rgb(var(--hydro-ink-rgb) / 10%),
+      12px 12px 0px 0px rgb(var(--hydro-ink-rgb) / 5%);
+  }
+  50% {
+    box-shadow: 
+      8px 8px 0px 0px rgb(var(--hydro-ink-rgb) / 8%),
+      15px 15px 0px 0px rgb(var(--hydro-ink-rgb) / 4%);
+  }
+}
+
 .hydro-moment--detail .hydro-moment-detail-card--media {
   display: block;
   min-height: clamp(41rem, 57vw, 50rem);
   overflow: hidden;
-  border: 1px solid rgb(var(--hydro-ink-rgb) / 56%);
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0 var(--hydro-moment-paper-gutter),
-      rgb(var(--hydro-coral-rgb) / 54%) 0 calc(var(--hydro-moment-paper-gutter) + 1px),
-      transparent 0
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0,
-      transparent calc(var(--hydro-moment-paper-line) - 1px),
-      rgb(var(--hydro-ink-rgb) / 50%) calc(var(--hydro-moment-paper-line) - 1px),
-      rgb(var(--hydro-ink-rgb) / 50%) var(--hydro-moment-paper-line)
-    ),
-    radial-gradient(circle at 10% 0%, rgb(var(--hydro-coral-rgb) / 11%), transparent 16rem),
-    linear-gradient(135deg, rgb(var(--hydro-paper-rgb) / 70%), rgb(var(--hydro-paper-rgb) / 30%)), var(--hydro-bg);
-  box-shadow:
-    0 1.6rem 4rem rgb(var(--hydro-shadow-rgb) / 8%),
-    inset 0 1px 0 rgb(var(--hydro-paper-rgb) / 38%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 40%);
+  border-radius: 0.75rem;
+  background: rgb(var(--hydro-paper-rgb));
+  box-shadow: 
+    6px 6px 0px 0px rgb(var(--hydro-ink-rgb) / 10%),
+    12px 12px 0px 0px rgb(var(--hydro-ink-rgb) / 5%);
+  animation: origami-shadow-breath 6s ease-in-out infinite;
 }
 
 .hydro-moment--detail .hydro-moment-detail-card--media-only {
@@ -17938,42 +17938,18 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered h2 {
   align-items: start;
   min-height: clamp(27rem, 44vw, 39rem);
   overflow: hidden;
-  border: 1px solid rgb(var(--hydro-ink-rgb) / 56%);
-  padding: var(--hydro-moment-paper-top) clamp(1.6rem, 5vw, 4.2rem) clamp(3rem, 5vw, 4.2rem)
-    var(--hydro-moment-paper-left);
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0 var(--hydro-moment-paper-gutter),
-      rgb(var(--hydro-coral-rgb) / 54%) 0 calc(var(--hydro-moment-paper-gutter) + 1px),
-      transparent 0
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0,
-      transparent calc(var(--hydro-moment-paper-line) - 1px),
-      rgb(var(--hydro-ink-rgb) / 50%) calc(var(--hydro-moment-paper-line) - 1px),
-      rgb(var(--hydro-ink-rgb) / 50%) var(--hydro-moment-paper-line)
-    ),
-    radial-gradient(circle at 10% 0%, rgb(var(--hydro-coral-rgb) / 11%), transparent 16rem),
-    linear-gradient(135deg, rgb(var(--hydro-paper-rgb) / 70%), rgb(var(--hydro-paper-rgb) / 30%)), var(--hydro-bg);
-  box-shadow:
-    0 1.6rem 4rem rgb(var(--hydro-shadow-rgb) / 8%),
-    inset 0 1px 0 rgb(var(--hydro-paper-rgb) / 38%);
+  border: 1px solid rgb(var(--hydro-ink-rgb) / 40%);
+  border-radius: 0.75rem;
+  padding: 3rem clamp(1.5rem, 5vw, 3.5rem);
+  background: rgb(var(--hydro-paper-rgb));
+  box-shadow: 
+    6px 6px 0px 0px rgb(var(--hydro-ink-rgb) / 10%),
+    12px 12px 0px 0px rgb(var(--hydro-ink-rgb) / 5%);
+  animation: origami-shadow-breath 6s ease-in-out infinite;
 }
 
 .hydro-moment--detail .hydro-moment-detail-card--text::after {
-  position: absolute;
-  right: clamp(1rem, 4vw, 2.5rem);
-  top: clamp(2.5rem, 7vw, 7rem);
-  z-index: 0;
-  pointer-events: none;
-  color: rgb(var(--hydro-ink-rgb) / 2.8%);
-  content: "MOMENT";
-  font-size: clamp(4.8rem, 11vw, 8.5rem);
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 0.85;
+  display: none;
 }
 
 .hydro-moment--detail .hydro-moment-detail-card::before {
@@ -17981,15 +17957,7 @@ html[data-hydro-motion="off"] .hydro-list-card.is-hydro-card-hovered h2 {
 }
 
 .hydro-moment--detail .hydro-moment-detail-card--text::before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--hydro-moment-paper-gutter);
-  display: block;
-  width: 1px;
-  pointer-events: none;
-  background: rgb(var(--hydro-coral-rgb) / 54%);
-  content: "";
+  display: none;
 }
 
 .hydro-moment--detail .hydro-moment-detail-media {
@@ -19196,4 +19164,23 @@ html[data-color-mode="light"] {
   .qr-image {
     max-width: 120px;
   }
+}
+
+/* ==================== 瞬间富文本样式与排版优化 ==================== */
+.hydro-prose h1 { font-size: 1.8rem !important; font-weight: 800 !important; margin: 1.5rem 0 0.8rem !important; color: var(--hydro-solid) !important; }
+.hydro-prose h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin: 1.3rem 0 0.7rem !important; color: var(--hydro-solid) !important; }
+.hydro-prose h3 { font-size: 1.25rem !important; font-weight: 700 !important; margin: 1.1rem 0 0.6rem !important; color: var(--hydro-solid) !important; }
+.hydro-prose strong { font-weight: 700 !important; color: var(--hydro-solid) !important; }
+.hydro-prose ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 1rem !important; }
+.hydro-prose ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin-bottom: 1rem !important; }
+
+/* 修复多媒体瞬间正文被强制设为大粗体导致和标题一模一样的问题 */
+.hydro-moment-detail-card--media .hydro-moment__content {
+  font-weight: normal !important;
+}
+.hydro-moment-detail-card--media .hydro-moment__content p {
+  font-size: 1.05rem !important;
+  font-weight: normal !important;
+  line-height: 1.8 !important;
+  color: rgb(var(--hydro-ink-rgb) / 80%) !important;
 }

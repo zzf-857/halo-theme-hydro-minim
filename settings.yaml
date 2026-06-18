@@ -1489,6 +1489,43 @@ spec:
               label: 插件安装链接
               help: 未安装或需升级 Docsme 插件时展示的跳转地址。
               value: https://www.halo.run/store/apps/app-yffxw
+        - $formkit: group
+          name: portfolio
+          label: 项目集
+          children:
+            - $formkit: text
+              name: eyebrow
+              key: plugins_portfolio_eyebrow
+              label: 英文 Kicker
+              help: 项目集页面的英文角标，如 Portfolio。
+              value: Portfolio
+            - $formkit: text
+              name: title
+              key: plugins_portfolio_title
+              label: 页面标题
+              help: 项目集列表页的主标题。
+              value: 项目集
+            - $formkit: textarea
+              name: description
+              key: plugins_portfolio_description
+              label: 页面描述
+              help: 项目集列表页标题下方的介绍文案。
+              value: 这里记录了我的开源项目、产品、插件与工具作品。
+            - $formkit: number
+              name: page_size
+              key: plugins_portfolio_page_size
+              label: 每页数量
+              help: 项目列表每页加载的条目数量。
+              value: 12
+              min: 1
+              max: 50
+              step: 1
+            - $formkit: switch
+              name: enable_comment
+              key: plugins_portfolio_enable_comment
+              label: 启用评论区
+              help: 开启后项目列表页和详情页底部渲染评论区；仍需站点或评论插件支持。
+              value: true
 
     - group: advanced
       label: 高级设置

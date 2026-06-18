@@ -9,7 +9,7 @@
       <div class="hydro-container">
         <p>Link In Bio</p>
         <h1>社交聚合名片</h1>
-        <span>一键联系我，打破沟通边界</span>
+        <span>随时联系我</span>
       </div>
     </section>
 
@@ -24,7 +24,7 @@
               <img th:src="${not #strings.isEmpty(site.logo) ? site.logo : (theme.config.identity?.brand?.logo ?: #theme.assets('/brand/hydro-minim-mark.svg'))}" class="profile-avatar" alt="Avatar" />
               <div class="aurora-ring" style="--aurora-speed: 6s;"></div>
             </div>
-            <h2 class="profile-name" th:text="${site.title}">站长</h2>
+            <h2 class="profile-name" th:text="LilKing">站长</h2>
             <p class="profile-bio">热爱设计、科技与生活方式，专注于创造 premium 的视觉与用户体验。</p>
           </div>
 
@@ -63,14 +63,14 @@
           </a>
 
           <!-- Card 5: 邮箱卡 (占 2x1 宽卡) -->
-          <div class="hydro-bento-card card-email clickable" data-tilt-card onclick="copyValue('1164020790@qq.com', this, true)">
+          <div class="hydro-bento-card card-email clickable" data-tilt-card onclick="copyValue('2996449004@qq.com', this, true)">
             <div class="email-content">
               <span class="card-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
               </span>
               <div class="email-details">
                 <h3>电子邮箱 Email</h3>
-                <p>1164020790@qq.com</p>
+                <p>2996449004@qq.com</p>
               </div>
             </div>
             <span class="hover-tip">点击复制邮箱并发送邮件</span>
@@ -80,7 +80,7 @@
           <!-- Card 6: 座右铭/状态卡 (占 2x1 宽卡) -->
           <div class="hydro-bento-card card-status" data-tilt-card>
             <span class="status-indicator"></span>
-            <p class="status-text">“ 33% 自由，66% 内容。在数字世界构建有序的美感。 ”</p>
+            <p class="status-text">“ 要么忙着去活，要么忙着去死 ”</p>
           </div>
 
         </div>

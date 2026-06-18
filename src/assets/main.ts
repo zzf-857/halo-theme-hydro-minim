@@ -1946,6 +1946,54 @@ function initPostContentEnhancements() {
   });
 }
 
+function initProjectDetailEnhancements() {
+  const page = document.querySelector<HTMLElement>(".hydro-project-detail-page");
+  if (!page) return;
+
+  // 1. 处理大封面图的无障碍交互
+  const coverImg = page.querySelector<HTMLImageElement>(".project-cover-img");
+  if (coverImg && lightboxEnabled) {
+    coverImg.setAttribute("role", "button");
+    coverImg.setAttribute("tabindex", "0");
+    coverImg.setAttribute("aria-label", coverImg.alt ? `查看图片：${coverImg.alt}` : "查看图片");
+    coverImg.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        coverImg.click();
+      }
+    });
+  }
+
+  // 2. 处理正文内的图片灯箱绑定与基础增强
+  const content = page.querySelector<HTMLElement>("[data-project-content]");
+  if (content) {
+    enhanceContentBasics(content);
+    if (lightboxEnabled) {
+      const lightboxImages = Array.from(content.querySelectorAll<HTMLImageElement>("img")).filter((image) => {
+        return !image.closest("a") && !image.classList.contains("icon") && !image.classList.contains("no-lightbox");
+      });
+      lightboxImages.forEach((image) => {
+        image.dataset.lightboxTrigger = "";
+        image.dataset.src = image.currentSrc || image.src;
+        image.dataset.alt = image.alt || "";
+        const caption = image.closest("figure")?.querySelector("figcaption")?.textContent?.trim();
+        if (caption) {
+          image.dataset.caption = caption;
+        }
+        image.setAttribute("role", "button");
+        image.setAttribute("tabindex", "0");
+        image.setAttribute("aria-label", image.alt ? `查看图片：${image.alt}` : "查看图片");
+        image.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            image.click();
+          }
+        });
+      });
+    }
+  }
+}
+
 function enhanceContentBasics(content: HTMLElement, tableWrapClass = "hydro-post-table-wrap") {
   content.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
     if (!image.hasAttribute("loading")) {
@@ -3284,6 +3332,7 @@ initCategoryCursor();
 initFooterMarquee();
 initAuthorPage();
 initPostContentEnhancements();
+initProjectDetailEnhancements();
 initMediaLoadingExperience();
 initPostToc();
 initPostMobileReadingControls();
