@@ -142,12 +142,19 @@ import "./styles/resume.css";
           function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
-                entry.target.classList.add("is-visible");
-                observer.unobserve(entry.target);
+                // 微延迟 30ms 确保浏览器优先渲染初始的隐蔽状态以完美播放过渡动画
+                setTimeout(function () {
+                  entry.target.classList.add("is-visible");
+                }, 30);
+              } else {
+                // 如果用户往上滚动（元素回到了当前视口下方），则移除 is-visible 以便能再次触发入场动效
+                if (entry.boundingClientRect.top > 0) {
+                  entry.target.classList.remove("is-visible");
+                }
               }
             });
           },
-          { threshold: 0.14 },
+          { threshold: 0.1 },
         );
 
         revealItems.forEach(function (item) {
