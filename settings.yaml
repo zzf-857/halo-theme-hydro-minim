@@ -1583,6 +1583,38 @@ spec:
           label: "专业技能与工具"
           children:
             - $formkit: array
+              name: categories
+              key: resume_skills_categories
+              label: "技能类别配置"
+              help: "自定义技能类别及其在前台的显示顺序。支持自由增加、删除或拖拽修改顺序 (类 Unity Inspector 列表)"
+              addLabel: "添加类别"
+              itemLabels:
+                - type: text
+                  label: $value.name
+              value:
+                - id: "frontend"
+                  name: "🎨 前端开发"
+                - id: "backend"
+                  name: "⚙️ 后端开发"
+                - id: "devops"
+                  name: "🚀 部署运维"
+                - id: "aitools"
+                  name: "🧠 AI 与工具"
+                - id: "softskills"
+                  name: "💼 职业软实力"
+              children:
+                - $formkit: text
+                  name: id
+                  label: "类别唯一标识 (ID)"
+                  placeholder: "例如: frontend"
+                  validation: "required"
+                - $formkit: text
+                  name: name
+                  label: "类别显示名称"
+                  placeholder: "例如: 🎨 前端开发"
+                  validation: "required"
+
+            - $formkit: array
               name: list
               key: resume_skills_list
               label: "技能与工具列表"
@@ -1638,21 +1670,11 @@ spec:
                   label: "技能/工具名称"
                   placeholder: "例如: React"
                   validation: "required"
-                - $formkit: select
+                - $formkit: text
                   name: category
-                  label: "技能类别"
-                  value: "frontend"
-                  options:
-                    - label: "🎨 前端开发"
-                      value: "frontend"
-                    - label: "⚙️ 后端开发"
-                      value: "backend"
-                    - label: "🚀 部署运维"
-                      value: "devops"
-                    - label: "🧠 AI 与工具"
-                      value: "aitools"
-                    - label: "💼 职业软实力"
-                      value: "softskills"
+                  label: "所属类别 ID"
+                  placeholder: "对应上方填写的类别唯一标识 (ID)，例如: frontend"
+                  validation: "required"
                 - $formkit: iconify
                   name: icon
                   label: "图标 (选填)"

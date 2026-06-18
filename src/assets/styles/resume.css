@@ -392,6 +392,8 @@ html[data-hydro-theme="dark"] .resume-skill-grid article:hover {
   font-weight: 900;
   font-size: 16px;
   letter-spacing: 0.02em;
+  background: #f3f4f6;
+  color: #374151;
 }
 
 /* 亮色模式技能徽章 */
@@ -426,6 +428,11 @@ html[data-hydro-theme="dark"] .resume-skill-grid article:hover {
 .resume-skill-icon--teal {
   background: #ccfbf1;
   color: #0d9488;
+}
+
+html[data-hydro-theme="dark"] .resume-skill-icon {
+  background: #0b0b0c;
+  color: #f3f4f6;
 }
 
 /* 暗色模式技能徽章 */
