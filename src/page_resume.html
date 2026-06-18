@@ -96,8 +96,8 @@
     </section>
 
     <!-- 2. 专业技能与工具 -->
-    <section class="resume-section resume-skills resume-reveal" id="resume-skills">
-      <div class="resume-section__heading" th:with="sTitle=${theme.config.resume?.skills?.title ?: '专业技能与工具'}, sSubtitle=${theme.config.resume?.skills?.subtitle ?: 'Competencies & Stack'}" th:if="${not #strings.isEmpty(sTitle) or not #strings.isEmpty(sSubtitle)}">
+    <section class="resume-section resume-skills resume-reveal" id="resume-skills" th:with="sTitle=${theme.config.resume?.skills?.title ?: '专业技能与工具'}, sSubtitle=${theme.config.resume?.skills?.subtitle ?: 'Competencies & Stack'}">
+      <div class="resume-section__heading" th:if="${not #strings.isEmpty(sTitle) or not #strings.isEmpty(sSubtitle)}">
         <p class="resume-eyebrow" th:if="${not #strings.isEmpty(sSubtitle)}" th:text="${sSubtitle}">Competencies & Stack</p>
         <h2 th:if="${not #strings.isEmpty(sTitle)}" th:text="${sTitle}">专业技能与工具</h2>
       </div>
@@ -275,8 +275,8 @@
     </section>
 
     <!-- 4. 成长经历 -->
-    <section class="resume-section resume-reveal" id="resume-career" th:if="${(theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)) or (theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c3_title != null)}">
-      <div class="resume-section__heading" th:with="cTitle=${theme.config.resume?.career?.title ?: '成长经历'}, cSubtitle=${theme.config.resume?.career?.subtitle ?: 'Career Journey'}" th:if="${not #strings.isEmpty(cTitle) or not #strings.isEmpty(cSubtitle)}">
+    <section class="resume-section resume-career resume-reveal" id="resume-career" th:if="${(theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)) or (theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c3_title != null)}" th:with="cTitle=${theme.config.resume?.career?.title ?: '成长经历'}, cSubtitle=${theme.config.resume?.career?.subtitle ?: 'Career Journey'}">
+      <div class="resume-section__heading" th:if="${not #strings.isEmpty(cTitle) or not #strings.isEmpty(cSubtitle)}">
         <p class="resume-eyebrow" th:if="${not #strings.isEmpty(cSubtitle)}" th:text="${cSubtitle}">Career Journey</p>
         <h2 th:if="${not #strings.isEmpty(cTitle)}" th:text="${cTitle}">成长经历</h2>
       </div>
