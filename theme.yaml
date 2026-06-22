@@ -15,7 +15,7 @@ spec:
   settingName: "halo-theme-hydro-minim-setting"
   configMapName: "halo-theme-hydro-minim-configMap"
   version: 1.0.0-beta3
-  requires: ">=2.24.0"
+  requires: ">=2.25.0"
   customTemplates:
     page:
       - name: Hydro 关于页

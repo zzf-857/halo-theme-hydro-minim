@@ -12,7 +12,10 @@
       safeDescription=${#strings.isEmpty(description) ? '该资源已开启访问保护，请输入密码后继续访问。' : description},
       safePath=${#strings.isEmpty(path) ? '/' : path},
       safeUnlockAction=${#strings.isEmpty(unlockAction) ? '/apis/public.safebox.muyin.site/v1alpha1/unlock' : unlockAction},
-      safeError=${#strings.isEmpty(error) ? '' : error}
+      safeError=${#strings.isEmpty(error) ? '' : error},
+      safeShowTargetPath=${theme.config.plugins?.safebox?.show_target_path != false},
+      safeShowUnlockNote=${theme.config.plugins?.safebox?.show_unlock_note != false},
+      safeAutofocusPassword=${theme.config.plugins?.safebox?.autofocus_password != false}
     "
   >
     <div class="hydro-container">
@@ -33,7 +36,7 @@
             </svg>
           </div>
 
-          <div class="hydro-safebox-route">
+          <div class="hydro-safebox-route" th:if="${safeShowTargetPath}">
             <span>返回路径</span>
             <code th:text="${safePath}">/upload/example.png</code>
           </div>
@@ -68,7 +71,7 @@
               type="password"
               autocomplete="current-password"
               required
-              autofocus
+              th:autofocus="${safeAutofocusPassword}"
               placeholder="输入密码继续访问"
             />
           </label>
@@ -81,7 +84,9 @@
             </svg>
           </button>
 
-          <p class="hydro-safebox-note">密码只用于本次访问验证。解锁成功后，插件会按规则有效期保持访问状态。</p>
+          <p class="hydro-safebox-note" th:if="${safeShowUnlockNote}">
+            密码只用于本次访问验证。解锁成功后，插件会按规则有效期保持访问状态。
+          </p>
         </form>
       </article>
     </div>
