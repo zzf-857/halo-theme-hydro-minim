@@ -10,6 +10,7 @@ import { createMediaLoadController } from "./media-loading";
 import { createHydroQrSvg, createHydroQrSvgDataUrl } from "./poster-qr";
 import { initSearchWidgetSkin } from "./search-widget-skin";
 import { initHydroTagCloud } from "./tag-cloud";
+import { initAutoLinks } from "./autolink";
 
 import "./styles/main.css";
 
@@ -5233,3 +5234,4 @@ function initFab() {
 
 initBackToTop();
 initFab();
+initAutoLinks();

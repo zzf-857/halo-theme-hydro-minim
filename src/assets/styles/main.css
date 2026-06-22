@@ -8174,8 +8174,8 @@ html.lenis body {
   width: 100%;
 }
 
-.hydro-moment__content p:empty {
-  display: none;
+.hydro-moment__content p:empty::before {
+  content: "\00a0";
 }
 
 .hydro-moment__media {
@@ -11662,8 +11662,8 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
   margin: 0;
 }
 
-.hydro-post-prose p:empty {
-  display: none;
+.hydro-post-prose p:empty::before {
+  content: "\00a0";
 }
 
 .hydro-post-prose h1,
@@ -11837,6 +11837,14 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
   padding-left: 1.34rem;
 }
 
+.hydro-post-prose ul {
+  list-style-type: disc;
+}
+
+.hydro-post-prose ol {
+  list-style-type: decimal;
+}
+
 .hydro-post-prose ol ol,
 .hydro-post-prose ul ol {
   list-style-type: lower-alpha;
@@ -11845,6 +11853,16 @@ html[data-hydro-lightbox="false"] .hydro-lightbox {
 .hydro-post-prose ol ol ol,
 .hydro-post-prose ul ol ol {
   list-style-type: lower-roman;
+}
+
+.hydro-post-prose ul ul,
+.hydro-post-prose ol ul {
+  list-style-type: circle;
+}
+
+.hydro-post-prose ul ul ul,
+.hydro-post-prose ol ul ul {
+  list-style-type: square;
 }
 
 .hydro-post-prose li {
