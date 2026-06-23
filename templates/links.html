@@ -129,7 +129,11 @@
       configuredSiteDescription=${theme.config.plugins?.links?.site_description},
       siteName=${#strings.isEmpty(configuredSiteName) ? site.title : configuredSiteName},
       siteUrlRaw=${#strings.isEmpty(configuredSiteUrlRaw) ? site.url : configuredSiteUrlRaw},
-      siteUrl=${#strings.isEmpty(siteUrlRaw) ? '' : (#strings.endsWith(siteUrlRaw, '/') ? #strings.substring(siteUrlRaw, 0, #strings.length(siteUrlRaw) - 1) : siteUrlRaw)},
+      siteUrl=${#strings.isEmpty(siteUrlRaw) ? '' : (
+        #strings.startsWith(siteUrlRaw, 'http://') or #strings.startsWith(siteUrlRaw, 'https://') or #strings.startsWith(siteUrlRaw, '//')
+        ? (#strings.endsWith(siteUrlRaw, '/') ? #strings.substring(siteUrlRaw, 0, #strings.length(siteUrlRaw) - 1) : siteUrlRaw)
+        : 'https://' + (#strings.endsWith(siteUrlRaw, '/') ? #strings.substring(siteUrlRaw, 0, #strings.length(siteUrlRaw) - 1) : siteUrlRaw)
+      )},
       fallbackSiteLogoRaw=${#strings.isEmpty(site.logo) ? (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo) : site.logo},
       siteLogoRaw=${#strings.isEmpty(configuredSiteLogoRaw) ? fallbackSiteLogoRaw : configuredSiteLogoRaw},
       siteBaseUrl=${#strings.isEmpty(siteUrl) ? '' : siteUrl},
@@ -308,7 +312,7 @@
           <a
             class="hydro-link-card"
             th:each="link, linkStat : ${theme.config.plugins.links.custom_links}"
-            th:href="${link.url}"
+            th:href="${#strings.startsWith(link.url, 'http://') or #strings.startsWith(link.url, 'https://') or #strings.startsWith(link.url, '//') ? link.url : 'https://' + link.url}"
             th:title="${link.description}"
             th:attr="aria-label=|访问 ${link.displayName}|"
             target="_blank"
@@ -319,7 +323,7 @@
               <div class="hydro-link-card__avatar">
                 <img
                   th:if="${not #strings.isEmpty(link.logo)}"
-                  th:src="${link.logo}"
+                  th:src="${#strings.startsWith(link.logo, 'http://') or #strings.startsWith(link.logo, 'https://') or #strings.startsWith(link.logo, '//') ? link.logo : 'https://' + link.logo}"
                   th:alt="${link.displayName}"
                   loading="lazy"
                 />
