@@ -28,7 +28,7 @@
       fallbackSiteLogoRaw=${#strings.isEmpty(site.logo) ? (theme.config.identity?.brand == null || #strings.isEmpty(theme.config.identity.brand.logo) ? #theme.assets('/brand/hydro-minim-mark.svg') : theme.config.identity.brand.logo) : site.logo},
       siteLogoRaw=${#strings.isEmpty(configuredSiteLogoRaw) ? fallbackSiteLogoRaw : configuredSiteLogoRaw},
       siteBaseUrl=${#strings.isEmpty(siteUrl) ? '' : siteUrl},
-      siteLogo=${#strings.startsWith(siteLogoRaw, 'http://') or #strings.startsWith(siteLogoRaw, 'https://') or #strings.startsWith(siteLogoRaw, '//') ? siteLogoRaw : siteBaseUrl + (#strings.startsWith(siteLogoRaw, '/') ? siteLogoRaw : '/' + siteLogoRaw)},
+      siteLogo=${#strings.startsWith(siteLogoRaw, 'http://') or #strings.startsWith(siteLogoRaw, 'https://') or #strings.startsWith(siteLogoRaw, '//') ? siteLogoRaw : (#strings.contains(siteLogoRaw, '/') and #strings.contains(#strings.substringBefore(siteLogoRaw, '/'), '.') ? 'https://' + siteLogoRaw : siteBaseUrl + (#strings.startsWith(siteLogoRaw, '/') ? siteLogoRaw : '/' + siteLogoRaw))},
       fallbackSiteDescription=${site.seo != null and not #strings.isEmpty(site.seo.description) ? site.seo.description : (not #strings.isEmpty(site.subtitle) ? site.subtitle : (theme.config.plugins?.links?.description ?: '与志同道合的创作者相互连接，共同构建开放的网络。'))},
       siteDescription=${#strings.isEmpty(configuredSiteDescription) ? fallbackSiteDescription : configuredSiteDescription}"
   >

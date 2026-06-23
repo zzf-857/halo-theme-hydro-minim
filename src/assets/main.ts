@@ -2958,7 +2958,7 @@ function initLinksPage() {
     if (groupWrapper) (groupWrapper as HTMLElement).style.display = submitReady ? "" : "none";
 
     sectionHeaders.forEach((header) => {
-      if (header.textContent?.includes("验证信息")) {
+      if (header.textContent?.includes("验证信息") || header.textContent?.includes("更多信息")) {
         const section = header.closest(".hydro-link-submit-form__section") as HTMLElement | null;
         if (section) section.style.display = submitReady ? "" : "none";
       }
