@@ -2944,14 +2944,44 @@ function initLinksPage() {
     getHydroLenis()?.start?.();
   };
   const openSubmitModal = () => {
-    if (!submitReady) {
-      showMessage(submitMessageEl, submitText.unavailable, "error");
-      return;
-    }
     openModal(submitModal);
-    loadLinkGroups("submit");
-    if (verifyType === "captcha") {
-      refreshCaptcha("submit");
+
+    const autoFetchBtn = document.getElementById("hydro-link-auto-fetch-btn");
+    const verifyCodeGroup = document.getElementById("hydro-link-verify-code")?.closest(".hydro-link-submit-form__group");
+    const captchaGroup = document.getElementById("hydro-link-captcha")?.closest(".hydro-link-submit-form__group");
+    const groupWrapper = document.getElementById("hydro-link-group-wrapper");
+    const sectionHeaders = document.querySelectorAll("#hydro-link-submit-form .hydro-link-submit-form__section-title");
+
+    if (autoFetchBtn) (autoFetchBtn as HTMLElement).style.display = submitReady ? "" : "none";
+    if (verifyCodeGroup) (verifyCodeGroup as HTMLElement).style.display = submitReady ? "" : "none";
+    if (captchaGroup) (captchaGroup as HTMLElement).style.display = submitReady ? "" : "none";
+    if (groupWrapper) (groupWrapper as HTMLElement).style.display = submitReady ? "" : "none";
+
+    sectionHeaders.forEach((header) => {
+      if (header.textContent?.includes("验证信息")) {
+        const section = header.closest(".hydro-link-submit-form__section") as HTMLElement | null;
+        if (section) section.style.display = submitReady ? "" : "none";
+      }
+    });
+
+    const emailInput = document.getElementById("hydro-link-email") as HTMLInputElement | null;
+    if (emailInput) {
+      emailInput.required = submitReady;
+      const emailGroup = emailInput.closest(".hydro-link-submit-form__group");
+      if (emailGroup) {
+        const star = emailGroup.querySelector("span");
+        if (star) star.style.display = submitReady ? "" : "none";
+      }
+    }
+
+    if (!submitReady) {
+      showMessage(submitMessageEl, "温馨提示：当前未检测到 LinksSubmit 插件，提交申请后系统会自动复制友情链接信息，并为您跳转到下方评论区，粘贴发送即可自助申请。", "success");
+    } else {
+      submitMessageEl.style.display = "none";
+      loadLinkGroups("submit");
+      if (verifyType === "captcha") {
+        refreshCaptcha("submit");
+      }
     }
   };
   const openUpdateModal = () => {
@@ -3025,13 +3055,16 @@ function initLinksPage() {
 
       submitReady = false;
       if (submitEntry) {
-        submitEntry.style.display = "none";
+        submitEntry.style.display = "";
       }
       if (updateEntry) {
         updateEntry.style.display = "none";
       }
       if (unavailableEntry) {
-        unavailableEntry.style.display = "";
+        unavailableEntry.style.display = "none";
+      }
+      if (window.location.hash === "#add") {
+        openSubmitModal();
       }
     }, 500);
   };
@@ -3171,11 +3204,66 @@ function initLinksPage() {
   const handleSubmit = (event: SubmitEvent) => {
     event.preventDefault();
     const api = getLinksSubmitApi();
+    const formData = new FormData(submitForm);
+
     if (!api) {
+      const displayName = formData.get("displayName") || "";
+      const url = formData.get("url") || "";
+      const logo = formData.get("logo") || "";
+      const description = formData.get("description") || "";
+      const email = formData.get("email") || "";
+
+      const formattedText = `## 友情链接申请
+- 站名：${displayName}
+- 链接：${url}
+- Logo：${logo}
+- 描述：${description}${email ? `\n- 邮箱：${email}` : ""}`;
+
+      navigator.clipboard.writeText(formattedText)
+        .then(() => {
+          showHydroNotice("您的友链申请信息已成功复制到剪贴板！请在下方评论区发表评论提交申请。", {
+            id: "hydro-link-submit-clipboard-success",
+            title: "信息复制成功",
+            variant: "success",
+          });
+        })
+        .catch(() => {
+          showHydroNotice("自动复制失败，请手动选中表单中的信息进行复制。", {
+            id: "hydro-link-submit-clipboard-error",
+            title: "复制提示",
+            variant: "error",
+          });
+        });
+
+      closeModal(submitModal);
+
+      setTimeout(() => {
+        const textareas = document.querySelectorAll("textarea");
+        let filled = false;
+        textareas.forEach((textarea) => {
+          const placeholder = textarea.placeholder || "";
+          if (placeholder.includes("评论") || placeholder.includes("说点什么") || textarea.className.includes("comment") || textarea.id.includes("comment")) {
+            textarea.value = formattedText;
+            textarea.dispatchEvent(new Event("input", { bubbles: true }));
+            textarea.focus();
+            filled = true;
+          }
+        });
+        if (!filled && textareas.length > 0) {
+          const firstTextarea = textareas[0] as HTMLTextAreaElement;
+          firstTextarea.value = formattedText;
+          firstTextarea.dispatchEvent(new Event("input", { bubbles: true }));
+          firstTextarea.focus();
+        }
+
+        const commentSection = document.getElementById("comment");
+        if (commentSection) {
+          commentSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 500);
       return;
     }
 
-    const formData = new FormData(submitForm);
     const verifyCode = parseVerifyCode(formData, "submit");
     if (verifyCode == null) {
       return;

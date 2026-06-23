@@ -1277,6 +1277,13 @@ spec:
               key: plugins_links_site_description
               label: 我的站点描述
               help: 友链申请页展示的本站描述，留空时使用系统 SEO 描述或站点副标题。
+            - $formkit: switch
+              name: show_my_site_info
+              id: plugins_links_show_my_site_info
+              key: plugins_links_show_my_site_info
+              label: 显示“我的站点信息”卡片
+              help: 关闭后，在前台友链页中将不会展示本站的站点信息卡片。
+              value: true
             - $formkit: array
               name: custom_links
               label: "友情链接管理"

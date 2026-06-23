@@ -16,6 +16,7 @@
   <!-- 站点信息 + 友链申请 -->
   <section
     class="hydro-site-info"
+    th:if="${not #strings.isEmpty(singlePage.content.content) or theme.config.plugins?.links?.enable_submit or theme.config.plugins?.links?.show_my_site_info == null or theme.config.plugins?.links?.show_my_site_info != false}"
     th:with="
       configuredSiteName=${theme.config.plugins?.links?.site_name},
       configuredSiteUrlRaw=${theme.config.plugins?.links?.site_url},
@@ -33,7 +34,7 @@
   >
     <div class="hydro-container">
       <div class="hydro-links-top">
-        <div class="hydro-site-info__card">
+        <div class="hydro-site-info__card" th:if="${theme.config.plugins?.links?.show_my_site_info == null or theme.config.plugins?.links?.show_my_site_info != false}">
           <div class="hydro-site-info__header">
             <div class="hydro-site-info__identity">
               <img class="hydro-site-info__logo" th:src="${siteLogo}" th:alt="|${siteName} logo|" loading="lazy" />
