@@ -1798,6 +1798,10 @@ spec:
               label: 自动聚焦密码框
               help: 开启后进入解锁页自动聚焦访问密码输入框，提高桌面端输入效率。
               value: true
+
+    - group: resume
+      label: 个人简历
+      formSchema:
         - $formkit: group
           name: info
           label: 基础信息
