@@ -196,78 +196,123 @@
   <!-- 友链列表 -->
   <section class="hydro-links-section">
     <div class="hydro-container">
-      <th:block th:if="${not #lists.isEmpty(groups)}">
-        <div class="hydro-links-group" th:each="group : ${groups}">
-          <div class="hydro-links-group__header">
-            <div class="hydro-links-group__line"></div>
-            <h2 th:text="${group.spec.displayName}">分组名称</h2>
-            <span
-              class="hydro-links-group__count"
-              th:text="|${#lists.size(group.links)} ${theme.config.plugins?.links?.group_count_suffix ?: '个链接'}|"
-              >0 个链接</span
-            >
-            <button
-              class="hydro-links-random"
-              th:if="${#lists.size(group.links) > 1}"
-              data-random-link
-              th:attr="data-links=${#strings.arrayJoin(group.links.![spec.url], ',')},aria-label=${theme.config.plugins?.links?.random_label ?: '随机访问'},title=${theme.config.plugins?.links?.random_label ?: '随机访问'}"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
-                <path d="m18 2 4 4-4 4"></path>
-                <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
-                <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
-                <path d="m18 14 4 4-4 4"></path>
+      <!-- 优先加载主题后台配置的自定义友链列表 -->
+      <th:block th:if="${theme.config.plugins?.links?.custom_links != null and not #lists.isEmpty(theme.config.plugins.links.custom_links)}">
+        <div class="hydro-links-grid">
+          <a
+            class="hydro-link-card"
+            th:each="link, linkStat : ${theme.config.plugins.links.custom_links}"
+            th:href="${link.url}"
+            th:title="${link.description}"
+            th:attr="aria-label=|访问 ${link.displayName}|"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <span class="hydro-link-card__index" th:text="${linkStat.index + 1}">1</span>
+            <div class="hydro-link-card__head">
+              <div class="hydro-link-card__avatar">
+                <img
+                  th:if="${not #strings.isEmpty(link.logo)}"
+                  th:src="${link.logo}"
+                  th:alt="${link.displayName}"
+                  loading="lazy"
+                />
+                <span
+                  th:if="${#strings.isEmpty(link.logo)}"
+                  th:text="${#strings.substring(link.displayName,0,1)}"
+                  >A</span
+                >
+              </div>
+              <div class="hydro-link-card__meta">
+                <strong th:text="${link.displayName}">站点名称</strong>
+                <code th:text="${#strings.contains(link.url, '//') ? #strings.substringAfter(link.url, '//') : link.url}">example.com</code>
+              </div>
+              <svg class="hydro-link-card__arrow" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 17 17 7M8 7h9v9"></path>
               </svg>
-            </button>
-          </div>
-          <div class="hydro-links-grid">
-            <a
-              class="hydro-link-card"
-              th:each="link, linkStat : ${group.links}"
-              th:href="${link.spec.url}"
-              th:title="${link.spec.description}"
-              th:attr="aria-label=|访问 ${link.spec.displayName}|"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <span class="hydro-link-card__index" th:text="${linkStat.index + 1}">1</span>
-              <div class="hydro-link-card__head">
-                <div class="hydro-link-card__avatar">
-                  <img
-                    th:if="${not #strings.isEmpty(link.spec.logo)}"
-                    th:src="${link.spec.logo}"
-                    th:alt="${link.spec.displayName}"
-                  />
-                  <span
-                    th:if="${#strings.isEmpty(link.spec.logo)}"
-                    th:text="${#strings.substring(link.spec.displayName,0,1)}"
-                    >A</span
-                  >
-                </div>
-                <div class="hydro-link-card__meta">
-                  <strong th:text="${link.spec.displayName}">站点名称</strong>
-                  <code th:text="${#strings.substringAfter(link.spec.url, '//')}">example.com</code>
-                </div>
-                <svg class="hydro-link-card__arrow" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 17 17 7M8 7h9v9"></path>
-                </svg>
-              </div>
-              <div class="hydro-link-card__desc">
-                <p th:text="${link.spec.description}">站点描述</p>
-              </div>
-            </a>
-          </div>
+            </div>
+            <div class="hydro-link-card__desc">
+              <p th:text="${link.description}">站点描述</p>
+            </div>
+          </a>
         </div>
       </th:block>
 
-      <div
-        th:if="${#lists.isEmpty(groups)}"
-        class="hydro-empty"
-        th:text="${theme.config.plugins?.links?.empty_text ?: '暂无友链。'}"
-      >
-        暂无友链。
-      </div>
+      <!-- 否则回退至从 plugin-links 插件加载的分组数据 -->
+      <th:block th:if="${theme.config.plugins?.links?.custom_links == null or #lists.isEmpty(theme.config.plugins.links.custom_links)}">
+        <th:block th:if="${not #lists.isEmpty(groups)}">
+          <div class="hydro-links-group" th:each="group : ${groups}">
+            <div class="hydro-links-group__header">
+              <div class="hydro-links-group__line"></div>
+              <h2 th:text="${group.spec.displayName}">分组名称</h2>
+              <span
+                class="hydro-links-group__count"
+                th:text="|${#lists.size(group.links)} ${theme.config.plugins?.links?.group_count_suffix ?: '个链接'}|"
+                >0 个链接</span
+              >
+              <button
+                class="hydro-links-random"
+                th:if="${#lists.size(group.links) > 1}"
+                data-random-link
+                th:attr="data-links=${#strings.arrayJoin(group.links.![spec.url], ',')},aria-label=${theme.config.plugins?.links?.random_label ?: '随机访问'},title=${theme.config.plugins?.links?.random_label ?: '随机访问'}"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
+                  <path d="m18 2 4 4-4 4"></path>
+                  <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
+                  <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
+                  <path d="m18 14 4 4-4 4"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="hydro-links-grid">
+              <a
+                class="hydro-link-card"
+                th:each="link, linkStat : ${group.links}"
+                th:href="${link.spec.url}"
+                th:title="${link.spec.description}"
+                th:attr="aria-label=|访问 ${link.spec.displayName}|"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <span class="hydro-link-card__index" th:text="${linkStat.index + 1}">1</span>
+                <div class="hydro-link-card__head">
+                  <div class="hydro-link-card__avatar">
+                    <img
+                      th:if="${not #strings.isEmpty(link.spec.logo)}"
+                      th:src="${link.spec.logo}"
+                      th:alt="${link.spec.displayName}"
+                    />
+                    <span
+                      th:if="${#strings.isEmpty(link.spec.logo)}"
+                      th:text="${#strings.substring(link.spec.displayName,0,1)}"
+                      >A</span
+                    >
+                  </div>
+                  <div class="hydro-link-card__meta">
+                    <strong th:text="${link.spec.displayName}">站点名称</strong>
+                    <code th:text="${#strings.substringAfter(link.spec.url, '//')}">example.com</code>
+                  </div>
+                  <svg class="hydro-link-card__arrow" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 17 17 7M8 7h9v9"></path>
+                  </svg>
+                </div>
+                <div class="hydro-link-card__desc">
+                  <p th:text="${link.spec.description}">站点描述</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </th:block>
+
+        <div
+          th:if="${#lists.isEmpty(groups)}"
+          class="hydro-empty"
+          th:text="${theme.config.plugins?.links?.empty_text ?: '暂无友链。'}"
+        >
+          暂无友链。
+        </div>
+      </th:block>
     </div>
   </section>
 
