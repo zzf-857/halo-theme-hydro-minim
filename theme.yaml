@@ -14,8 +14,8 @@ spec:
   issues: https://github.com/liuyiwuqing/halo-theme-hydro-minim/issues
   settingName: "halo-theme-hydro-minim-setting"
   configMapName: "halo-theme-hydro-minim-configMap"
-  version: 1.0.0-beta2
-  requires: ">=2.24.0"
+  version: 1.0.0-beta4
+  requires: ">=2.25.0"
   customTemplates:
     page:
       - name: Hydro 关于页
@@ -27,6 +27,9 @@ spec:
       - name: Hydro 个人简历
         description: 氢风格个人简历，展示个人能力、专业技能和作品展示
         file: page_resume.html
+      - name: Hydro 友链页
+        description: 友链页面模板；支持站点信息、友链列表、申请说明和在线提交入口
+        file: links.html
       - name: Hydro 追番页
         description: 追番插件页面模板；未安装插件时显示安装提示
         file: bangumis.html
@@ -48,6 +51,9 @@ spec:
       - name: Hydro Steam 页
         description: Steam 插件页面模板；未安装插件时显示安装提示
         file: steam.html
+      - name: Hydro 项目集
+        description: 项目集插件页面模板；未安装插件时显示安装提示
+        file: projects.html
   license:
     - name: "GPL-3.0"
       url: "https://www.gnu.org/licenses/gpl-3.0.html"

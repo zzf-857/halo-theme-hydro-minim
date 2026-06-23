@@ -1325,6 +1325,7 @@ spec:
               value: true
             - $el: div
               if: $get(plugins_links_enable_submit).value === true
+              key: plugins_links_submit_install_notice
               attrs:
                 class: "text-sm"
                 style: |
@@ -1377,6 +1378,29 @@ spec:
           name: moments
           label: 瞬间
           children:
+            - $el: div
+              key: plugins_moments_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-SnwWD"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【瞬间插件】"
             - $formkit: number
               name: page_size
               key: plugins_moments_page_size
@@ -1408,6 +1432,29 @@ spec:
           name: photos
           label: 图库
           children:
+            - $el: div
+              key: plugins_photos_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-BmQJW"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【图库管理插件】"
             - $formkit: number
               name: page_size
               key: plugins_photos_page_size
@@ -1427,6 +1474,29 @@ spec:
           name: equipment
           label: 装备
           children:
+            - $el: div
+              key: plugins_equipment_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-ytygyqml"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【装备管理插件】"
             - $formkit: switch
               name: enable_comment
               key: plugins_equipment_enable_comment
@@ -1437,6 +1507,29 @@ spec:
           name: friends
           label: 朋友圈
           children:
+            - $el: div
+              key: plugins_friends_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-yISsV"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【朋友圈插件】"
             - $formkit: number
               name: page_size
               key: plugins_friends_page_size
@@ -1456,6 +1549,29 @@ spec:
           name: bangumi
           label: 追番
           children:
+            - $el: div
+              key: plugins_bangumi_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-OTFPN"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【Bilibili 追番插件】"
             - $formkit: number
               name: item_limit
               key: plugins_bangumi_item_limit
@@ -1475,6 +1591,29 @@ spec:
           name: steam
           label: Steam
           children:
+            - $el: div
+              key: plugins_steam_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-0ojqyzfh"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【Steam 游戏库插件】"
             - $formkit: number
               name: recent_limit
               key: plugins_steam_recent_limit
@@ -1493,6 +1632,15 @@ spec:
               min: 1
               max: 60
               step: 1
+            - $formkit: number
+              name: cache_ttl_minutes
+              key: plugins_steam_cache_ttl_minutes
+              label: 前端缓存分钟数
+              help: 控制 Steam 前端数据缓存时间；设为 0 可关闭前端缓存，调试时才建议这么干。
+              value: 3
+              min: 0
+              max: 60
+              step: 1
             - $formkit: switch
               name: enable_game_link
               key: plugins_steam_enable_game_link
@@ -1509,6 +1657,29 @@ spec:
           name: docs
           label: Docsme 文档
           children:
+            - $el: div
+              key: plugins_docs_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-yffxw"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【Docsme 插件】"
             - $formkit: switch
               name: enable_toc
               id: plugins_docs_enable_toc
@@ -1522,12 +1693,6 @@ spec:
               label: 启用评论区
               help: 开启后 Docsme 文档页渲染评论区；仍需站点或评论插件支持。
               value: true
-            - $formkit: url
-              name: install_link
-              key: plugins_docs_install_link
-              label: 插件安装链接
-              help: 未安装或需升级 Docsme 插件时展示的跳转地址。
-              value: https://www.halo.run/store/apps/app-yffxw
         - $formkit: group
           name: portfolio
           label: 项目集
@@ -1550,25 +1715,89 @@ spec:
               label: 页面描述
               help: 项目集列表页标题下方的介绍文案。
               value: 这里记录了我的开源项目、产品、插件与工具作品。
+            - $el: div
+              key: plugins_portfolio_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/store/apps/app-ix3j4n6d"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【项目集插件】"
             - $formkit: number
               name: page_size
               key: plugins_portfolio_page_size
               label: 每页数量
-              help: 项目列表每页加载的条目数量。
+              help: 项目集独立页面通过 Finder 读取项目时，每页展示的项目数量。
               value: 12
               min: 1
-              max: 50
+              max: 60
               step: 1
             - $formkit: switch
               name: enable_comment
               key: plugins_portfolio_enable_comment
               label: 启用评论区
-              help: 开启后项目列表页和详情页底部渲染评论区；仍需站点或评论插件支持。
+              help: 开启后项目集独立页和项目详情页底部渲染评论区；仍需站点或评论插件支持。
               value: true
-
-    - group: resume
-      label: 个人简历
-      formSchema:
+        - $formkit: group
+          name: safebox
+          label: 保险箱
+          children:
+            - $el: div
+              key: plugins_safebox_install_notice
+              attrs:
+                class: "text-sm"
+                style: |
+                  display: inline-block;
+                  margin-top: 0.5rem;
+                  padding: 0.5rem 0.75rem;
+                  background: #fffbeb;
+                  border-radius: 0.375rem;
+                  border: 1px solid #fcd34d;
+              children:
+                - $el: span
+                  attrs:
+                    style: "color: #92400e;"
+                  children: "⚠️ 需要安装 "
+                - $el: a
+                  attrs:
+                    href: "https://www.halo.run/uc/developer/apps/app-ak7nvfvj"
+                    target: "_blank"
+                    style: |
+                      color: #00a8ff;
+                  children: "【保险箱插件】"
+            - $formkit: switch
+              name: show_target_path
+              key: plugins_safebox_show_target_path
+              label: 显示返回路径
+              help: 开启后解锁页展示验证通过后将返回的资源路径，便于访客确认目标资源。
+              value: true
+            - $formkit: switch
+              name: show_unlock_note
+              key: plugins_safebox_show_unlock_note
+              label: 显示解锁说明
+              help: 开启后解锁表单底部显示密码仅用于本次访问验证的说明。
+              value: true
+            - $formkit: switch
+              name: autofocus_password
+              key: plugins_safebox_autofocus_password
+              label: 自动聚焦密码框
+              help: 开启后进入解锁页自动聚焦访问密码输入框，提高桌面端输入效率。
+              value: true
         - $formkit: group
           name: info
           label: 基础信息
@@ -1999,6 +2228,7 @@ spec:
                   label: "触发下载"
                   value: false
 
+
     - group: advanced
       label: 高级设置
       formSchema:
@@ -2034,16 +2264,3 @@ spec:
               help: 注入为全站自定义脚本，只填写 JavaScript 内容，不需要包裹 script 标签。
               language: javascript
               value: ""
-        - $formkit: group
-          name: performance
-          label: 性能
-          children:
-            - $formkit: number
-              name: steam_cache_ttl_minutes
-              key: advanced_performance_steam_cache_ttl_minutes
-              label: Steam 前端缓存分钟数
-              help: 控制 Steam 前端数据缓存时间；设为 0 可关闭前端缓存，调试时才建议这么干。
-              value: 3
-              min: 0
-              max: 60
-              step: 1
