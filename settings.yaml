@@ -1843,21 +1843,52 @@ spec:
                   label: "要件内容"
                   placeholder: "例如: 长沙"
                   validation: "required"
-            - $formkit: attachment
-              name: pdf_url
-              key: resume_info_pdf_url
-              label: PDF 简历文件
-              help: 上传你的 PDF 简历，以便在前台提供下载
-              accepts:
-                - "application/pdf"
-                - ".pdf"
-              value: "/themes/halo-theme-hydro-minim/assets/images/resume/LK_Resume.pdf"
-            - $formkit: text
-              name: pdf_title
-              key: resume_info_pdf_title
-              label: PDF 简历下载文件名
-              help: "下载时保存的文件名（不需要写 .pdf 后缀，留空则默认使用“姓名_Resume.pdf”或“LK_Resume.pdf”）"
-              value: ""
+            - $formkit: switch
+              name: show_download_button
+              key: resume_info_show_download_button
+              label: "是否开启简历下载按钮"
+              help: "全局总开关。开启后在简历页面显示下载按钮，关闭则完全隐藏下载入口（防偷看）"
+              value: true
+            - $formkit: array
+              name: hr_resumes
+              key: resume_info_hr_resumes
+              label: "HR 专属多版本简历配置"
+              help: "点击添加专属简历，可上传多份简历。你可以为不同公司设置对应的识别码（即专属链接后缀）和上传定制的简历。"
+              addLabel: "添加专属简历"
+              itemLabels:
+                - type: text
+                  label: $value.company_key
+              value:
+                - company_key: "default"
+                  pdf_url: "/themes/halo-theme-hydro-minim/assets/images/resume/LK_Resume.pdf"
+                  pdf_title: "曾先生_个人简历"
+                  show_download: true
+              children:
+                - $formkit: text
+                  name: company_key
+                  label: "专属链接后缀 / 提取码"
+                  placeholder: "留空表示默认首页链接"
+                - $formkit: text
+                  name: full_url
+                  label: "自动拼接好的专属链接（双击即可复制）"
+                  disabled: true
+                  value: "$('blog.zengxiansheng.top/' + ($value.company_key || ''))"
+                - $formkit: switch
+                  name: show_download
+                  label: "是否允许下载简历"
+                  help: "控制使用该后缀进入的 HR 是否能看到并下载此份简历（完全独立控制显示隐藏）"
+                  value: true
+                - $formkit: attachment
+                  name: pdf_url
+                  label: "上传/选择 PDF 简历"
+                  accepts:
+                    - "application/pdf"
+                    - ".pdf"
+                  validation: "required"
+                - $formkit: text
+                  name: pdf_title
+                  label: "下载时保存的文件名"
+                  placeholder: "例如：曾先生_简历_腾讯版 (不需要写 .pdf 后缀)" 
             - $formkit: text
               name: email
               key: resume_info_email

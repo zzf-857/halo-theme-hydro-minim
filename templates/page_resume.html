@@ -186,10 +186,12 @@
           <!-- 如果配置了自定义按钮，则遍历渲染 -->
           <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
             <a th:each="btn : ${buttons}"
-               th:href="${btn.url == 'pdf_url' ? (theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')) : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
-               th:target="${btn.new_tab ? '_blank' : '_self'}"
+               th:if="${theme.config.resume?.info?.show_download_button != false or btn.url != 'pdf_url'}"
+               th:classappend="${btn.url == 'pdf_url'} ? 'auth-download-btn' : ''"
+               th:href="${btn.url == 'pdf_url' ? 'javascript:void(0);' : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+               th:target="${btn.url == 'pdf_url' ? '_self' : (btn.new_tab ? '_blank' : '_self')}"
                th:rel="${btn.new_tab ? 'noopener' : null}"
-               th:download="${btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null}">
+               th:download="${btn.url == 'pdf_url' ? '简历.pdf' : (btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null)}">
               <th:block th:if="${btn.icon_type == 'pdf'}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -220,10 +222,11 @@
             <a href="#resume-contact">联系我</a>
             <a href="/about/">关于我</a>
             <a
-              th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
-              class="resume-pdf-btn"
+              th:if="${theme.config.resume?.info?.show_download_button != false}"
+              href="javascript:void(0);"
+              class="resume-pdf-btn auth-download-btn"
               download
-              th:attr="download=${not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}"
+              th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -541,9 +544,11 @@
             GitHub
           </a>
           <a
-            th:href="${theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')}"
+            th:if="${theme.config.resume?.info?.show_download_button != false}"
+            href="javascript:void(0);"
+            class="auth-download-btn"
             download
-            th:attr="download=${not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}"
+            th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
           >
             <svg
               viewBox="0 0 24 24"
@@ -583,6 +588,217 @@
       th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
       th:utext="${theme.config.advanced.inject.code_js}"
     ></script>
+    <!-- 📋 专属简历链接助手悬浮窗 -->
+    <div id="admin-resume-helper" 
+         class="admin-helper-panel"
+         style="display: none;">
+      <div class="admin-helper-header">
+        <strong>📋 专属简历链接助手</strong>
+        <span class="admin-helper-close" onclick="document.getElementById('admin-resume-helper').style.display='none'">×</span>
+      </div>
+      <div class="admin-helper-body">
+        <p class="admin-helper-tip">直接点击 [复制] 即可将专属链接发给 HR：</p>
+        <ul id="admin-links-list"></ul>
+      </div>
+    </div>
+
+    <!-- 悬浮窗样式 -->
+    <style>
+      .admin-helper-panel {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 320px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 13px;
+        color: #333;
+        text-align: left;
+      }
+      html[data-hydro-theme="dark"] .admin-helper-panel {
+        background: rgba(20, 22, 24, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #ddd;
+      }
+      .admin-helper-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .admin-helper-close {
+        cursor: pointer;
+        font-size: 16px;
+        opacity: 0.6;
+      }
+      .admin-helper-close:hover { opacity: 1; }
+      .admin-helper-body { padding: 16px; }
+      .admin-helper-tip { margin-bottom: 12px; opacity: 0.7; }
+      .admin-helper-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        background: rgba(0,0,0,0.02);
+        padding: 6px 10px;
+        border-radius: 6px;
+      }
+      .admin-helper-copy-btn {
+        background: #FF6B6B;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 0.2s;
+      }
+      .admin-helper-copy-btn:hover { background: #FF8A8A; }
+    </style>
+
+    <!-- 动态分流及复制逻辑 -->
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      document.addEventListener("DOMContentLoaded", () => {
+        const downloadBtns = document.querySelectorAll(".auth-download-btn");
+        
+        // 1. 读取后台原始配置数据，并规范化驼峰键名（兼容 Java 序列化命名）
+        const rawResumes = /*[[${theme.config.resume?.info?.hr_resumes}]]*/ [];
+        const normalizedResumes = (rawResumes || []).map(r => ({
+          companyKey: (r.companyKey || r.company_key || "").trim(),
+          pdfUrl: r.pdfUrl || r.pdf_url || "",
+          pdfTitle: r.pdfTitle || r.pdf_title || "",
+          showDownload: r.showDownload !== undefined ? r.showDownload : (r.show_download !== undefined ? r.show_download : true)
+        }));
+
+        // 2. 忽略重复的识别码（不区分大小写，只取第一个）
+        const resumesList = [];
+        const seenKeys = new Set();
+        normalizedResumes.forEach(r => {
+          const lowKey = r.companyKey.toLowerCase();
+          if (!seenKeys.has(lowKey)) {
+            seenKeys.add(lowKey);
+            resumesList.push(r);
+          }
+        });
+
+        // 3. 读取授权过的公司标记
+        const company = localStorage.getItem('hr_company');
+
+        // 辅助函数：查找对应的配置（不区分大小写匹配）
+        function findResumeByCode(code) {
+          const targetCode = (code || "").trim().toLowerCase();
+          return resumesList.find(r => r.companyKey.toLowerCase() === targetCode) 
+              || resumesList.find(r => r.companyKey.toLowerCase() === 'default');
+        }
+
+        // 4. 如果是已授权的 HR，根据授权标记控制显示/隐藏以及动态绑定
+        if (company) {
+          const targetResume = findResumeByCode(company);
+          if (targetResume) {
+            // 如果该专属通道关闭了下载，直接隐藏下载按钮
+            if (targetResume.showDownload === false) {
+              downloadBtns.forEach(btn => btn.style.display = "none");
+            } else {
+              downloadBtns.forEach(btn => {
+                btn.style.display = "";
+                btn.href = targetResume.pdfUrl;
+                btn.setAttribute("download", (targetResume.pdfTitle || "个人简历") + ".pdf");
+              });
+            }
+          }
+        } else {
+          // 5. 普通访客点击：拦截并提示输入提取码
+          downloadBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+              if (!localStorage.getItem('hr_company')) {
+                e.preventDefault();
+                
+                const code = prompt("🔒 简历下载受限\n请输入您的专属提取码：");
+                if (code === null) return;
+                
+                const matchedResume = findResumeByCode(code);
+                const searchCode = code.trim().toLowerCase();
+                const directMatch = resumesList.find(r => r.companyKey.toLowerCase() === searchCode);
+                
+                if (directMatch) {
+                  localStorage.setItem('hr_company', code.trim());
+                  alert("验证成功！已为您解锁专属简历。");
+                  
+                  if (directMatch.showDownload === false) {
+                    alert("抱歉，该版本的简历下载已被作者关闭。");
+                    downloadBtns.forEach(b => b.style.display = "none");
+                  } else {
+                    downloadBtns.forEach(b => {
+                      b.style.display = "";
+                      b.href = directMatch.pdfUrl;
+                      b.setAttribute("download", (directMatch.pdfTitle || "个人简历") + ".pdf");
+                    });
+                    btn.click(); // 重新触发下载
+                  }
+                } else {
+                  alert("提取码错误，请联系作者获取专属链接。");
+                }
+              }
+            });
+          });
+        }
+
+        // 6. 管理员助手显示控制及拼接复制逻辑
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminParam = urlParams.get('admin');
+
+        if (adminParam === 'show') {
+          const helperPanel = document.getElementById("admin-resume-helper");
+          if (helperPanel) {
+            helperPanel.style.display = "block";
+            
+            const linksList = document.getElementById("admin-links-list");
+            const origin = window.location.origin;
+
+            resumesList.forEach(resume => {
+              const fullUrl = resume.companyKey ? (origin + '/' + resume.companyKey) : (origin + '/');
+              const displaySuffix = resume.companyKey ? resume.companyKey : "默认首页链接";
+              const downloadStatus = resume.showDownload ? '✅ 允许下载' : '❌ 禁止下载';
+
+              const li = document.createElement("li");
+              li.className = "admin-helper-item";
+              li.innerHTML = 
+                '<div>' +
+                  '<strong>' + displaySuffix + '</strong>' +
+                  '<span style="font-size:10px; opacity:0.5; display:block;">' + (resume.pdfTitle || '通用简历') + ' | ' + downloadStatus + '</span>' +
+                '</div>' +
+                '<button class="admin-helper-copy-btn" data-url="' + fullUrl + '">复制</button>';
+              linksList.appendChild(li);
+            });
+
+            linksList.addEventListener("click", (e) => {
+              if (e.target.classList.contains("admin-helper-copy-btn")) {
+                const urlToCopy = e.target.getAttribute("data-url");
+                navigator.clipboard.writeText(urlToCopy).then(() => {
+                  const originalText = e.target.innerText;
+                  e.target.innerText = "已复制";
+                  e.target.style.background = "#2ec4b6";
+                  setTimeout(() => {
+                    e.target.innerText = originalText;
+                    e.target.style.background = "";
+                  }, 1500);
+                }).catch(err => {
+                  alert("复制失败，请手动复制：" + urlToCopy);
+                });
+              }
+            });
+          }
+        }
+      });
+      /*]]>*/
+    </script>
   </body>
 </html>
 
