@@ -3,10 +3,10 @@
  */
 export function initAutoLinks() {
   // 目标容器选择器（文章正文、自定义页面、瞬间动态内容）
-  const selectors = ['.hydro-prose', '.hydro-moment__content'];
-  
+  const selectors = [".hydro-prose", ".hydro-moment__content"];
+
   // 排除的敏感标签，绝不扫描其中的文本
-  const ignoreTags = ['A', 'PRE', 'CODE', 'SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'BUTTON'];
+  const ignoreTags = ["A", "PRE", "CODE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT", "BUTTON"];
 
   // 统一的链接匹配正则：
   // 捕获组 1: Markdown 链接格式 [text](url)
@@ -17,10 +17,10 @@ export function initAutoLinks() {
 
   function processElement(element: HTMLElement) {
     // 避免重复解析
-    if (element.dataset.autolinkProcessed === 'true') {
+    if (element.dataset.autolinkProcessed === "true") {
       return;
     }
-    element.dataset.autolinkProcessed = 'true';
+    element.dataset.autolinkProcessed = "true";
 
     const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
@@ -33,7 +33,7 @@ export function initAutoLinks() {
           parent = parent.parentNode;
         }
         return NodeFilter.FILTER_ACCEPT;
-      }
+      },
     });
 
     const textNodes: Text[] = [];
@@ -45,7 +45,7 @@ export function initAutoLinks() {
 
     for (const node of textNodes) {
       const text = node.nodeValue;
-      if (!text || !text.includes('http')) {
+      if (!text || !text.includes("http")) {
         continue;
       }
 
@@ -58,7 +58,7 @@ export function initAutoLinks() {
 
       while ((match = linkRegex.exec(text)) !== null) {
         const matchIndex = match.index;
-        
+
         // 放入匹配前多余的文本
         if (matchIndex > lastIndex) {
           parts.push(document.createTextNode(text.substring(lastIndex, matchIndex)));
@@ -69,17 +69,17 @@ export function initAutoLinks() {
         const display = isMarkdownLink ? match[2] : match[4];
 
         if (href) {
-          const anchor = document.createElement('a');
+          const anchor = document.createElement("a");
           anchor.href = href;
           anchor.textContent = display;
-          anchor.target = '_blank';
-          anchor.rel = 'noopener noreferrer';
-          
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+
           // 添加特定的类名以便于 CSS 样式控制，并注入点缀样式
-          anchor.classList.add('hydro-autolink');
-          anchor.style.textDecoration = 'underline';
-          anchor.style.textDecorationStyle = 'dashed';
-          
+          anchor.classList.add("hydro-autolink");
+          anchor.style.textDecoration = "underline";
+          anchor.style.textDecorationStyle = "dashed";
+
           parts.push(anchor);
         }
 
@@ -94,27 +94,27 @@ export function initAutoLinks() {
       // 如果有任何被拆分的子节点，将原 TextNode 进行替换
       if (parts.length > 0) {
         const fragment = document.createDocumentFragment();
-        parts.forEach(part => fragment.appendChild(part));
+        parts.forEach((part) => fragment.appendChild(part));
         node.parentNode?.replaceChild(fragment, node);
       }
     }
   }
 
   // 1. 首屏渲染时已存在的元素进行转换
-  selectors.forEach(selector => {
+  selectors.forEach((selector) => {
     document.querySelectorAll<HTMLElement>(selector).forEach(processElement);
   });
 
   // 2. 利用 MutationObserver 监听动态内容变化（如瞬间分页异步加载、新评论插入等）
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach(node => {
+      if (mutation.type === "childList") {
+        mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as HTMLElement;
-            
+
             // 检查插入的元素本身是否需要处理
-            selectors.forEach(selector => {
+            selectors.forEach((selector) => {
               if (el.matches(selector)) {
                 processElement(el);
               }
@@ -129,6 +129,6 @@ export function initAutoLinks() {
 
   observer.observe(document.body, {
     childList: true,
-    subtree: true
+    subtree: true,
   });
 }

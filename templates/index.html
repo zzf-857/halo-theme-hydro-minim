@@ -67,13 +67,15 @@
 </script>
 
     
-    <title th:text="|${site.title} - Hydro-Minim|">Hydro-Minim</title>
+    <title th:text="${#strings.isEmpty(site.subtitle) ? site.title : site.title + ' - ' + site.subtitle}">
+      站点标题
+    </title>
     <link th:if="${showHero}" rel="preload" th:href="${heroCover}" as="image" fetchpriority="high" />
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js"></script>
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js"></script>
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CjxhUalM.js"></script>
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-0srKAI6O.css">
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DRH5izAB.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~bgw9g2a9-X3luOg67.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-Dx7d4KkH.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-BstiqEOZ.css">
   </head>
   <body
     class="hydro-page"

@@ -1843,17 +1843,11 @@ spec:
                   label: "要件内容"
                   placeholder: "例如: 长沙"
                   validation: "required"
-            - $formkit: switch
-              name: show_download_button
-              key: resume_info_show_download_button
-              label: "是否开启简历下载按钮"
-              help: "全局总开关。开启后在简历页面显示下载按钮，关闭则完全隐藏下载入口（防偷看）"
-              value: true
             - $formkit: array
               name: hr_resumes
               key: resume_info_hr_resumes
               label: "HR 专属多版本简历配置"
-              help: "点击添加专属简历，可上传多份简历。你可以为不同公司设置对应的识别码（即专属链接后缀）和上传定制的简历。"
+              help: "你可以为不同公司设置专属的提取码（识别码）。推荐发给 HR 的链接格式为：简历页永久链接 + ?hr=识别码（例如：blog.zengxiansheng.top/resume?hr=tencent）。"
               addLabel: "添加专属简历"
               itemLabels:
                 - type: text
@@ -1868,11 +1862,6 @@ spec:
                   name: company_key
                   label: "专属链接后缀 / 提取码"
                   placeholder: "留空表示默认首页链接"
-                - $formkit: text
-                  name: full_url
-                  label: "自动拼接好的专属链接（双击即可复制）"
-                  disabled: true
-                  value: "$('blog.zengxiansheng.top/' + ($value.company_key || ''))"
                 - $formkit: switch
                   name: show_download
                   label: "是否允许下载简历"
@@ -1888,7 +1877,7 @@ spec:
                 - $formkit: text
                   name: pdf_title
                   label: "下载时保存的文件名"
-                  placeholder: "例如：曾先生_简历_腾讯版 (不需要写 .pdf 后缀)" 
+                  placeholder: "例如：曾先生_简历_腾讯版 (不需要写 .pdf 后缀)"
             - $formkit: text
               name: email
               key: resume_info_email
@@ -2262,7 +2251,6 @@ spec:
                   name: is_download
                   label: "触发下载"
                   value: false
-
 
     - group: advanced
       label: 高级设置

@@ -69,10 +69,10 @@
     
     <title th:text="|${theme.config.plugins?.links?.title ?: '友链'} - ${site.title}|">友链</title>
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js"></script>
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js"></script>
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-CjxhUalM.js"></script>
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-0srKAI6O.css">
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DRH5izAB.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~bgw9g2a9-X3luOg67.js"></script>
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/main-Dx7d4KkH.js"></script>
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-BstiqEOZ.css">
   </head>
   <body
     class="hydro-page"
@@ -143,7 +143,10 @@
   >
     <div class="hydro-container">
       <div class="hydro-links-top">
-        <div class="hydro-site-info__card" th:if="${theme.config.plugins?.links?.show_my_site_info == null or theme.config.plugins?.links?.show_my_site_info != false}">
+        <div
+          class="hydro-site-info__card"
+          th:if="${theme.config.plugins?.links?.show_my_site_info == null or theme.config.plugins?.links?.show_my_site_info != false}"
+        >
           <div class="hydro-site-info__header">
             <div class="hydro-site-info__identity">
               <img class="hydro-site-info__logo" th:src="${siteLogo}" th:alt="|${siteName} logo|" loading="lazy" />
@@ -307,7 +310,9 @@
   <section class="hydro-links-section">
     <div class="hydro-container">
       <!-- 优先加载主题后台配置的自定义友链列表 -->
-      <th:block th:if="${theme.config.plugins?.links?.custom_links != null and not #lists.isEmpty(theme.config.plugins.links.custom_links)}">
+      <th:block
+        th:if="${theme.config.plugins?.links?.custom_links != null and not #lists.isEmpty(theme.config.plugins.links.custom_links)}"
+      >
         <div class="hydro-links-grid">
           <a
             class="hydro-link-card"
@@ -327,15 +332,16 @@
                   th:alt="${link.displayName}"
                   loading="lazy"
                 />
-                <span
-                  th:if="${#strings.isEmpty(link.logo)}"
-                  th:text="${#strings.substring(link.displayName,0,1)}"
+                <span th:if="${#strings.isEmpty(link.logo)}" th:text="${#strings.substring(link.displayName,0,1)}"
                   >A</span
                 >
               </div>
               <div class="hydro-link-card__meta">
                 <strong th:text="${link.displayName}">站点名称</strong>
-                <code th:text="${#strings.contains(link.url, '//') ? #strings.substringAfter(link.url, '//') : link.url}">example.com</code>
+                <code
+                  th:text="${#strings.contains(link.url, '//') ? #strings.substringAfter(link.url, '//') : link.url}"
+                  >example.com</code
+                >
               </div>
               <svg class="hydro-link-card__arrow" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M7 17 17 7M8 7h9v9"></path>
@@ -349,7 +355,9 @@
       </th:block>
 
       <!-- 否则回退至从 plugin-links 插件加载的分组数据 -->
-      <th:block th:if="${theme.config.plugins?.links?.custom_links == null or #lists.isEmpty(theme.config.plugins.links.custom_links)}">
+      <th:block
+        th:if="${theme.config.plugins?.links?.custom_links == null or #lists.isEmpty(theme.config.plugins.links.custom_links)}"
+      >
         <th:block th:if="${not #lists.isEmpty(groups)}">
           <div class="hydro-links-group" th:each="group : ${groups}">
             <div class="hydro-links-group__header">

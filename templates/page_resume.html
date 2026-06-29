@@ -67,24 +67,29 @@
 </script>
 
     
-    <title th:text="|个人简历 - ${site.title}|">个人简历</title>
+    <title th:text="|个人简历 - ${site.title}|">个人简历</title>
+    <script th:inline="javascript">
+      window.__HYDRO_RESUME_CONFIG__ = {
+        hrResumes: /*[[${theme.config.resume?.info?.hr_resumes}]]*/ [],
+      };
+    </script>
     <style>
       .resume-showcase {
-        --resume-accent: [(${theme.config.resume?.info?.accent_color ?: '#f0b429'})];
-        --resume-accent-soft: [(${theme.config.resume?.info?.accent_color_soft ?: '#f7c948'})];
+        --resume-accent: [(${theme.config.resume?.info?.accent_color ?: "#f0b429"})];
+        --resume-accent-soft: [(${theme.config.resume?.info?.accent_color_soft ?: "#f7c948"})];
       }
       html[data-hydro-theme="dark"] .resume-showcase {
-        --resume-accent: [(${theme.config.resume?.info?.dark_accent_color ?: '#f7c948'})];
-        --resume-accent-soft: [(${theme.config.resume?.info?.dark_accent_color_soft ?: '#fad96a'})];
+        --resume-accent: [(${theme.config.resume?.info?.dark_accent_color ?: "#f7c948"})];
+        --resume-accent-soft: [(${theme.config.resume?.info?.dark_accent_color_soft ?: "#fad96a"})];
       }
     </style>
   
-    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-A96EO_mB.js"></script>
-    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DFURTO-d.js">
-    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~cnig074y-CEtd067-.js">
-    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-CjxhUalM.js">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-0srKAI6O.css">
-    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-B7Z1Ka14.css">
+    <script type="module" crossorigin src="/themes/halo-theme-hydro-minim/assets/page_resume-PH8xbGa1.js"></script>
+    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/modulepreload-polyfill-DRH5izAB.js">
+    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/vendor~archives~author~bangumis~categories~category~doc-catalog~doc~docs~equipments~friends~bgw9g2a9-X3luOg67.js">
+    <link rel="modulepreload" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-Dx7d4KkH.js">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/main-BstiqEOZ.css">
+    <link rel="stylesheet" crossorigin href="/themes/halo-theme-hydro-minim/assets/page_resume-CAqRjOUJ.css">
   </head>
   <body
     class="hydro-page"
@@ -120,7 +125,18 @@
       
   
 
-  <div class="resume-showcase">
+  <div
+    class="resume-showcase"
+    th:attr="data-hr-resumes=${theme.config.resume?.info?.hr_resumes}"
+    th:with="
+         hrResumes=${theme.config.resume?.info?.hr_resumes},
+         defaultResumeList=${hrResumes != null ? hrResumes.?[company_key == 'default' or company_key == 'defualt'] : null},
+         defaultResume=${defaultResumeList != null and not #lists.isEmpty(defaultResumeList) ? defaultResumeList[0] : null},
+         defaultDownloadAllowed=${defaultResume == null or (defaultResume.show_download != false and defaultResume.show_download != 'false')},
+         defaultPdfUrl=${defaultResume != null ? defaultResume.pdf_url : #theme.assets('/images/resume/LK_Resume.pdf')},
+         defaultPdfTitle=${defaultResume != null and not #strings.isEmpty(defaultResume.pdf_title) ? defaultResume.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}
+       "
+  >
     <div class="resume-bg" aria-hidden="true">
       <span class="resume-bg__halo resume-bg__halo--gold"></span>
       <span class="resume-bg__halo resume-bg__halo--cyan"></span>
@@ -157,23 +173,33 @@
           “我正在把前端基础、AI 工具链和个人内容平台结合起来，持续学习如何把创意做成真实可访问、可部署、可复盘的作品。”
         </blockquote>
 
-        <div class="resume-profile-facts" aria-label="个人信息" th:if="${(theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)) or (theme.config.resume?.info?.location != null or theme.config.resume?.info?.direction != null or theme.config.resume?.info?.featured_project != null)}">
+        <div
+          class="resume-profile-facts"
+          aria-label="个人信息"
+          th:if="${(theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)) or (theme.config.resume?.info?.location != null or theme.config.resume?.info?.direction != null or theme.config.resume?.info?.featured_project != null)}"
+        >
           <!-- 动态个人要件 -->
-          <th:block th:if="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}">
+          <th:block
+            th:if="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}"
+          >
             <div th:each="fact : ${theme.config.resume.info.facts}">
               <span th:text="${fact.label}">要点名称</span>
               <strong th:text="${fact.value}">要点内容</strong>
             </div>
           </th:block>
           <!-- 向下兼容 Fallback -->
-          <th:block th:unless="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}">
+          <th:block
+            th:unless="${theme.config.resume?.info?.facts != null and not #lists.isEmpty(theme.config.resume.info.facts)}"
+          >
             <div th:if="${theme.config.resume?.info?.location != null}">
               <span>所在地</span>
               <strong th:text="${theme.config.resume.info.location ?: '重庆'}">重庆</strong>
             </div>
             <div th:if="${theme.config.resume?.info?.direction != null}">
               <span>方向</span>
-              <strong th:text="${theme.config.resume.info.direction ?: '前端 / AI 工具 / 内容平台'}">前端 / AI 工具 / 内容平台</strong>
+              <strong th:text="${theme.config.resume.info.direction ?: '前端 / AI 工具 / 内容平台'}"
+                >前端 / AI 工具 / 内容平台</strong
+              >
             </div>
             <div th:if="${theme.config.resume?.info?.featured_project != null}">
               <span>代表项目</span>
@@ -185,15 +211,24 @@
         <div class="resume-actions" th:with="buttons=${theme.config.resume?.info?.buttons}">
           <!-- 如果配置了自定义按钮，则遍历渲染 -->
           <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
-            <a th:each="btn : ${buttons}"
-               th:if="${theme.config.resume?.info?.show_download_button != false or btn.url != 'pdf_url'}"
-               th:classappend="${btn.url == 'pdf_url'} ? 'auth-download-btn' : ''"
-               th:href="${btn.url == 'pdf_url' ? 'javascript:void(0);' : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
-               th:target="${btn.url == 'pdf_url' ? '_self' : (btn.new_tab ? '_blank' : '_self')}"
-               th:rel="${btn.new_tab ? 'noopener' : null}"
-               th:download="${btn.url == 'pdf_url' ? '简历.pdf' : (btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null)}">
+            <a
+              th:each="btn : ${buttons}"
+              th:if="${btn.url != 'pdf_url' or defaultDownloadAllowed}"
+              th:attr="data-pdf-download=${btn.url == 'pdf_url' ? 'true' : null}"
+              th:href="${btn.url == 'pdf_url' ? defaultPdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+              th:target="${btn.new_tab ? '_blank' : '_self'}"
+              th:rel="${btn.new_tab ? 'noopener' : null}"
+              th:download="${btn.is_download ? defaultPdfTitle : null}"
+            >
               <th:block th:if="${btn.icon_type == 'pdf'}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                   <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -202,12 +237,28 @@
                 </svg>
               </th:block>
               <th:block th:if="${btn.icon_type == 'github'}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                  ></path>
                 </svg>
               </th:block>
               <th:block th:if="${btn.icon_type == 'link'}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                   <polyline points="15 3 21 3 21 9"></polyline>
                   <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -216,17 +267,18 @@
               <span th:text="${btn.text}">按钮文字</span>
             </a>
           </th:block>
-          
+
           <!-- 向下兼容 Fallback -->
           <th:block th:unless="${buttons != null and not #lists.isEmpty(buttons)}">
             <a href="#resume-contact">联系我</a>
             <a href="/about/">关于我</a>
             <a
-              th:if="${theme.config.resume?.info?.show_download_button != false}"
-              href="javascript:void(0);"
-              class="resume-pdf-btn auth-download-btn"
+              th:if="${defaultDownloadAllowed}"
+              th:href="${defaultPdfUrl}"
+              class="resume-pdf-btn"
+              data-pdf-download="true"
               download
-              th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
+              th:attr="download=${defaultPdfTitle}"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -250,28 +302,46 @@
     </section>
 
     <!-- 2. 专业技能与工具 -->
-    <section class="resume-section resume-skills resume-reveal" id="resume-skills" th:with="sTitle=${theme.config.resume?.skills?.title ?: '专业技能与工具'}, sSubtitle=${theme.config.resume?.skills?.subtitle ?: 'Competencies & Stack'}">
+    <section
+      class="resume-section resume-skills resume-reveal"
+      id="resume-skills"
+      th:with="sTitle=${theme.config.resume?.skills?.title ?: '专业技能与工具'}, sSubtitle=${theme.config.resume?.skills?.subtitle ?: 'Competencies & Stack'}"
+    >
       <div class="resume-section__heading" th:if="${not #strings.isEmpty(sTitle) or not #strings.isEmpty(sSubtitle)}">
-        <p class="resume-eyebrow" th:if="${not #strings.isEmpty(sSubtitle)}" th:text="${sSubtitle}">Competencies & Stack</p>
+        <p class="resume-eyebrow" th:if="${not #strings.isEmpty(sSubtitle)}" th:text="${sSubtitle}">
+          Competencies & Stack
+        </p>
         <h2 th:if="${not #strings.isEmpty(sTitle)}" th:text="${sTitle}">专业技能与工具</h2>
       </div>
 
-      <th:block th:if="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}">
+      <th:block
+        th:if="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}"
+      >
         <!-- 动态配置分类渲染 -->
-        <th:block th:if="${theme.config.resume?.skills?.categories != null and not #lists.isEmpty(theme.config.resume.skills.categories)}">
+        <th:block
+          th:if="${theme.config.resume?.skills?.categories != null and not #lists.isEmpty(theme.config.resume.skills.categories)}"
+        >
           <th:block th:each="cat : ${theme.config.resume.skills.categories}">
-            <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == #ctx.getVariable('cat').value]}">
+            <th:block
+              th:with="groupSkills = ${theme.config.resume.skills.list.?[category == #ctx.getVariable('cat').value]}"
+            >
               <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
                 <h3 class="resume-skill-group__title" th:text="${cat.label}">分类显示名称</h3>
                 <div class="resume-skill-grid">
                   <article th:each="item : ${groupSkills}">
                     <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                       <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                      <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                      <th:block
+                        th:unless="${not #strings.isEmpty(item.icon)}"
+                        th:text="${#strings.substring(item.name, 0, 1)}"
+                      />
                     </div>
                     <h4 th:text="${item.name}">技能名称</h4>
                     <p th:text="${item.keywords}">技术关键字</p>
-                    <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                    <span
+                      th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                      >★★★★☆</span
+                    >
                   </article>
                 </div>
               </div>
@@ -280,7 +350,9 @@
         </th:block>
 
         <!-- 默认分类兜底（若 categories 未配置或为空） -->
-        <th:block th:unless="${theme.config.resume?.skills?.categories != null and not #lists.isEmpty(theme.config.resume.skills.categories)}">
+        <th:block
+          th:unless="${theme.config.resume?.skills?.categories != null and not #lists.isEmpty(theme.config.resume.skills.categories)}"
+        >
           <!-- 🎨 前端开发 -->
           <th:block th:with="groupSkills = ${theme.config.resume.skills.list.?[category == 'frontend']}">
             <div th:if="${not #lists.isEmpty(groupSkills)}" class="resume-skill-group">
@@ -289,11 +361,17 @@
                 <article th:each="item : ${groupSkills}">
                   <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                     <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                    <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                    <th:block
+                      th:unless="${not #strings.isEmpty(item.icon)}"
+                      th:text="${#strings.substring(item.name, 0, 1)}"
+                    />
                   </div>
                   <h4 th:text="${item.name}">技能名称</h4>
                   <p th:text="${item.keywords}">技术关键字</p>
-                  <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                  <span
+                    th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                    >★★★★☆</span
+                  >
                 </article>
               </div>
             </div>
@@ -307,11 +385,17 @@
                 <article th:each="item : ${groupSkills}">
                   <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                     <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                    <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                    <th:block
+                      th:unless="${not #strings.isEmpty(item.icon)}"
+                      th:text="${#strings.substring(item.name, 0, 1)}"
+                    />
                   </div>
                   <h4 th:text="${item.name}">技能名称</h4>
                   <p th:text="${item.keywords}">技术关键字</p>
-                  <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                  <span
+                    th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                    >★★★★☆</span
+                  >
                 </article>
               </div>
             </div>
@@ -325,11 +409,17 @@
                 <article th:each="item : ${groupSkills}">
                   <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                     <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                    <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                    <th:block
+                      th:unless="${not #strings.isEmpty(item.icon)}"
+                      th:text="${#strings.substring(item.name, 0, 1)}"
+                    />
                   </div>
                   <h4 th:text="${item.name}">技能名称</h4>
                   <p th:text="${item.keywords}">技术关键字</p>
-                  <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                  <span
+                    th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                    >★★★★☆</span
+                  >
                 </article>
               </div>
             </div>
@@ -343,11 +433,17 @@
                 <article th:each="item : ${groupSkills}">
                   <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                     <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                    <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                    <th:block
+                      th:unless="${not #strings.isEmpty(item.icon)}"
+                      th:text="${#strings.substring(item.name, 0, 1)}"
+                    />
                   </div>
                   <h4 th:text="${item.name}">技能名称</h4>
                   <p th:text="${item.keywords}">技术关键字</p>
-                  <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                  <span
+                    th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                    >★★★★☆</span
+                  >
                 </article>
               </div>
             </div>
@@ -361,11 +457,17 @@
                 <article th:each="item : ${groupSkills}">
                   <div th:class="|resume-skill-icon resume-skill-icon--${item.category}|">
                     <th:block th:if="${not #strings.isEmpty(item.icon)}" th:utext="${item.icon}" />
-                    <th:block th:unless="${not #strings.isEmpty(item.icon)}" th:text="${#strings.substring(item.name, 0, 1)}" />
+                    <th:block
+                      th:unless="${not #strings.isEmpty(item.icon)}"
+                      th:text="${#strings.substring(item.name, 0, 1)}"
+                    />
                   </div>
                   <h4 th:text="${item.name}">技能名称</h4>
                   <p th:text="${item.keywords}">技术关键字</p>
-                  <span th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}">★★★★☆</span>
+                  <span
+                    th:text="${item.stars == '5' ? '★★★★★' : (item.stars == '4' ? '★★★★☆' : (item.stars == '3' ? '★★★☆☆' : (item.stars == '2' ? '★★☆☆☆' : '★☆☆☆☆')))}"
+                    >★★★★☆</span
+                  >
                 </article>
               </div>
             </div>
@@ -374,7 +476,9 @@
       </th:block>
 
       <!-- 兜底Fallback -->
-      <th:block th:unless="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}">
+      <th:block
+        th:unless="${theme.config.resume?.skills?.list != null and not #lists.isEmpty(theme.config.resume.skills.list)}"
+      >
         <div class="resume-skill-grid">
           <article>
             <div class="resume-skill-icon resume-skill-icon--frontend">FE</div>
@@ -429,7 +533,12 @@
     </section>
 
     <!-- 4. 成长经历 -->
-    <section class="resume-section resume-career resume-reveal" id="resume-career" th:if="${(theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)) or (theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c3_title != null)}" th:with="cTitle=${theme.config.resume?.career?.title ?: '成长经历'}, cSubtitle=${theme.config.resume?.career?.subtitle ?: 'Career Journey'}">
+    <section
+      class="resume-section resume-career resume-reveal"
+      id="resume-career"
+      th:if="${(theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)) or (theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c3_title != null)}"
+      th:with="cTitle=${theme.config.resume?.career?.title ?: '成长经历'}, cSubtitle=${theme.config.resume?.career?.subtitle ?: 'Career Journey'}"
+    >
       <div class="resume-section__heading" th:if="${not #strings.isEmpty(cTitle) or not #strings.isEmpty(cSubtitle)}">
         <p class="resume-eyebrow" th:if="${not #strings.isEmpty(cSubtitle)}" th:text="${cSubtitle}">Career Journey</p>
         <h2 th:if="${not #strings.isEmpty(cTitle)}" th:text="${cTitle}">成长经历</h2>
@@ -437,7 +546,9 @@
 
       <div class="resume-timeline">
         <!-- 动态成长经历 -->
-        <th:block th:if="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}">
+        <th:block
+          th:if="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}"
+        >
           <article th:each="item : ${theme.config.resume.career.list}">
             <time th:text="${item.year}">年份/时间</time>
             <div>
@@ -447,26 +558,50 @@
           </article>
         </th:block>
         <!-- 向下兼容 Fallback -->
-        <th:block th:unless="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}">
-          <article th:if="${theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c1_year != null}">
+        <th:block
+          th:unless="${theme.config.resume?.career?.list != null and not #lists.isEmpty(theme.config.resume.career.list)}"
+        >
+          <article
+            th:if="${theme.config.resume?.career?.c1_title != null or theme.config.resume?.career?.c1_year != null}"
+          >
             <time th:text="${theme.config.resume?.career?.c1_year ?: '2026'}">2026</time>
             <div>
-              <h3 th:text="${theme.config.resume?.career?.c1_title ?: '搭建 LK Universe 个人内容平台'}">搭建 LK Universe 个人内容平台</h3>
-              <p th:text="${theme.config.resume?.career?.c1_desc ?: '完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。'}">完成 Hexo 博客等...</p>
+              <h3 th:text="${theme.config.resume?.career?.c1_title ?: '搭建 LK Universe 个人内容平台'}">
+                搭建 LK Universe 个人内容平台
+              </h3>
+              <p
+                th:text="${theme.config.resume?.career?.c1_desc ?: '完成 Hexo 博客、Butterfly 主题、Express API、后台页面、Nginx/PM2 部署和 HTTPS 生产环境配置。'}"
+              >
+                完成 Hexo 博客等...
+              </p>
             </div>
           </article>
-          <article th:if="${theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c2_year != null}">
+          <article
+            th:if="${theme.config.resume?.career?.c2_title != null or theme.config.resume?.career?.c2_year != null}"
+          >
             <time th:text="${theme.config.resume?.career?.c2_year ?: '2026'}">2026</time>
             <div>
-              <h3 th:text="${theme.config.resume?.career?.c2_title ?: '扩展内容管理和自动化流程'}">扩展内容管理和自动化流程</h3>
-              <p th:text="${theme.config.resume?.career?.c2_desc ?: '围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。'}">围绕文章等...</p>
+              <h3 th:text="${theme.config.resume?.career?.c2_title ?: '扩展内容管理和自动化流程'}">
+                扩展内容管理和自动化流程
+              </h3>
+              <p
+                th:text="${theme.config.resume?.career?.c2_desc ?: '围绕文章、微语、图片上传、构建触发和 Git 同步，逐步把普通博客升级成轻量内容发布系统。'}"
+              >
+                围绕文章等...
+              </p>
             </div>
           </article>
-          <article th:if="${theme.config.resume?.career?.c3_title != null or theme.config.resume?.career?.c3_year != null}">
+          <article
+            th:if="${theme.config.resume?.career?.c3_title != null or theme.config.resume?.career?.c3_year != null}"
+          >
             <time th:text="${theme.config.resume?.career?.c3_year ?: 'Next'}">Next</time>
             <div>
               <h3 th:text="${theme.config.resume?.career?.c3_title ?: '继续升级个人展示系统'}">继续升级个人展示系统</h3>
-              <p th:text="${theme.config.resume?.career?.c3_desc ?: '计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。'}">计划加入等...</p>
+              <p
+                th:text="${theme.config.resume?.career?.c3_desc ?: '计划加入可后台编辑的简历模块、项目模块排序、作品详情页、PDF 简历下载和更完整的数据驱动展示。'}"
+              >
+                计划加入等...
+              </p>
             </div>
           </article>
         </th:block>
@@ -474,29 +609,52 @@
     </section>
 
     <!-- 5. 诚邀交流 -->
-    <section class="resume-contact resume-reveal" id="resume-contact" th:with="conTitle=${theme.config.resume?.contact?.title ?: '诚邀交流'}, conSubtitle=${theme.config.resume?.contact?.subtitle ?: 'Contact'}, conDesc=${theme.config.resume?.contact?.description ?: '如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：'}">
+    <section
+      class="resume-contact resume-reveal"
+      id="resume-contact"
+      th:with="conTitle=${theme.config.resume?.contact?.title ?: '诚邀交流'}, conSubtitle=${theme.config.resume?.contact?.subtitle ?: 'Contact'}, conDesc=${theme.config.resume?.contact?.description ?: '如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：'}"
+    >
       <div>
         <p class="resume-eyebrow" th:if="${not #strings.isEmpty(conSubtitle)}" th:text="${conSubtitle}">Contact</p>
         <h2 th:if="${not #strings.isEmpty(conTitle)}" th:text="${conTitle}">诚邀交流</h2>
-        <p th:if="${not #strings.isEmpty(conDesc)}" th:text="${conDesc}">如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：</p>
-        <div class="resume-contact__social-btn-wrap" th:if="${theme.config.resume?.contact?.show_social_button ?: true}" style="margin-top: 16px;">
-          <a class="resume-contact__social-btn" 
-             th:href="${theme.config.resume?.contact?.social_button_url ?: '/social'}" 
-             th:text="${theme.config.resume?.contact?.social_button_text ?: '🔗 建立连接 (社交网络)'}">
-             🔗 建立连接 (社交网络)
+        <p th:if="${not #strings.isEmpty(conDesc)}" th:text="${conDesc}">
+          如果您对我的研究方向或个人作品感兴趣，欢迎通过以下方式与我建立连接：
+        </p>
+        <div
+          class="resume-contact__social-btn-wrap"
+          th:if="${theme.config.resume?.contact?.show_social_button ?: true}"
+          style="margin-top: 16px"
+        >
+          <a
+            class="resume-contact__social-btn"
+            th:href="${theme.config.resume?.contact?.social_button_url ?: '/social'}"
+            th:text="${theme.config.resume?.contact?.social_button_text ?: '🔗 建立连接 (社交网络)'}"
+          >
+            🔗 建立连接 (社交网络)
           </a>
         </div>
       </div>
       <div class="resume-contact__actions" th:with="buttons=${theme.config.resume?.contact?.buttons}">
         <!-- 如果配置了自定义按钮，则遍历渲染 -->
         <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
-          <a th:each="btn : ${buttons}"
-             th:href="${btn.url == 'pdf_url' ? (theme.config.resume?.info?.pdf_url ?: #theme.assets('/images/resume/LK_Resume.pdf')) : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
-             th:target="${btn.new_tab ? '_blank' : '_self'}"
-             th:rel="${btn.new_tab ? 'noopener' : null}"
-             th:download="${btn.is_download ? (not #strings.isEmpty(theme.config.resume?.info?.pdf_title) ? theme.config.resume.info.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')) : null}">
+          <a
+            th:each="btn : ${buttons}"
+            th:if="${btn.url != 'pdf_url' or defaultDownloadAllowed}"
+            th:attr="data-pdf-download=${btn.url == 'pdf_url' ? 'true' : null}"
+            th:href="${btn.url == 'pdf_url' ? defaultPdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+            th:target="${btn.new_tab ? '_blank' : '_self'}"
+            th:rel="${btn.new_tab ? 'noopener' : null}"
+            th:download="${btn.is_download ? defaultPdfTitle : null}"
+          >
             <th:block th:if="${btn.icon_type == 'pdf'}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -505,12 +663,28 @@
               </svg>
             </th:block>
             <th:block th:if="${btn.icon_type == 'github'}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                ></path>
               </svg>
             </th:block>
             <th:block th:if="${btn.icon_type == 'link'}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15 3 21 3 21 9"></polyline>
                 <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -519,7 +693,7 @@
             <span th:text="${btn.text}">按钮文字</span>
           </a>
         </th:block>
-        
+
         <!-- 向下兼容 Fallback -->
         <th:block th:unless="${buttons != null and not #lists.isEmpty(buttons)}">
           <a href="/">返回首页</a>
@@ -544,11 +718,11 @@
             GitHub
           </a>
           <a
-            th:if="${theme.config.resume?.info?.show_download_button != false}"
-            href="javascript:void(0);"
-            class="auth-download-btn"
+            th:if="${defaultDownloadAllowed}"
+            th:href="${defaultPdfUrl}"
+            data-pdf-download="true"
             download
-            th:attr="download=${theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf'}"
+            th:attr="download=${defaultPdfTitle}"
           >
             <svg
               viewBox="0 0 24 24"
@@ -569,7 +743,6 @@
         </th:block>
       </div>
     </section>
-
   </div>
 
     </main>
@@ -588,217 +761,6 @@
       th:if="${not #strings.isEmpty(theme.config.advanced?.inject?.code_js)}"
       th:utext="${theme.config.advanced.inject.code_js}"
     ></script>
-    <!-- 📋 专属简历链接助手悬浮窗 -->
-    <div id="admin-resume-helper" 
-         class="admin-helper-panel"
-         style="display: none;">
-      <div class="admin-helper-header">
-        <strong>📋 专属简历链接助手</strong>
-        <span class="admin-helper-close" onclick="document.getElementById('admin-resume-helper').style.display='none'">×</span>
-      </div>
-      <div class="admin-helper-body">
-        <p class="admin-helper-tip">直接点击 [复制] 即可将专属链接发给 HR：</p>
-        <ul id="admin-links-list"></ul>
-      </div>
-    </div>
-
-    <!-- 悬浮窗样式 -->
-    <style>
-      .admin-helper-panel {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 320px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        z-index: 9999;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 13px;
-        color: #333;
-        text-align: left;
-      }
-      html[data-hydro-theme="dark"] .admin-helper-panel {
-        background: rgba(20, 22, 24, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #ddd;
-      }
-      .admin-helper-header {
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .admin-helper-close {
-        cursor: pointer;
-        font-size: 16px;
-        opacity: 0.6;
-      }
-      .admin-helper-close:hover { opacity: 1; }
-      .admin-helper-body { padding: 16px; }
-      .admin-helper-tip { margin-bottom: 12px; opacity: 0.7; }
-      .admin-helper-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-        background: rgba(0,0,0,0.02);
-        padding: 6px 10px;
-        border-radius: 6px;
-      }
-      .admin-helper-copy-btn {
-        background: #FF6B6B;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 11px;
-        transition: all 0.2s;
-      }
-      .admin-helper-copy-btn:hover { background: #FF8A8A; }
-    </style>
-
-    <!-- 动态分流及复制逻辑 -->
-    <script th:inline="javascript">
-      /*<![CDATA[*/
-      document.addEventListener("DOMContentLoaded", () => {
-        const downloadBtns = document.querySelectorAll(".auth-download-btn");
-        
-        // 1. 读取后台原始配置数据，并规范化驼峰键名（兼容 Java 序列化命名）
-        const rawResumes = /*[[${theme.config.resume?.info?.hr_resumes}]]*/ [];
-        const normalizedResumes = (rawResumes || []).map(r => ({
-          companyKey: (r.companyKey || r.company_key || "").trim(),
-          pdfUrl: r.pdfUrl || r.pdf_url || "",
-          pdfTitle: r.pdfTitle || r.pdf_title || "",
-          showDownload: r.showDownload !== undefined ? r.showDownload : (r.show_download !== undefined ? r.show_download : true)
-        }));
-
-        // 2. 忽略重复的识别码（不区分大小写，只取第一个）
-        const resumesList = [];
-        const seenKeys = new Set();
-        normalizedResumes.forEach(r => {
-          const lowKey = r.companyKey.toLowerCase();
-          if (!seenKeys.has(lowKey)) {
-            seenKeys.add(lowKey);
-            resumesList.push(r);
-          }
-        });
-
-        // 3. 读取授权过的公司标记
-        const company = localStorage.getItem('hr_company');
-
-        // 辅助函数：查找对应的配置（不区分大小写匹配）
-        function findResumeByCode(code) {
-          const targetCode = (code || "").trim().toLowerCase();
-          return resumesList.find(r => r.companyKey.toLowerCase() === targetCode) 
-              || resumesList.find(r => r.companyKey.toLowerCase() === 'default');
-        }
-
-        // 4. 如果是已授权的 HR，根据授权标记控制显示/隐藏以及动态绑定
-        if (company) {
-          const targetResume = findResumeByCode(company);
-          if (targetResume) {
-            // 如果该专属通道关闭了下载，直接隐藏下载按钮
-            if (targetResume.showDownload === false) {
-              downloadBtns.forEach(btn => btn.style.display = "none");
-            } else {
-              downloadBtns.forEach(btn => {
-                btn.style.display = "";
-                btn.href = targetResume.pdfUrl;
-                btn.setAttribute("download", (targetResume.pdfTitle || "个人简历") + ".pdf");
-              });
-            }
-          }
-        } else {
-          // 5. 普通访客点击：拦截并提示输入提取码
-          downloadBtns.forEach(btn => {
-            btn.addEventListener("click", (e) => {
-              if (!localStorage.getItem('hr_company')) {
-                e.preventDefault();
-                
-                const code = prompt("🔒 简历下载受限\n请输入您的专属提取码：");
-                if (code === null) return;
-                
-                const matchedResume = findResumeByCode(code);
-                const searchCode = code.trim().toLowerCase();
-                const directMatch = resumesList.find(r => r.companyKey.toLowerCase() === searchCode);
-                
-                if (directMatch) {
-                  localStorage.setItem('hr_company', code.trim());
-                  alert("验证成功！已为您解锁专属简历。");
-                  
-                  if (directMatch.showDownload === false) {
-                    alert("抱歉，该版本的简历下载已被作者关闭。");
-                    downloadBtns.forEach(b => b.style.display = "none");
-                  } else {
-                    downloadBtns.forEach(b => {
-                      b.style.display = "";
-                      b.href = directMatch.pdfUrl;
-                      b.setAttribute("download", (directMatch.pdfTitle || "个人简历") + ".pdf");
-                    });
-                    btn.click(); // 重新触发下载
-                  }
-                } else {
-                  alert("提取码错误，请联系作者获取专属链接。");
-                }
-              }
-            });
-          });
-        }
-
-        // 6. 管理员助手显示控制及拼接复制逻辑
-        const urlParams = new URLSearchParams(window.location.search);
-        const adminParam = urlParams.get('admin');
-
-        if (adminParam === 'show') {
-          const helperPanel = document.getElementById("admin-resume-helper");
-          if (helperPanel) {
-            helperPanel.style.display = "block";
-            
-            const linksList = document.getElementById("admin-links-list");
-            const origin = window.location.origin;
-
-            resumesList.forEach(resume => {
-              const fullUrl = resume.companyKey ? (origin + '/' + resume.companyKey) : (origin + '/');
-              const displaySuffix = resume.companyKey ? resume.companyKey : "默认首页链接";
-              const downloadStatus = resume.showDownload ? '✅ 允许下载' : '❌ 禁止下载';
-
-              const li = document.createElement("li");
-              li.className = "admin-helper-item";
-              li.innerHTML = 
-                '<div>' +
-                  '<strong>' + displaySuffix + '</strong>' +
-                  '<span style="font-size:10px; opacity:0.5; display:block;">' + (resume.pdfTitle || '通用简历') + ' | ' + downloadStatus + '</span>' +
-                '</div>' +
-                '<button class="admin-helper-copy-btn" data-url="' + fullUrl + '">复制</button>';
-              linksList.appendChild(li);
-            });
-
-            linksList.addEventListener("click", (e) => {
-              if (e.target.classList.contains("admin-helper-copy-btn")) {
-                const urlToCopy = e.target.getAttribute("data-url");
-                navigator.clipboard.writeText(urlToCopy).then(() => {
-                  const originalText = e.target.innerText;
-                  e.target.innerText = "已复制";
-                  e.target.style.background = "#2ec4b6";
-                  setTimeout(() => {
-                    e.target.innerText = originalText;
-                    e.target.style.background = "";
-                  }, 1500);
-                }).catch(err => {
-                  alert("复制失败，请手动复制：" + urlToCopy);
-                });
-              }
-            });
-          }
-        }
-      });
-      /*]]>*/
-    </script>
   </body>
 </html>
 

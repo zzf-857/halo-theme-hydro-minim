@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { initAuthAltchaFloatingAnchor } from "./auth-altcha";
+import { initAutoLinks } from "./autolink";
 import { initCommentWidgetSkin } from "./comment-widget-skin";
 import { runHydroFabAction, type HydroFabActionDependencies } from "./fab-actions";
 import { initHydroNotice, type HydroNoticeApi } from "./hydro-notice";
@@ -11,7 +12,6 @@ import { createMediaLoadController } from "./media-loading";
 import { createHydroQrSvg, createHydroQrSvgDataUrl } from "./poster-qr";
 import { initSearchWidgetSkin } from "./search-widget-skin";
 import { initHydroTagCloud } from "./tag-cloud";
-import { initAutoLinks } from "./autolink";
 
 import "./styles/main.css";
 
@@ -2948,7 +2948,9 @@ function initLinksPage() {
     openModal(submitModal);
 
     const autoFetchBtn = document.getElementById("hydro-link-auto-fetch-btn");
-    const verifyCodeGroup = document.getElementById("hydro-link-verify-code")?.closest(".hydro-link-submit-form__group");
+    const verifyCodeGroup = document
+      .getElementById("hydro-link-verify-code")
+      ?.closest(".hydro-link-submit-form__group");
     const captchaGroup = document.getElementById("hydro-link-captcha")?.closest(".hydro-link-submit-form__group");
     const groupWrapper = document.getElementById("hydro-link-group-wrapper");
     const sectionHeaders = document.querySelectorAll("#hydro-link-submit-form .hydro-link-submit-form__section-title");
@@ -2976,7 +2978,11 @@ function initLinksPage() {
     }
 
     if (!submitReady) {
-      showMessage(submitMessageEl, "温馨提示：当前未检测到 LinksSubmit 插件，提交申请后系统会自动复制友情链接信息，并为您跳转到下方评论区，粘贴发送即可自助申请。", "success");
+      showMessage(
+        submitMessageEl,
+        "温馨提示：当前未检测到 LinksSubmit 插件，提交申请后系统会自动复制友情链接信息，并为您跳转到下方评论区，粘贴发送即可自助申请。",
+        "success",
+      );
     } else {
       submitMessageEl.style.display = "none";
       loadLinkGroups("submit");
@@ -3220,7 +3226,8 @@ function initLinksPage() {
 - Logo：${logo}
 - 描述：${description}${email ? `\n- 邮箱：${email}` : ""}`;
 
-      navigator.clipboard.writeText(formattedText)
+      navigator.clipboard
+        .writeText(formattedText)
         .then(() => {
           showHydroNotice("您的友链申请信息已成功复制到剪贴板！请在下方评论区发表评论提交申请。", {
             id: "hydro-link-submit-clipboard-success",
@@ -3243,7 +3250,12 @@ function initLinksPage() {
         let filled = false;
         textareas.forEach((textarea) => {
           const placeholder = textarea.placeholder || "";
-          if (placeholder.includes("评论") || placeholder.includes("说点什么") || textarea.className.includes("comment") || textarea.id.includes("comment")) {
+          if (
+            placeholder.includes("评论") ||
+            placeholder.includes("说点什么") ||
+            textarea.className.includes("comment") ||
+            textarea.id.includes("comment")
+          ) {
             textarea.value = formattedText;
             textarea.dispatchEvent(new Event("input", { bubbles: true }));
             textarea.focus();

@@ -594,7 +594,9 @@ html[data-hydro-theme="dark"] .resume-work-card {
   opacity: 0;
   transform: scaleY(0);
   transform-origin: top;
-  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.5s ease;
+  transition:
+    transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1.5s ease;
   transition-delay: 0.15s;
 }
 
@@ -1079,26 +1081,54 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
 }
 
-.resume-skills.is-visible .resume-skill-group:nth-child(1) { transition-delay: 0.25s; }
-.resume-skills.is-visible .resume-skill-group:nth-child(2) { transition-delay: 0.45s; }
-.resume-skills.is-visible .resume-skill-group:nth-child(3) { transition-delay: 0.65s; }
-.resume-skills.is-visible .resume-skill-group:nth-child(4) { transition-delay: 0.85s; }
-.resume-skills.is-visible .resume-skill-group:nth-child(5) { transition-delay: 1.05s; }
-.resume-skills.is-visible .resume-skill-group:nth-child(6) { transition-delay: 1.25s; }
+.resume-skills.is-visible .resume-skill-group:nth-child(1) {
+  transition-delay: 0.25s;
+}
+.resume-skills.is-visible .resume-skill-group:nth-child(2) {
+  transition-delay: 0.45s;
+}
+.resume-skills.is-visible .resume-skill-group:nth-child(3) {
+  transition-delay: 0.65s;
+}
+.resume-skills.is-visible .resume-skill-group:nth-child(4) {
+  transition-delay: 0.85s;
+}
+.resume-skills.is-visible .resume-skill-group:nth-child(5) {
+  transition-delay: 1.05s;
+}
+.resume-skills.is-visible .resume-skill-group:nth-child(6) {
+  transition-delay: 1.25s;
+}
 
 .resume-skills.is-visible .resume-skill-grid article {
   opacity: 1;
   transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0);
 }
 
-.resume-skills.is-visible .resume-skill-grid article:nth-child(1) { transition-delay: 0.25s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(2) { transition-delay: 0.38s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(3) { transition-delay: 0.51s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(4) { transition-delay: 0.64s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(5) { transition-delay: 0.77s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(6) { transition-delay: 0.9s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(7) { transition-delay: 1.03s; }
-.resume-skills.is-visible .resume-skill-grid article:nth-child(8) { transition-delay: 1.16s; }
+.resume-skills.is-visible .resume-skill-grid article:nth-child(1) {
+  transition-delay: 0.25s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(2) {
+  transition-delay: 0.38s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(3) {
+  transition-delay: 0.51s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(4) {
+  transition-delay: 0.64s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(5) {
+  transition-delay: 0.77s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(6) {
+  transition-delay: 0.9s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(7) {
+  transition-delay: 1.03s;
+}
+.resume-skills.is-visible .resume-skill-grid article:nth-child(8) {
+  transition-delay: 1.16s;
+}
 
 /* --- 3. 成长经历 (Career) 3D交错入场 --- */
 .resume-career .resume-section__heading {
@@ -1135,11 +1165,21 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   transform: scaleY(1);
 }
 
-.resume-career.is-visible .resume-timeline article:nth-child(1) { transition-delay: 0.25s; }
-.resume-career.is-visible .resume-timeline article:nth-child(2) { transition-delay: 0.48s; }
-.resume-career.is-visible .resume-timeline article:nth-child(3) { transition-delay: 0.71s; }
-.resume-career.is-visible .resume-timeline article:nth-child(4) { transition-delay: 0.94s; }
-.resume-career.is-visible .resume-timeline article:nth-child(5) { transition-delay: 1.17s; }
+.resume-career.is-visible .resume-timeline article:nth-child(1) {
+  transition-delay: 0.25s;
+}
+.resume-career.is-visible .resume-timeline article:nth-child(2) {
+  transition-delay: 0.48s;
+}
+.resume-career.is-visible .resume-timeline article:nth-child(3) {
+  transition-delay: 0.71s;
+}
+.resume-career.is-visible .resume-timeline article:nth-child(4) {
+  transition-delay: 0.94s;
+}
+.resume-career.is-visible .resume-timeline article:nth-child(5) {
+  transition-delay: 1.17s;
+}
 
 /* --- 4. 诚邀交流 (Contact) 3D交错入场 --- */
 .resume-contact > div:first-child {
@@ -1291,7 +1331,6 @@ html[data-hydro-theme="dark"] .resume-modal__panel {
   }
 }
 
-
 /* Grouped Skill & Toolbox styles */
 .resume-skill-group {
   margin-bottom: 48px;
@@ -1353,4 +1392,123 @@ html[data-hydro-theme="dark"] .resume-skill-icon--aitools {
 }
 html[data-hydro-theme="dark"] .resume-skill-icon--softskills {
   background: #042f2e;
+}
+
+/* ==========================================================================
+   📋 专属简历链接助手面板
+   ========================================================================== */
+.admin-helper-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 330px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  z-index: 9999;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--resume-text);
+  overflow: hidden;
+  animation: resumePanelFadeIn 0.3s ease;
+}
+
+html[data-hydro-theme="dark"] .admin-helper-panel {
+  background: rgba(24, 25, 27, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+.admin-helper-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--resume-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+}
+
+.admin-helper-close {
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.admin-helper-close:hover {
+  opacity: 1;
+}
+
+.admin-helper-body {
+  padding: 16px;
+}
+
+.admin-helper-tip {
+  margin: 0 0 12px;
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+#admin-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.admin-helper-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+html[data-hydro-theme="dark"] .admin-helper-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.admin-helper-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+html[data-hydro-theme="dark"] .admin-helper-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-helper-copy-btn {
+  background: var(--resume-accent);
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.admin-helper-copy-btn:hover {
+  background: var(--resume-accent-soft);
+  transform: translateY(-1px);
+}
+
+@keyframes resumePanelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
