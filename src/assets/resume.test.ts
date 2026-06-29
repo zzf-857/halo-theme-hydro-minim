@@ -69,6 +69,26 @@ describe("resume HR download access", () => {
     expect(resolveHrResumeAccess(resumes, "beta")?.pdfUrl).toBe("https://cdn.example.com/resume-beta.pdf");
   });
 
+  it("unwraps Halo realNode values from inline theme config", () => {
+    const resumes = normalizeHrResumes([
+      {
+        realNode: {
+          company_key: "game",
+          pdf_url: "/upload/game-resume.pdf",
+          pdf_title: "游戏开发简历",
+          show_download: true,
+        },
+      },
+    ]);
+
+    expect(resolveHrResumeAccess(resumes, "game")).toEqual({
+      companyKey: "game",
+      pdfUrl: "/upload/game-resume.pdf",
+      pdfTitle: "游戏开发简历",
+      showDownload: true,
+    });
+  });
+
   it("keeps same-origin PDF links on the browser native download path", () => {
     const currentHref = "https://blog.example.com/resume/?hr=acme";
 

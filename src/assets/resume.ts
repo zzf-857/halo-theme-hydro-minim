@@ -7,6 +7,7 @@ type RawHrResume = {
   pdf_url?: unknown;
   pdfTitle?: unknown;
   pdf_title?: unknown;
+  realNode?: unknown;
   showDownload?: unknown;
   show_download?: unknown;
 };
@@ -80,15 +81,24 @@ function findDefaultResume(resumesList: NormalizedHrResume[]) {
   return resumesList.find((resume) => normalizeCompanyKey(resume.companyKey) === "default") || null;
 }
 
+function unwrapHrResumeNode(resume: RawHrResume): RawHrResume {
+  return isRecord(resume.realNode) ? (resume.realNode as RawHrResume) : resume;
+}
+
 export function normalizeHrResumes(rawResumes: unknown): NormalizedHrResume[] {
   if (!Array.isArray(rawResumes)) return [];
-  return rawResumes.map((resume: RawHrResume) => ({
-    companyKey: toConfigString(firstPresent(resume.companyKey, resume.company_key)).trim(),
-    pdfUrl: pickAttachmentUrl(firstPresent(resume.pdfUrl, resume.pdf_url)),
-    pdfTitle: toConfigString(firstPresent(resume.pdfTitle, resume.pdf_title)),
-    showDownload:
-      resume.showDownload !== undefined ? toBoolean(resume.showDownload, true) : toBoolean(resume.show_download, true),
-  }));
+  return rawResumes.map((rawResume: RawHrResume) => {
+    const resume = unwrapHrResumeNode(rawResume);
+    return {
+      companyKey: toConfigString(firstPresent(resume.companyKey, resume.company_key)).trim(),
+      pdfUrl: pickAttachmentUrl(firstPresent(resume.pdfUrl, resume.pdf_url)),
+      pdfTitle: toConfigString(firstPresent(resume.pdfTitle, resume.pdf_title)),
+      showDownload:
+        resume.showDownload !== undefined
+          ? toBoolean(resume.showDownload, true)
+          : toBoolean(resume.show_download, true),
+    };
+  });
 }
 
 export function resolveHrResumeAccess(
