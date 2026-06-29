@@ -42,4 +42,30 @@ describe("resume HR download access", () => {
     expect(resolveHrResumeAccess(resumes, null)?.pdfUrl).toBe("/blank-default.pdf");
     expect(resolveHrResumeAccess(resumes, "")?.showDownload).toBe(false);
   });
+
+  it("extracts PDF URLs from attachment object values", () => {
+    const resumes = normalizeHrResumes([
+      {
+        company_key: "acme",
+        pdf_url: {
+          status: {
+            permalink: "/upload/resume-acme.pdf",
+          },
+        },
+        pdf_title: "Acme Resume",
+        show_download: true,
+      },
+      {
+        company_key: "beta",
+        pdf_url: {
+          url: "https://cdn.example.com/resume-beta.pdf",
+        },
+        pdf_title: "Beta Resume",
+        show_download: true,
+      },
+    ]);
+
+    expect(resolveHrResumeAccess(resumes, "acme")?.pdfUrl).toBe("/upload/resume-acme.pdf");
+    expect(resolveHrResumeAccess(resumes, "beta")?.pdfUrl).toBe("https://cdn.example.com/resume-beta.pdf");
+  });
 });

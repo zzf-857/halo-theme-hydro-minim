@@ -1847,7 +1847,7 @@ spec:
               name: hr_resumes
               key: resume_info_hr_resumes
               label: "HR 专属多版本简历配置"
-              help: "你可以为不同公司设置专属的提取码（识别码）。推荐发给 HR 的链接格式为：简历页永久链接 + ?hr=识别码（例如：blog.zengxiansheng.top/resume?hr=tencent）。"
+              help: "你可以为不同公司设置专属的提取码（识别码）。推荐发给 HR 的链接格式为：首页 + ?hr=识别码（例如：https://example.com/?hr=tencent）。HR 从首页点击“关于我”或“简历”入口时，主题会自动保留该识别码。"
               addLabel: "添加专属简历"
               itemLabels:
                 - type: text
@@ -1861,7 +1861,30 @@ spec:
                 - $formkit: text
                   name: company_key
                   label: "专属链接后缀 / 提取码"
-                  placeholder: "留空表示默认首页链接"
+                  placeholder: "留空表示默认首页链接，例如 tencent"
+                  help: "填写后点击下方按钮即可复制发给 HR 的首页专属链接。"
+                - $el: div
+                  attrs:
+                    style: "display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-6px 0 8px;"
+                  children:
+                    - $el: button
+                      attrs:
+                        type: button
+                        style: "border:1px solid rgba(0,0,0,.18);border-radius:6px;background:#fff;padding:6px 10px;font-size:12px;line-height:1.4;cursor:pointer;"
+                        onclick: |
+                          const field=this.parentElement&&this.parentElement.previousElementSibling;
+                          const fallback=this.closest('li,.formkit-item,.formkit-fieldset,[data-index]');
+                          const input=(field&&field.querySelector('input'))||(fallback&&fallback.querySelector('input[name$="company_key"],input[name="company_key"],input[placeholder*="tencent"]'));
+                          const code=(input&&input.value?input.value:'').trim();
+                          const url=code?location.origin+'/?hr='+encodeURIComponent(code):location.origin+'/';
+                          const label=this.textContent;
+                          const done=(ok)=>{this.textContent=ok?'已复制链接':'请手动复制';setTimeout(()=>{this.textContent=label;},1800);};
+                          if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(url).then(()=>done(true)).catch(()=>{window.prompt('复制 HR 首页链接',url);done(false);});}else{window.prompt('复制 HR 首页链接',url);done(false);}
+                      children: "复制首页专属链接"
+                    - $el: span
+                      attrs:
+                        style: "font-size:12px;color:rgba(0,0,0,.52);"
+                      children: "复制结果会自动拼成：首页 + ?hr=后缀"
                 - $formkit: switch
                   name: show_download
                   label: "是否允许下载简历"

@@ -39,6 +39,38 @@ function toConfigString(value: unknown) {
   return "";
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function pickAttachmentUrl(value: unknown): string {
+  const primitiveValue = toConfigString(value).trim();
+  if (primitiveValue) return primitiveValue;
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const itemUrl = pickAttachmentUrl(item);
+      if (itemUrl) return itemUrl;
+    }
+    return "";
+  }
+
+  if (!isRecord(value)) return "";
+
+  const directUrl = firstPresent(value.url, value.permalink, value.path, value.value, value.href);
+  const directUrlString = toConfigString(directUrl).trim();
+  if (directUrlString) return directUrlString;
+
+  const statusUrl = isRecord(value.status)
+    ? toConfigString(firstPresent(value.status.permalink, value.status.url, value.status.path)).trim()
+    : "";
+  if (statusUrl) return statusUrl;
+
+  return isRecord(value.spec)
+    ? toConfigString(firstPresent(value.spec.url, value.spec.permalink, value.spec.path)).trim()
+    : "";
+}
+
 function normalizeCompanyKey(value: string) {
   const key = value.trim().toLowerCase();
   return key === "" || key === "default" || key === "defualt" ? "default" : key;
@@ -52,7 +84,7 @@ export function normalizeHrResumes(rawResumes: unknown): NormalizedHrResume[] {
   if (!Array.isArray(rawResumes)) return [];
   return rawResumes.map((resume: RawHrResume) => ({
     companyKey: toConfigString(firstPresent(resume.companyKey, resume.company_key)).trim(),
-    pdfUrl: toConfigString(firstPresent(resume.pdfUrl, resume.pdf_url)),
+    pdfUrl: pickAttachmentUrl(firstPresent(resume.pdfUrl, resume.pdf_url)),
     pdfTitle: toConfigString(firstPresent(resume.pdfTitle, resume.pdf_title)),
     showDownload:
       resume.showDownload !== undefined ? toBoolean(resume.showDownload, true) : toBoolean(resume.show_download, true),
@@ -85,6 +117,63 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
   } catch {
     return [];
   }
+}
+
+function normalizePdfFilename(value: string | null | undefined) {
+  const filename = (value || "个人简历").trim() || "个人简历";
+  return /\.pdf$/i.test(filename) ? filename : `${filename}.pdf`;
+}
+
+function configurePdfButton(button: Element, resume: NormalizedHrResume) {
+  const link = button as HTMLAnchorElement;
+  link.style.display = "";
+  if (resume.pdfUrl) {
+    link.href = resume.pdfUrl;
+  } else {
+    link.removeAttribute("href");
+  }
+  link.setAttribute("download", normalizePdfFilename(resume.pdfTitle));
+}
+
+function triggerBlobDownload(blob: Blob, filename: string) {
+  const blobUrl = window.URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = blobUrl;
+  anchor.download = filename;
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+}
+
+async function downloadPdfButton(button: HTMLAnchorElement) {
+  const href = button.getAttribute("href") || "";
+  if (!href || href.startsWith("javascript:")) return;
+
+  const url = new URL(href, window.location.href);
+  const response = await fetch(url.href, {
+    credentials: url.origin === window.location.origin ? "same-origin" : "omit",
+  });
+  if (!response.ok) throw new Error(`Resume PDF download failed with ${response.status}`);
+
+  triggerBlobDownload(await response.blob(), normalizePdfFilename(button.getAttribute("download")));
+}
+
+function bindPdfDownload(button: Element) {
+  const link = button as HTMLAnchorElement;
+  if (link.dataset.pdfDownloadBound === "true") return;
+  link.dataset.pdfDownloadBound = "true";
+
+  link.addEventListener("click", (event) => {
+    const href = link.getAttribute("href") || "";
+    if (!href || href.startsWith("javascript:")) return;
+
+    event.preventDefault();
+    void downloadPdfButton(link).catch(() => {
+      window.location.href = link.href;
+    });
+  });
 }
 
 (function () {
@@ -254,6 +343,76 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
       }
     }
 
+    // === 🔗 HR 专属简历分流及下载可见性控制 ===
+    (function handleHrAccess() {
+      const downloadBtns = document.querySelectorAll('[data-pdf-download="true"]');
+      if (downloadBtns.length === 0) return;
+      downloadBtns.forEach(bindPdfDownload);
+
+      const showcaseEl = document.querySelector(".resume-showcase");
+      const normalizedResumes = normalizeHrResumes(readHrResumesFromPage(showcaseEl));
+
+      // 忽略重复 of the 识别码（大小写不敏感，只保留第一个）
+      const resumesList: typeof normalizedResumes = [];
+      const seenKeys = new Set<string>();
+      normalizedResumes.forEach((r: any) => {
+        const lowKey = normalizeCompanyKey(r.companyKey);
+        if (!seenKeys.has(lowKey)) {
+          seenKeys.add(lowKey);
+          resumesList.push(r);
+        }
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const hrParam = urlParams.get("hr");
+      const activeCode = hrParam !== null ? hrParam.trim() : "";
+      const matched = resolveHrResumeAccess(resumesList, activeCode);
+
+      if (matched) {
+        if (matched.showDownload === false) {
+          downloadBtns.forEach((btn: any) => {
+            btn.style.display = "none";
+          });
+        } else {
+          downloadBtns.forEach((btn) => configurePdfButton(btn, matched));
+        }
+      } else {
+        downloadBtns.forEach((btn) => {
+          const link = btn as HTMLAnchorElement;
+          link.href = "javascript:void(0);";
+          if (link.dataset.pdfPromptBound === "true") return;
+          link.dataset.pdfPromptBound = "true";
+
+          link.addEventListener("click", (e: Event) => {
+            if (!new URLSearchParams(window.location.search).get("hr")) {
+              e.preventDefault();
+              const code = prompt("🔒 简历下载受限\n请输入您的专属提取码/公司识别码：");
+              if (code === null) return;
+
+              const searchCode = normalizeCompanyKey(code);
+              const matched = resumesList.find((r: any) => normalizeCompanyKey(r.companyKey) === searchCode);
+
+              if (matched) {
+                alert("验证成功！已为您解锁专属简历。");
+
+                if (matched.showDownload === false) {
+                  alert("抱歉，该版本的简历下载已被作者关闭。");
+                  downloadBtns.forEach((b) => ((b as HTMLElement).style.display = "none"));
+                } else {
+                  downloadBtns.forEach((b) => configurePdfButton(b, matched));
+                  void downloadPdfButton(link).catch(() => {
+                    window.location.href = link.href;
+                  });
+                }
+              } else {
+                alert("提取码错误，请联系作者获取专属链接。");
+              }
+            }
+          });
+        });
+      }
+    })();
+
     if (globalBound) return;
     globalBound = true;
 
@@ -310,78 +469,6 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
         startAutoplay();
       }
     });
-
-    // === 🔗 HR 专属简历分流及下载可见性控制 ===
-    (function handleHrAccess() {
-      const downloadBtns = document.querySelectorAll('[data-pdf-download="true"]');
-      if (downloadBtns.length === 0) return;
-
-      const showcaseEl = document.querySelector(".resume-showcase");
-      const normalizedResumes = normalizeHrResumes(readHrResumesFromPage(showcaseEl));
-
-      // 忽略重复 of the 识别码（大小写不敏感，只保留第一个）
-      const resumesList: typeof normalizedResumes = [];
-      const seenKeys = new Set<string>();
-      normalizedResumes.forEach((r: any) => {
-        const lowKey = normalizeCompanyKey(r.companyKey);
-        if (!seenKeys.has(lowKey)) {
-          seenKeys.add(lowKey);
-          resumesList.push(r);
-        }
-      });
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const hrParam = urlParams.get("hr");
-      const activeCode = hrParam !== null ? hrParam.trim() : "";
-      const matched = resolveHrResumeAccess(resumesList, activeCode);
-
-      if (matched) {
-        if (matched.showDownload === false) {
-          downloadBtns.forEach((btn: any) => {
-            btn.style.display = "none";
-          });
-        } else {
-          downloadBtns.forEach((btn: any) => {
-            btn.style.display = "";
-            btn.href = matched.pdfUrl;
-            btn.setAttribute("download", (matched.pdfTitle || "个人简历") + ".pdf");
-          });
-        }
-      } else {
-        downloadBtns.forEach((btn: any) => {
-          btn.href = "javascript:void(0);";
-
-          btn.addEventListener("click", (e: Event) => {
-            if (!new URLSearchParams(window.location.search).get("hr")) {
-              e.preventDefault();
-              const code = prompt("🔒 简历下载受限\n请输入您的专属提取码/公司识别码：");
-              if (code === null) return;
-
-              const searchCode = normalizeCompanyKey(code);
-              const matched = resumesList.find((r: any) => normalizeCompanyKey(r.companyKey) === searchCode);
-
-              if (matched) {
-                alert("验证成功！已为您解锁专属简历。");
-
-                if (matched.showDownload === false) {
-                  alert("抱歉，该版本的简历下载已被作者关闭。");
-                  downloadBtns.forEach((b: any) => (b.style.display = "none"));
-                } else {
-                  downloadBtns.forEach((b: any) => {
-                    b.style.display = "";
-                    b.href = matched.pdfUrl;
-                    b.setAttribute("download", (matched.pdfTitle || "个人简历") + ".pdf");
-                  });
-                  btn.click();
-                }
-              } else {
-                alert("提取码错误，请联系作者获取专属链接。");
-              }
-            }
-          });
-        });
-      }
-    })();
   }
 
   if (document.readyState === "loading") {
