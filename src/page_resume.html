@@ -24,11 +24,16 @@
     th:attr="data-hr-resumes=${theme.config.resume?.info?.hr_resumes}"
     th:with="
          hrResumes=${theme.config.resume?.info?.hr_resumes},
-         defaultResumeList=${hrResumes != null ? hrResumes.?[company_key == 'default' or company_key == 'defualt'] : null},
+         currentHrCode=${param.hr != null and not #lists.isEmpty(param.hr) ? #strings.trim(param.hr[0]) : ''},
+         currentHrCodeLower=${#strings.toLowerCase(currentHrCode)},
+         currentHrIsDefault=${#strings.isEmpty(currentHrCodeLower) or currentHrCodeLower == 'default' or currentHrCodeLower == 'defualt'},
+         defaultResumeList=${hrResumes != null ? hrResumes.?[#strings.isEmpty(company_key) or #strings.toLowerCase('' + company_key) == 'default' or #strings.toLowerCase('' + company_key) == 'defualt'] : null},
          defaultResume=${defaultResumeList != null and not #lists.isEmpty(defaultResumeList) ? defaultResumeList[0] : null},
-         defaultDownloadAllowed=${defaultResume == null or (defaultResume.show_download != false and defaultResume.show_download != 'false')},
-         defaultPdfUrl=${defaultResume != null ? defaultResume.pdf_url : #theme.assets('/images/resume/LK_Resume.pdf')},
-         defaultPdfTitle=${defaultResume != null and not #strings.isEmpty(defaultResume.pdf_title) ? defaultResume.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}
+         matchedResumeList=${hrResumes != null and not currentHrIsDefault ? hrResumes.?[not #strings.isEmpty(company_key) and #strings.toLowerCase('' + company_key) == #ctx.getVariable('currentHrCodeLower')] : null},
+         activeResume=${matchedResumeList != null and not #lists.isEmpty(matchedResumeList) ? matchedResumeList[0] : (currentHrIsDefault ? defaultResume : null)},
+         activeDownloadAllowed=${activeResume == null ? currentHrIsDefault : (activeResume.show_download != false and activeResume.show_download != 'false')},
+         activePdfUrl=${activeResume != null ? activeResume.pdf_url : #theme.assets('/images/resume/LK_Resume.pdf')},
+         activePdfTitle=${activeResume != null and not #strings.isEmpty(activeResume.pdf_title) ? activeResume.pdf_title + '.pdf' : (theme.config.identity?.nickname != null ? theme.config.identity.nickname + '_Resume.pdf' : 'LK_Resume.pdf')}
        "
   >
     <div class="resume-bg" aria-hidden="true">
@@ -107,12 +112,12 @@
           <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
             <a
               th:each="btn : ${buttons}"
-              th:if="${btn.url != 'pdf_url' or defaultDownloadAllowed}"
+              th:if="${btn.url != 'pdf_url' or activeDownloadAllowed}"
               th:attr="data-pdf-download=${btn.url == 'pdf_url' ? 'true' : null}"
-              th:href="${btn.url == 'pdf_url' ? defaultPdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+              th:href="${btn.url == 'pdf_url' ? activePdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
               th:target="${btn.new_tab ? '_blank' : '_self'}"
               th:rel="${btn.new_tab ? 'noopener' : null}"
-              th:download="${btn.is_download ? defaultPdfTitle : null}"
+              th:download="${btn.is_download ? activePdfTitle : null}"
             >
               <th:block th:if="${btn.icon_type == 'pdf'}">
                 <svg
@@ -167,12 +172,12 @@
             <a href="#resume-contact">联系我</a>
             <a href="/about/">关于我</a>
             <a
-              th:if="${defaultDownloadAllowed}"
-              th:href="${defaultPdfUrl}"
+              th:if="${activeDownloadAllowed}"
+              th:href="${activePdfUrl}"
               class="resume-pdf-btn"
               data-pdf-download="true"
               download
-              th:attr="download=${defaultPdfTitle}"
+              th:attr="download=${activePdfTitle}"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -533,12 +538,12 @@
         <th:block th:if="${buttons != null and not #lists.isEmpty(buttons)}">
           <a
             th:each="btn : ${buttons}"
-            th:if="${btn.url != 'pdf_url' or defaultDownloadAllowed}"
+            th:if="${btn.url != 'pdf_url' or activeDownloadAllowed}"
             th:attr="data-pdf-download=${btn.url == 'pdf_url' ? 'true' : null}"
-            th:href="${btn.url == 'pdf_url' ? defaultPdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
+            th:href="${btn.url == 'pdf_url' ? activePdfUrl : (btn.url == 'github_url' ? (theme.config.resume?.info?.github ?: 'https://github.com/zengxiansheng') : btn.url)}"
             th:target="${btn.new_tab ? '_blank' : '_self'}"
             th:rel="${btn.new_tab ? 'noopener' : null}"
-            th:download="${btn.is_download ? defaultPdfTitle : null}"
+            th:download="${btn.is_download ? activePdfTitle : null}"
           >
             <th:block th:if="${btn.icon_type == 'pdf'}">
               <svg
@@ -612,11 +617,11 @@
             GitHub
           </a>
           <a
-            th:if="${defaultDownloadAllowed}"
-            th:href="${defaultPdfUrl}"
+            th:if="${activeDownloadAllowed}"
+            th:href="${activePdfUrl}"
             data-pdf-download="true"
             download
-            th:attr="download=${defaultPdfTitle}"
+            th:attr="download=${activePdfTitle}"
           >
             <svg
               viewBox="0 0 24 24"

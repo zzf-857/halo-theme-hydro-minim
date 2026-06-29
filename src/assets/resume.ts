@@ -39,6 +39,15 @@ function toConfigString(value: unknown) {
   return "";
 }
 
+function normalizeCompanyKey(value: string) {
+  const key = value.trim().toLowerCase();
+  return key === "" || key === "default" || key === "defualt" ? "default" : key;
+}
+
+function findDefaultResume(resumesList: NormalizedHrResume[]) {
+  return resumesList.find((resume) => normalizeCompanyKey(resume.companyKey) === "default") || null;
+}
+
 export function normalizeHrResumes(rawResumes: unknown): NormalizedHrResume[] {
   if (!Array.isArray(rawResumes)) return [];
   return rawResumes.map((resume: RawHrResume) => ({
@@ -54,15 +63,13 @@ export function resolveHrResumeAccess(
   resumesList: NormalizedHrResume[],
   code: string | null | undefined,
 ): NormalizedHrResume | null {
-  const targetCode = (code || "default").trim().toLowerCase();
-  return (
-    resumesList.find((resume) => resume.companyKey.toLowerCase() === targetCode) ||
-    resumesList.find((resume) => {
-      const key = resume.companyKey.toLowerCase();
-      return key === "default" || key === "defualt";
-    }) ||
-    null
-  );
+  const targetCode = (code || "").trim();
+  if (targetCode === "") return findDefaultResume(resumesList);
+
+  const normalizedTarget = normalizeCompanyKey(targetCode);
+  if (normalizedTarget === "default") return findDefaultResume(resumesList);
+
+  return resumesList.find((resume) => normalizeCompanyKey(resume.companyKey) === normalizedTarget) || null;
 }
 
 function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
@@ -316,7 +323,7 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
       const resumesList: typeof normalizedResumes = [];
       const seenKeys = new Set<string>();
       normalizedResumes.forEach((r: any) => {
-        const lowKey = r.companyKey.toLowerCase();
+        const lowKey = normalizeCompanyKey(r.companyKey);
         if (!seenKeys.has(lowKey)) {
           seenKeys.add(lowKey);
           resumesList.push(r);
@@ -325,7 +332,7 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
 
       const urlParams = new URLSearchParams(window.location.search);
       const hrParam = urlParams.get("hr");
-      const activeCode = hrParam !== null ? hrParam.trim() : "default";
+      const activeCode = hrParam !== null ? hrParam.trim() : "";
       const matched = resolveHrResumeAccess(resumesList, activeCode);
 
       if (matched) {
@@ -350,8 +357,8 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
               const code = prompt("🔒 简历下载受限\n请输入您的专属提取码/公司识别码：");
               if (code === null) return;
 
-              const searchCode = code.trim().toLowerCase();
-              const matched = resumesList.find((r: any) => r.companyKey.toLowerCase() === searchCode);
+              const searchCode = normalizeCompanyKey(code);
+              const matched = resumesList.find((r: any) => normalizeCompanyKey(r.companyKey) === searchCode);
 
               if (matched) {
                 alert("验证成功！已为您解锁专属简历。");
@@ -374,122 +381,7 @@ function readHrResumesFromPage(showcaseEl: Element | null): unknown[] {
           });
         });
       }
-
-      const adminParam = urlParams.get("admin");
-      if (adminParam === "show") {
-        renderAdminHelper(resumesList);
-      }
     })();
-  }
-
-  function renderAdminHelper(resumesList: any[]) {
-    if (document.getElementById("admin-resume-helper")) return;
-
-    const panel = document.createElement("div");
-    panel.id = "admin-resume-helper";
-    panel.className = "admin-helper-panel";
-
-    const header = document.createElement("div");
-    header.className = "admin-helper-header";
-
-    const title = document.createElement("strong");
-    title.textContent = "📋 专属简历链接助手";
-
-    const closeBtn = document.createElement("span");
-    closeBtn.className = "admin-helper-close";
-    closeBtn.textContent = "×";
-    closeBtn.addEventListener("click", () => {
-      panel.style.display = "none";
-    });
-
-    header.appendChild(title);
-    header.appendChild(closeBtn);
-
-    const body = document.createElement("div");
-    body.className = "admin-helper-body";
-
-    const tip = document.createElement("p");
-    tip.className = "admin-helper-tip";
-    tip.textContent = "直接点击 [复制] 即可将专属链接发给 HR：";
-
-    const list = document.createElement("ul");
-    list.id = "admin-links-list";
-
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.delete("admin");
-    currentUrl.searchParams.delete("hr");
-    const cleanBaseUrl = currentUrl.origin + currentUrl.pathname;
-
-    resumesList.forEach((resume) => {
-      const companyKey = resume.companyKey;
-      const fullUrl = companyKey ? `${cleanBaseUrl}?hr=${companyKey}` : cleanBaseUrl;
-      const displaySuffix = companyKey ? `?hr=${companyKey}` : "默认简历链接";
-      const downloadStatus = resume.showDownload ? "✅ 允许下载" : "❌ 禁止下载";
-
-      const li = document.createElement("li");
-      li.className = "admin-helper-item";
-
-      const infoDiv = document.createElement("div");
-
-      const keySpan = document.createElement("strong");
-      keySpan.textContent = displaySuffix;
-
-      const metaSpan = document.createElement("span");
-      metaSpan.style.fontSize = "10px";
-      metaSpan.style.opacity = "0.5";
-      metaSpan.style.display = "block";
-      metaSpan.textContent = `${resume.pdfTitle || "通用简历"} | ${downloadStatus}`;
-
-      infoDiv.appendChild(keySpan);
-      infoDiv.appendChild(metaSpan);
-
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "admin-helper-copy-btn";
-      copyBtn.textContent = "复制";
-
-      copyBtn.addEventListener("click", () => {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard
-            .writeText(fullUrl)
-            .then(() => {
-              showCopyFeedback(copyBtn);
-            })
-            .catch(() => {
-              fallbackCopy(fullUrl, copyBtn);
-            });
-        } else {
-          fallbackCopy(fullUrl, copyBtn);
-        }
-      });
-
-      li.appendChild(infoDiv);
-      li.appendChild(copyBtn);
-      list.appendChild(li);
-    });
-
-    body.appendChild(tip);
-    body.appendChild(list);
-
-    panel.appendChild(header);
-    panel.appendChild(body);
-    document.body.appendChild(panel);
-  }
-
-  function fallbackCopy(text: string, button: HTMLButtonElement) {
-    const promptVal = prompt("🔒 复制失败，请手动复制以下链接：", text);
-    if (promptVal !== null) {
-      showCopyFeedback(button);
-    }
-  }
-
-  function showCopyFeedback(button: HTMLButtonElement) {
-    const originalText = button.textContent;
-    button.textContent = "已复制";
-    button.style.background = "#2ec4b6";
-    setTimeout(() => {
-      button.textContent = originalText;
-      button.style.background = "";
-    }, 1500);
   }
 
   if (document.readyState === "loading") {
