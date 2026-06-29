@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { normalizeHrResumes, resolveHrResumeAccess } from "./resume";
+import { normalizeHrResumes, resolveHrResumeAccess, shouldUseNativePdfDownload } from "./resume";
 
 describe("resume HR download access", () => {
   it("uses the default resume when no HR code is present and respects disabled downloads", () => {
@@ -67,5 +67,13 @@ describe("resume HR download access", () => {
 
     expect(resolveHrResumeAccess(resumes, "acme")?.pdfUrl).toBe("/upload/resume-acme.pdf");
     expect(resolveHrResumeAccess(resumes, "beta")?.pdfUrl).toBe("https://cdn.example.com/resume-beta.pdf");
+  });
+
+  it("keeps same-origin PDF links on the browser native download path", () => {
+    const currentHref = "https://blog.example.com/resume/?hr=acme";
+
+    expect(shouldUseNativePdfDownload("/upload/resume-acme.pdf", currentHref)).toBe(true);
+    expect(shouldUseNativePdfDownload("https://blog.example.com/upload/resume-acme.pdf", currentHref)).toBe(true);
+    expect(shouldUseNativePdfDownload("https://cdn.example.com/resume-acme.pdf", currentHref)).toBe(false);
   });
 });

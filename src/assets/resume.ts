@@ -124,6 +124,17 @@ function normalizePdfFilename(value: string | null | undefined) {
   return /\.pdf$/i.test(filename) ? filename : `${filename}.pdf`;
 }
 
+export function shouldUseNativePdfDownload(href: string | null | undefined, currentHref: string) {
+  const rawHref = (href || "").trim();
+  if (!rawHref || rawHref.startsWith("javascript:")) return false;
+
+  try {
+    return new URL(rawHref, currentHref).origin === new URL(currentHref).origin;
+  } catch {
+    return false;
+  }
+}
+
 function configurePdfButton(button: Element, resume: NormalizedHrResume) {
   const link = button as HTMLAnchorElement;
   link.style.display = "";
@@ -168,6 +179,7 @@ function bindPdfDownload(button: Element) {
   link.addEventListener("click", (event) => {
     const href = link.getAttribute("href") || "";
     if (!href || href.startsWith("javascript:")) return;
+    if (shouldUseNativePdfDownload(href, window.location.href)) return;
 
     event.preventDefault();
     void downloadPdfButton(link).catch(() => {
